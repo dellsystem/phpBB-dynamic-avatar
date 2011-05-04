@@ -1,0 +1,4 @@
+*
+# Everything except the specified files
+!readme.md
+!.gitignore
