@@ -1,4 +1,13 @@
-*
+/*
 # Everything except the specified files
 !readme.md
 !.gitignore
+
+# Include files
+!root/includes/acp/acp_dynamo.php
+!root/includes/acp/info/acp_dynamo.php
+
+# Language files
+!root/language/en/mods/dynamo/acp.php
+
+# This piece of shit file doesn't even work wtf
