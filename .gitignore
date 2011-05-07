@@ -2,6 +2,14 @@
 # Everything except the specified files
 !readme.md
 !.gitignore
+# SVG file for the sample images
+!penguin.svg
+!root/
+
+root/*
+
+# Sample image files
+!root/images/dynamo/
 
 # Include files
 !root/includes/acp/acp_dynamo.php
