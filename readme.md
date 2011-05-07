@@ -11,6 +11,11 @@ This repo will contain all the modified/new files (only) that are required for t
 
 Will add ACP and UCP modules.
 
+Permissions
+-----------
+
+`acl_a_dynamo` - the only one lol (for full admins only), might add more later if necessary
+
 Database structure and SQL
 --------------------------
 
