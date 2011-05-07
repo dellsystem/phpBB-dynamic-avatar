@@ -13,9 +13,11 @@
  */
 class acp_dynamo
 {
+	var $u_action;
+	
 	function main($id, $mode)
 	{
-		global $phpbb_root_path, $phpEx, $auth, $user;
+		global $phpbb_root_path, $phpEx, $auth, $user, $template;
 		
 		$user->add_lang('mods/dynamo/acp');
 		$action	= request_var('action', '');
@@ -24,26 +26,35 @@ class acp_dynamo
 		switch($mode)
 		{
 			case 'overview':
-				$this->tpl_name = 'acp_dynamo_overview';
-				$this->page_title = 'ACP_DYNAMO_OVERVIEW';
+				$this_template = 'acp_dynamo_overview';
+				$this_title = 'ACP_DYNAMO_OVERVIEW';
+				$template_vars = array();
 			break;
 			case 'settings':
-				$this->tpl_name = 'acp_dynamo_settings';
-				$this->page_title = 'ACP_DYNAMO_SETTINGS';
+				$this_template = 'acp_dynamo_settings';
+				$this_title = 'ACP_DYNAMO_SETTINGS';
+				$template_vars = array();
+				
 			break;
 			case 'layers':
-				$this->tpl_name = 'acp_dynamo_layers';
-				$this->page_title = 'ACP_DYNAMO_LAYERS';
+				$this_template = 'acp_dynamo_layers';
+				$this_title = 'ACP_DYNAMO_LAYERS';
+				$template_vars = array();
 			break;
 			case 'items':
-				$this->tpl_name = 'acp_dynamo_items';
-				$this->page_title = 'ACP_DYNAMO_ITEMS';
+				$this_template = 'acp_dynamo_items';
+				$this_title = 'ACP_DYNAMO_ITEMS';
+				$template_vars = array();
 			break;
 			case 'users':
-				$this->tpl_name = 'acp_dynamo_users';
-				$this->page_title = 'ACP_DYNAMO_USERS';
+				$this_template = 'acp_dynamo_users';
+				$this_title = 'ACP_DYNAMO_USERS';
+				$template_vars = array();
 			break;
 		}
+		$this->tpl_name = $this_template;
+		$this->page_title = $this_title;
+		$template->assign_vars($template_vars);
 	}
 }
 ?>
