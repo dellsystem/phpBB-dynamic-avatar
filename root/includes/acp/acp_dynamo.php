@@ -17,7 +17,7 @@ class acp_dynamo
 	
 	function main($id, $mode)
 	{
-		global $phpbb_root_path, $phpEx, $auth, $user, $template;
+		global $phpbb_root_path, $phpEx, $auth, $user, $template, $config;
 		
 		$user->add_lang('mods/dynamo/acp');
 		$action	= request_var('action', '');
@@ -33,7 +33,26 @@ class acp_dynamo
 			case 'settings':
 				$this_template = 'acp_dynamo_settings';
 				$this_title = 'ACP_DYNAMO_SETTINGS';
-				$template_vars = array();
+				
+				if ($submit)
+				{
+					// Update the config values ... better way of doing this?
+					add_log('admin', 'LOG_DYNAMO_SETTINGS');
+					set_config('dynamo_enabled', request_var('dynamo_enabled', 0));
+					set_config('dynamo_use_points', request_var('dynamo_use_points', 0));
+					set_config('dynamo_change_base', request_var('dynamo_change_base', 0));
+					set_config('dynamo_mandatory', request_var('dynamo_mandatory', 0));
+					
+					trigger_error($user->lang['CONFIG_UPDATED'] . adm_back_link($this->u_action));
+				}
+				
+				$template_vars = array(
+					'U_ACTION' 				=> $this->u_action,
+					'DYNAMO_ENABLED'		=> $config['dynamo_enabled'],
+					'DYNAMO_USE_POINTS'		=> $config['dynamo_use_points'],
+					'DYNAMO_CHANGE_BASE'	=> $config['dynamo_change_base'],
+					'DYNAMO_MANDATORY'		=> $config['dynamo_mandatory'],
+				);
 				
 			break;
 			case 'layers':

@@ -30,6 +30,7 @@ $lang = array_merge($lang, array(
 	'ACP_DYNAMO_LAYERS'				=> 'Layers',
 	'ACP_DYNAMO_ITEMS'				=> 'Items',
 	'ACP_DYNAMO_USERS'				=> 'Users',
+	'LOG_DYNAMO_SETTINGS'			=> '<strong>Altered dynamic avatar settings</strong>',
 ));
 
 ?>
