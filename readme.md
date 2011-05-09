@@ -11,6 +11,10 @@ This repo will contain all the modified/new files (only) that are required for t
 
 Will add ACP and UCP modules.
 
+**What's the status of this MOD?**
+
+I had some code (mainly for the ACP and a bit of skeleton code for the UCP module) already written from when I first started writing this MOD, but I decided to restructure it a bit and thus start from scratch. So it's  under heavy development right now, and is definitely not ready for public consumption just yet. That said, most of the code left to write is fairly trivial, so it's just a matter of implementation.
+
 Permissions
 -----------
 
