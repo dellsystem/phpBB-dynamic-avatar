@@ -24,12 +24,7 @@ if (empty($lang) || !is_array($lang))
 
 // Merge the following language entries into the lang array
 $lang = array_merge($lang, array(
-	'ACP_DYNAMO'					=> 'Dynamic avatar',
-	'ACP_DYNAMO_OVERVIEW'			=> 'Dynamic avatar overview',
-	'ACP_DYNAMO_SETTINGS'			=> 'Dynamic avatar settings',
-	'ACP_DYNAMO_LAYERS'				=> 'Dynamic avatar layers',
-	'ACP_DYNAMO_ITEMS'				=> 'Dynamic avatar items',
-	'ACP_DYNAMO_USERS'				=> 'Dynamic avatar users',
+	// Later
 ));
 
 ?>
