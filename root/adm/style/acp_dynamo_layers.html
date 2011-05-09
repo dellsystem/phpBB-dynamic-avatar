@@ -2,6 +2,34 @@
 
 <h1>{L_ACP_DYNAMO_LAYERS}</h1>
 
-<p>Blah blah blah</p>
+<p>Here you can view all the layers you have created and edit them etc</p>
+
+<table cellspacing="1">
+	<col class="col1" /><col class="col2" /><col class="col1" /><col class="col2" /><col class="col1" /><col class="col2" /><col class="col1" />
+	<thead>
+		<tr>
+			<th>Layer ID</th>
+			<th>Layer name</th>
+			<th>Layer description</th>
+			<th>Layer position</th>
+			<th>Mandatory?</th>
+			<th>Default item</th>
+			<th>Options</th>
+		</tr>
+	</thead>
+	<tbody>
+		<!-- BEGIN layers -->
+		<tr>
+			<td>{layers.LAYER_ID}</td>
+			<td>{layers.LAYER_NAME}</td>
+			<td>{layers.LAYER_DESC}</td>
+			<td>{layers.LAYER_POSITION}</td>
+			<td>{layers.LAYER_MANDATORY}</td>
+			<td>{layers.DEFAULT_ITEM}</td>
+			<td style="text-align: center;"><a href="{layers.U_EDIT}">{L_EDIT}</a> | <a href="{layers.U_DELETE}">{L_DELETE}</a></td>
+		</tr>
+		<!-- END layers -->
+	</tbody>
+</table>
 
 <!-- INCLUDE overall_footer.html -->
