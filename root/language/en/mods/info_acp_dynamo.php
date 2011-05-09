@@ -32,6 +32,8 @@ $lang = array_merge($lang, array(
 	'ACP_DYNAMO_USERS'				=> 'Users',
 	// ACP messages when doing shit
 	'ACP_DYNAMO_EDITED_LAYER'		=> 'Successfully edited layer.',
+	'ACP_DYNAMO_ADDED_LAYER'		=> 'Successfully added layer.',
+	'ACP_DYNAMO_DELETED_LAYER'		=> 'Successfully deleted layer.',
 	
 	// Log shit
 	'LOG_DYNAMO_SETTINGS'			=> '<strong>Altered dynamic avatar settings</strong>',
