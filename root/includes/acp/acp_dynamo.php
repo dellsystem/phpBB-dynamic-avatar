@@ -250,20 +250,31 @@ class acp_dynamo
 				}
 				else if ($delete_get > 0)
 				{
-					// If we need to delete a layer, the delete get var will be > 0 (will be the ID)
-					$sql = "DELETE FROM " . DYNAMO_LAYERS_TABLE . "
-							WHERE dynamo_layer_id = $delete_get";
-					$db->sql_query($sql);
+					// Do the confirm box thing whatever before deleting
+					if (confirm_box(true))
+					{
+						// If we need to delete a layer, the delete get var will be > 0 (will be the ID)
+						$sql = "DELETE FROM " . DYNAMO_LAYERS_TABLE . "
+								WHERE dynamo_layer_id = $delete_get";
+						$db->sql_query($sql);
 					
-					// Now set the associated items to an item ID of 0 (uncategorised)
-					$sql = "UPDATE " . DYNAMO_ITEMS_TABLE . "
-							SET dynamo_item_layer = 0
-							WHERE dynamo_item_layer = $delete_get";
-					$db->sql_query($sql);
-					
-					// Need a confirm box in the future
-					 
-					trigger_error($user->lang['ACP_DYNAMO_DELETED_LAYER'] . adm_back_link($this->u_action));
+						// Now set the associated items to an item ID of 0 (uncategorised)
+						$sql = "UPDATE " . DYNAMO_ITEMS_TABLE . "
+								SET dynamo_item_layer = 0
+								WHERE dynamo_item_layer = $delete_get";
+						$db->sql_query($sql);
+						 
+						trigger_error($user->lang['ACP_DYNAMO_DELETED_LAYER'] . adm_back_link($this->u_action));
+					}
+					else
+					{
+						$s_hidden_fields = build_hidden_fields(array(
+							'submit'    => true,
+							)
+						);
+						
+						confirm_box(false, $user->lang['ACP_DYNAMO_DELETE_LAYER'], $s_hidden_fields);
+					}
 				}
 				else
 				{
