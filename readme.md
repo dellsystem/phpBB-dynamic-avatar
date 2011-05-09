@@ -20,12 +20,14 @@ Database structure and SQL
 --------------------------
 
 `phpbb_config` - add the following configuration-related fields:
+
 *   `dynamo_enabled`
 *   `dynamo_use_points` - if set to true, it will look for a points MOD (by seeing if `points_enable` in `phpbb_config` is set to true). if it can find one, then the points-related options will be available.
 *   `dynamo_change_base` - if set to true, users can change their base after they've created it. if set to false, users cannot change their base (i.e. the items in all layers designated 'base').
 *   `dynamo_mandatory` - if set to true, then users cannot have a regular avatar, and must set a dynamic avatar in order for an avatar to show up at all. if set to false, then users can choose between a regular avatar and a dynmic one 
 
 `phpbb_dynamo_layers` - new table to hold the information associated with each layer, with the following fields:
+
 *   `dynamo_layer_id` - should be immutable as each layer ID is linked to its items
 *   `dynamo_layer_mandatory` - whether it's required or not. can only be set to true if there is at least one item associated with it.
 *   `dynamo_layer_default` - the default item id for the layer. can choose between all the items associated with that layer.
@@ -34,12 +36,14 @@ Database structure and SQL
 *   `dynamo_layer_position` - from 1 to the number of layers. Or, allow it to accept any sort of ordering? For more graceful behaviour in case of manual change or something?
 
 `phpbb_dynamo_items` - new table to hold the information associated with each item, with the following fields:
+
 *   `dynamo_item_id` - image files will be saved with their item id as a filename
 *   `dynamo_item_layer` - the ID of the layer it is associated with. Deleting a layer should delete all of its items.
 *   `dynamo_item_name`
 *   `dynamo_item_desc` - description (optional)
 
 `phpbb_dynamo_users` - new table to hold each user's avatar information. no keys here as each user can and probably will show up multiple times.
+
 *   `dynamo_user_id`
 *   `dynamo_user_layer`
 *   `dynamo_user_item` - item ID for that layer
