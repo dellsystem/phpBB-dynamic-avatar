@@ -137,7 +137,7 @@ class acp_dynamo
 						$desired_name = request_var('dynamo_layer_name', '');
 						$desired_desc = request_var('dynamo_layer_desc', '');
 						$desired_mandatory = request_var('dynamo_layer_mandatory', 0);
-						$desired_default = request_var('dynamo_default_item', 0);
+						$desired_default = request_var('dynamo_layer_default', 0);
 						
 						// First get the old position from the db
 						$sql = "SELECT dynamo_layer_position
