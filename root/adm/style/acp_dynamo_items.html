@@ -2,6 +2,46 @@
 
 <h1>{L_ACP_DYNAMO_ITEMS}</h1>
 
-<p>Blah blah blah</p>
+<p>Here you can manage the items associated with each layer. Items are grouped by layer, which are themselves sorted by their position(top to bottom).</p>
+
+<!-- BEGIN item -->
+<!-- IF item.NEW_LAYER && !item.FIRST_LAYER -->
+		</tr>
+	</tbody>
+</table>
+<br />
+<!-- ENDIF -->
+<!-- IF item.NEW_LAYER -->
+<table cellspacing="1">
+	<col class="col1" /><col class="col2" /><col class="col1" /><col class="col2" /><col class="col1" />
+	<thead>
+		<tr>
+			<th colspan="5">{item.LAYER_NAME}</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+<!-- ENDIF -->
+			<td><img src="{item.ITEM_IMAGE}" /><br /><strong>{item.ITEM_NAME}</strong></td>
+			<!-- IF item.NUM_IN_LAYER % 5 == 0 -->
+			</tr>
+			<tr>
+			<!-- ENDIF -->
+<!-- END item -->
+<!-- IF .item -->
+<!-- for the very end of the loop, if there is content in it -->
+		</tr>
+	</tbody>
+</table>
+<!-- ENDIF -->
+
+
+<form id="dynamo_add_item" method="post" action="{U_ADD_ACTION}"> 
+	<fieldset class="quick"> 
+		<input type="hidden" name="action" value="add" /> 
+		<input type="text" name="dynamo_item_name" value="" maxlength="255" /> 
+		<input class="button2" name="add_item" type="submit" value="Create new item" />
+	</fieldset> 
+</form> 
 
 <!-- INCLUDE overall_footer.html -->

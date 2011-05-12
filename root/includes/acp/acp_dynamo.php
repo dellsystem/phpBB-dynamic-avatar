@@ -314,9 +314,137 @@ class acp_dynamo
 				}
 			break;
 			case 'items':
-				$this_template = 'acp_dynamo_items';
 				$this_title = 'ACP_DYNAMO_ITEMS';
-				$template_vars = array();
+				
+				$add_item = request_var('add', 0);
+				$edit_item_id = request_var('edit', 0);
+				$delete_item_id = request_var('delete', 0);
+				
+				// If add_item is 1, then, add a new item
+				if ($add_item)
+				{
+					// If the form was submitted, create this item
+					if ($submit)
+					{
+						// The necessary post vars for this new item
+						$desired_name = request_var('dynamo_item_name', '');
+						$desired_desc = request_var('dynamo_item_desc', '');
+						$desired_layer = request_var('dynamo_item_layer', 0);
+						
+						// First get the next item ID from the database
+						$sql = "SELECT dynamo_item_id
+								FROM " . DYNAMO_ITEMS_TABLE . "
+								ORDER BY dynamo_item_id DESC
+								LIMIT 1";
+						$result = $db->sql_query($sql);
+						$row = $db->sql_fetchrow($result);
+						
+						$item_id = $row['dynamo_item_id'] + 1;
+						
+						// Now upload the file - include functions_upload.php
+						// Init upload class
+						include_once($phpbb_root_path . 'includes/functions_upload.' . $phpEx);
+						// Must be in gif or png for transparency? figure this out later
+						// Need config settings for avatar width and height later
+						$upload = new fileupload('AVATAR_', array('gif', 'png'), false, 100, 100, 120, 120);
+
+						// Maybe edit functions_uploaded.php or something ... or maybe not
+						if (!empty($_FILES['uploadfile']['name']))
+						{
+							$file = $upload->form_upload('uploadfile');
+							$prefix = $desired_layer . '-';
+							$file->realname = $prefix . $item_id . '.png';
+							// Make sure file is an image ... later
+							//echo $file->realname;
+	
+							// Make a config option to set this later
+							$destination = 'images/dynamo';
+							// Move file and overwrite any existing image
+							$file->move_file($destination, true);
+						}
+						
+						
+						// Might as well not ignore the ID since we have it
+						$sql = "INSERT INTO " . DYNAMO_ITEMS_TABLE . " (dynamo_item_id, dynamo_item_name, dynamo_item_desc, dynamo_item_layer)
+								VALUES ($item_id, '$desired_name', '$desired_desc', $desired_layer)";
+						$db->sql_query($sql);
+						
+						trigger_error($user->lang['ACP_DYNAMO_ADDED_ITEM'] . adm_back_link($this->u_action));
+					}
+					$this_template = 'acp_dynamo_items_edit';
+					
+					// Make the layer dropdown - get all the layers from the db
+					$sql = "SELECT dynamo_layer_name, dynamo_layer_id
+							FROM " . DYNAMO_LAYERS_TABLE . "
+							ORDER BY dynamo_layer_position DESC";
+					$result = $db->sql_query($sql);
+					
+					$layer_dropdown = '<select name="dynamo_item_layer">';
+					// There should always be an "uncategorised" option
+					$layer_dropdown .= '<option value="0">Uncategorised</option>';
+					
+					while ($row = $db->sql_fetchrow($result))
+					{
+						$layer_id = $row['dynamo_layer_id'];
+						$layer_name = $row['dynamo_layer_name'];
+						$layer_dropdown .= '<option value="' . $layer_id . '">' . $layer_name . '</option>';
+					}
+					
+					$layer_dropdown .= '</select>';
+					
+					$template_vars = array(
+						'ITEM_ADD_EDIT'		=> 'Add a new item',
+						'U_ACTION'			=> $this->u_action . '&amp;add=1',
+						'LAYER_DROPDOWN'	=> $layer_dropdown,
+						'ITEM_NAME'			=> request_var('dynamo_item_name', ''),
+						'MODE_DESCRIPTION'	=> 'Here you can add a new item', // lang constants later
+					);
+				}
+				else
+				{
+					// Just show all the items
+					$this_template = 'acp_dynamo_items';
+					
+					// Select all the items from the database, left join to get their layer name if applicable
+					// Layers start indexing at 1 so a layer of 0 == uncategorised
+					$sql = "SELECT i.dynamo_item_id, i.dynamo_item_name, i.dynamo_item_layer, i.dynamo_item_desc, l.dynamo_layer_name, l.dynamo_layer_position
+							FROM " . DYNAMO_ITEMS_TABLE . " i
+							LEFT JOIN " . DYNAMO_LAYERS_TABLE . " l
+							ON i.dynamo_item_layer = l.dynamo_layer_id
+							ORDER BY l.dynamo_layer_position DESC";
+					$result = $db->sql_query($sql);
+				
+					$previous_layer = '';
+					$num_layers = 0;
+					while ($row = $db->sql_fetchrow($result))
+					{
+						$item_layer = $row['dynamo_item_layer'];
+						$new_layer = ($previous_layer != $item_layer);
+						$num_layers++;
+						
+						// For determining if we need a new row or not
+						$num_in_layer = ($new_layer) ? 1 : $num_in_layer + 1;
+						
+						$item_id = $row['dynamo_item_id'];
+					
+						// Figure out the item's image URL
+						$item_image_url = '../images/dynamo/' . $item_layer . '-' . $item_id . '.png';
+					
+						$template->assign_block_vars('item', array(
+							'NEW_LAYER'		=> $new_layer,
+							'NUM_IN_LAYER'	=> $num_in_layer,
+							'ITEM_NAME'		=> $row['dynamo_item_name'],
+							'ITEM_IMAGE'	=> $item_image_url,
+							'FIRST_LAYER'	=> ($num_layers == 1) ? true : false,
+							'LAYER_NAME'	=> ($item_layer) ? $row['dynamo_layer_name'] : 'Uncategorised')
+						);
+						$previous_layer = $item_layer;
+					}
+					
+					$template_vars = array(
+							'U_ADD_ACTION' 		=> $this->u_action . '&amp;add=1', // Form for adding a new item
+					);
+				}
 			break;
 			case 'users':
 				$this_template = 'acp_dynamo_users';
