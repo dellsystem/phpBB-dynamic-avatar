@@ -469,6 +469,35 @@ class acp_dynamo
 						'LAYER_DROPDOWN'	=> $layer_dropdown,
 					);
 				}
+				else if ($delete_item_id > 0)
+				{
+				// Do the confirm box thing whatever before deleting
+					if (confirm_box(true))
+					{
+						// Delete the item
+						$sql = "DELETE FROM " . DYNAMO_ITEMS_TABLE . "
+								WHERE dynamo_item_id = $delete_item_id";
+						$db->sql_query($sql);
+					
+						// Now see if the layer has it as a default item ... if so, set the default item to 0
+						$sql = "UPDATE " . DYNAMO_LAYERS_TABLE . "
+								SET dynamo_layer_default = 0
+								WHERE dynamo_layer_default = $delete_item_id";
+						// This way, we don't need to do a select query first
+						$db->sql_query($sql);
+						 
+						trigger_error($user->lang['ACP_DYNAMO_DELETED_ITEM'] . adm_back_link($this->u_action));	
+					}
+					else
+					{
+						$s_hidden_fields = build_hidden_fields(array(
+							'submit'    => true,
+							)
+						);
+						
+						confirm_box(false, $user->lang['ACP_DYNAMO_DELETE_ITEM'], $s_hidden_fields);
+					}				
+				}
 				else
 				{
 					// Just show all the items
@@ -506,6 +535,7 @@ class acp_dynamo
 							'ITEM_IMAGE'	=> $item_image_url,
 							'FIRST_LAYER'	=> ($num_layers == 1) ? true : false,
 							'U_EDIT'		=> $this->u_action . '&amp;edit=' . $item_id,
+							'U_DELETE'		=> $this->u_action . '&amp;delete=' . $item_id,
 							'LAYER_NAME'	=> ($item_layer) ? $row['dynamo_layer_name'] : 'Uncategorised')
 						);
 						$previous_layer = $item_layer;

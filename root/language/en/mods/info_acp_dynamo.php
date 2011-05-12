@@ -37,6 +37,8 @@ $lang = array_merge($lang, array(
 	'ACP_DYNAMO_DELETE_LAYER'		=> 'Are you sure you want to delete this layer?',
 	'ACP_DYNAMO_ADDED_ITEM'			=> 'Successfully added item.',
 	'ACP_DYNAMO_EDITED_ITEM'		=> 'Successfully edited item.',
+	'ACP_DYNAMO_DELETED_ITEM'		=> 'Successfully deleted item.',
+	'ACP_DYNAMO_DELETE_ITEM'		=> 'Are you sure you want to delete this item?',
 	
 	// Log shit
 	'LOG_DYNAMO_SETTINGS'			=> '<strong>Altered dynamic avatar settings</strong>',
