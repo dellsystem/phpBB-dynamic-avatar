@@ -418,12 +418,33 @@ class acp_dynamo
 						$desired_desc = request_var('dynamo_item_desc', '');
 						$desired_layer = request_var('dynamo_item_layer', 0);
 						
+						// Change the filename to reflect the new layer if necessary
+						$sql = "SELECT dynamo_item_layer
+								FROM " . DYNAMO_ITEMS_TABLE . "
+								WHERE dynamo_item_id = $edit_item_id";
+						$result = $db->sql_query($sql);
+						$item = $db->sql_fetchrow($result);
+						$old_layer = $item['dynamo_item_layer'];
+						
+						if ($old_layer != $desired_layer)
+						{
+							// Stop assuming PNG (temp solution)
+							$old_file_name = $phpbb_root_path . 'images/dynamo/' . $old_layer . '-' . $edit_item_id . '.png';
+							$new_file_name = $phpbb_root_path . 'images/dynamo/' . $desired_layer . '-' . $edit_item_id . '.png';
+							if (!@move_uploaded_file($old_file_name, $new_file_name))
+							{
+								// not working yet lol
+								echo 'wtf';
+							}
+						}
+						
 						$sql = "UPDATE " . DYNAMO_ITEMS_TABLE . "
 								SET dynamo_item_name = '$desired_name',
 									dynamo_item_desc = '$desired_desc',
 									dynamo_item_layer = '$desired_layer'
 								WHERE dynamo_item_id = $edit_item_id";
 						$db->sql_query($sql);
+					
 						trigger_error($user->lang['ACP_DYNAMO_EDITED_ITEM'] . adm_back_link($this->u_action));
 					}
 					// Editing the item

@@ -15,6 +15,12 @@ Will add ACP and UCP modules.
 
 I had some code (mainly for the ACP and a bit of skeleton code for the UCP module) already written from when I first started writing this MOD, but I decided to restructure it a bit and thus start from scratch. So it's  under heavy development right now, and is definitely not ready for public consumption just yet. That said, most of the code left to write is fairly trivial, so it's just a matter of implementation.
 
+To do
+-----
+
+*	Delete file if the item is deleted? Or if the image file is changed
+*	Make the dynamo filepath (for uploaded images) ACP-configurable (dir must be chmodded to 777)
+
 Permissions
 -----------
 
