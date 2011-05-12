@@ -410,6 +410,65 @@ class acp_dynamo
 						'MODE_DESCRIPTION'	=> 'Here you can add a new item', // lang constants later
 					);
 				}
+				else if ($edit_item_id > 0)
+				{
+					if ($submit)
+					{
+						$desired_name = request_var('dynamo_item_name', '');
+						$desired_desc = request_var('dynamo_item_desc', '');
+						$desired_layer = request_var('dynamo_item_layer', 0);
+						
+						$sql = "UPDATE " . DYNAMO_ITEMS_TABLE . "
+								SET dynamo_item_name = '$desired_name',
+									dynamo_item_desc = '$desired_desc',
+									dynamo_item_layer = '$desired_layer'
+								WHERE dynamo_item_id = $edit_item_id";
+						$db->sql_query($sql);
+						trigger_error($user->lang['ACP_DYNAMO_EDITED_ITEM'] . adm_back_link($this->u_action));
+					}
+					// Editing the item
+					$this_title = 'ACP_DYNAMO_ITEMS_EDIT';
+					$this_template = 'acp_dynamo_items_edit';
+					
+					// Get the info related to this item
+					$sql = "SELECT *
+							FROM " . DYNAMO_ITEMS_TABLE . "
+							WHERE dynamo_item_id = $edit_item_id";
+					$result = $db->sql_query($sql);
+					$item = $db->sql_fetchrow($result);
+					
+					$item_name = $item['dynamo_item_name'];
+					
+					// Make the layer dropdown - get all the layers from the db
+					// Make this some sort of helper function later
+					$sql = "SELECT dynamo_layer_name, dynamo_layer_id
+							FROM " . DYNAMO_LAYERS_TABLE . "
+							ORDER BY dynamo_layer_position DESC";
+					$result = $db->sql_query($sql);
+					
+					$layer_dropdown = '<select name="dynamo_item_layer">';
+					// There should always be an "uncategorised" option
+					$layer_dropdown .= '<option value="0">Uncategorised</option>';
+					
+					while ($row = $db->sql_fetchrow($result))
+					{
+						$layer_id = $row['dynamo_layer_id'];
+						$layer_name = $row['dynamo_layer_name'];
+						$layer_dropdown .= '<option value="' . $layer_id . '"';
+						// If this layer is the current layer
+						$layer_dropdown .= ($layer_id == $item['dynamo_item_layer']) ? ' selected="selected"' : '';
+						$layer_dropdown .= '>' . $layer_name . '</option>';
+					}
+					
+					$layer_dropdown .= '</select>';
+					
+					$template_vars = array(
+						'ITEM_ADD_EDIT'		=> 'Edit ' . $item_name,
+						'ITEM_NAME'			=> $item_name,
+						'ITEM_DESC'			=> $item['dynamo_item_desc'],
+						'LAYER_DROPDOWN'	=> $layer_dropdown,
+					);
+				}
 				else
 				{
 					// Just show all the items
@@ -446,6 +505,7 @@ class acp_dynamo
 							'ITEM_NAME'		=> $row['dynamo_item_name'],
 							'ITEM_IMAGE'	=> $item_image_url,
 							'FIRST_LAYER'	=> ($num_layers == 1) ? true : false,
+							'U_EDIT'		=> $this->u_action . '&amp;edit=' . $item_id,
 							'LAYER_NAME'	=> ($item_layer) ? $row['dynamo_layer_name'] : 'Uncategorised')
 						);
 						$previous_layer = $item_layer;
