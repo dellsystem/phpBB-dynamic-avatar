@@ -194,6 +194,7 @@ class acp_dynamo
 					$result = $db->sql_query($sql);
 					$layer = $db->sql_fetchrow($result);
 					$layer_name = $layer['dynamo_layer_name'];
+					$layer_mandatory = $layer['dynamo_layer_mandatory'];
 					
 					// Now get the information for all the layers, for the position dropdown menu
 					$sql = "SELECT dynamo_layer_id, dynamo_layer_name, dynamo_layer_position
@@ -234,6 +235,9 @@ class acp_dynamo
 						$num_items++;
 						$default_dropdown .= '<option value="' . $row['dynamo_item_id'] . '">' . $row['dynamo_item_name'] . '</option>';
 					}
+					// If the layer is NOT mandatory, let there be an option to choose no default item
+					// Self note: layers that have no item don't show up anyway so this is okay
+					$default_dropdown .= (!$layer_mandatory) ? '<option value="0">No default item</option>' : '';
 					$default_dropdown .= '</select>';
 					
 					$template_vars = array(
