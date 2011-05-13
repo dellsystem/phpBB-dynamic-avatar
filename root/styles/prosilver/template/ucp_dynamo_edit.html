@@ -1,0 +1,61 @@
+<!-- INCLUDE ucp_header.html -->
+
+<!-- the JS file for the dynamic part -->
+<script src="{T_TEMPLATE_PATH}/dynamo.js"></script>
+
+<h2>{L_TITLE}</h2>
+
+<div class="panel">
+	<div class="inner"><span class="corners-top"><span></span></span>
+	
+	<p>Here you'll be able to edit your avatar. All the items in your inventory (if the shop is enabled etc) will appear, and you can click them to try them on, and then press submit when you like the way you look and want to consolidate your avatar (idk). If the Salvation Army setup is enabled, then all the possible items that can be worn will appear, and you can choose among them. Yay</p>
+	<p>Assuming a Salvation Army setup for now: (click the item you want to select)</p>
+<table>
+	<tr>
+		<td style="width: 50%; vertical-align: top; text-align: center;" id="item-images">
+			<!-- BEGIN images -->
+			<div id="{images.LAYER_ID}" style="position: absolute; z-index: {images.POSITION};"><img src="{images.ITEM_IMAGE}" /></div>
+			<!-- END images -->
+		</td>
+		<td>
+	<!-- BEGIN item -->
+<!-- IF item.NEW_LAYER && item.FIRST_LAYER == false -->
+		</tr>
+	</tbody>
+</table>
+<br />
+<!-- ENDIF -->
+<!-- IF item.NEW_LAYER -->
+<table cellspacing="1">
+	<col class="col1" /><col class="col2" /><col class="col1" /><col class="col2" /><col class="col1" />
+	<thead>
+		<tr>
+			<th colspan="6">{item.LAYER_NAME}</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+		<!-- IF item.IS_MANDATORY == 0 -->
+			<td style="text-align: center;"><label for="{item.LAYER_ID}-0">None</label><br /><input type="radio" name="layer-{item.LAYER_ID}" value="0" id="{item.LAYER_ID}-0" {item.NONE_SELECTED} onclick="changeImage({item.LAYER_ID}, 0, {item.LAYER_POSITION});" /></td>
+		<!-- ENDIF -->
+<!-- ENDIF -->
+			<td style="text-align: center;"><label for="{item.LAYER_ID}-{item.ITEM_ID}"><img src="{item.ITEM_IMAGE}" onclick="changeImage({item.LAYER_ID}, {item.ITEM_ID}, {item.LAYER_POSITION});" /></label><br /><input type="radio" name="layer-{item.LAYER_ID}" value="{item.ITEM_ID}" id="{item.LAYER_ID}-{item.ITEM_ID}" {item.SELECTED} /></td>
+			<!-- IF item.NUM_IN_LAYER % 6 == 0 -->
+			</tr>
+			<tr>
+			<!-- ENDIF -->
+<!-- END item -->
+<!-- IF .item -->
+<!-- for the very end of the loop, if there is content in it -->
+		</tr>
+	</tbody>
+</table>
+<!-- ENDIF -->
+		</td>
+	</tr>
+</table>
+
+	<span class="corners-bottom"><span></span></span></div>
+</div>
+
+<!-- INCLUDE ucp_footer.html -->
