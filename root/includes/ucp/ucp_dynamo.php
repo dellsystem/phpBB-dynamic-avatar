@@ -28,14 +28,88 @@ class ucp_dynamo
 	function main($id, $mode)
 	{
 		global $template, $user, $db, $config, $phpEx, $phpbb_root_path;
+		
+		$submit = (isset($_POST['submit'])) ? true : false;
+		$user_id = $user->data['user_id'];
 
 		switch ($mode)
 		{
 			case 'edit':
+				if ($submit)
+				{
+					// Get all the values we need, using the layers as stored in the db for security-ish
+					
+					// First get all the rows for this user from the dynamo users table
+					$sql = "SELECT dynamo_user_layer
+							FROM " . DYNAMO_USERS_TABLE . "
+							WHERE dynamo_user_id = $user_id";
+					$result = $db->sql_query($sql);
+					
+					$layers_to_update = array();
+					
+					// Push them to an array so we can get them later
+					while ($row = $db->sql_fetchrow($result))
+					{
+						$layers_to_update[$row['dynamo_user_layer']] = 1; // meh
+					}
+					
+					// Get info for each layer
+					$sql = "SELECT dynamo_layer_id, dynamo_layer_default, dynamo_layer_mandatory
+							FROM " . DYNAMO_LAYERS_TABLE;
+					$result = $db->sql_query($sql);
+					
+					$insert_query = '';
+					$update_query = '';
+					while ($row = $db->sql_fetchrow($result))
+					{
+						$layer_id = $row['dynamo_layer_id'];
+						$layer_default = $row['dynamo_layer_default'];
+						$layer_mandatory = $row['dynamo_layer_mandatory'];
+						
+						// First get the POST value for this layer (from the form)
+						$this_item = request_var('layer-' . $layer_id, 0);
+						
+						// If it's set to 0, and the layer is mandatory, use the default item
+						if ($this_item == 0 && $layer_mandatory)
+						{
+							$this_item = $layer_default;
+						}
+						
+						// Check if this layer should be inserted or updated
+						// Does it exist in the layers_to_update array?
+						if ($layers_to_update[$layer_id] == 1)
+						{
+							// Have to do like a thousand update queries
+							$sql = "UPDATE " . DYNAMO_USERS_TABLE . "
+									SET dynamo_user_item = $this_item
+									WHERE dynamo_user_id = $user_id
+										AND dynamo_user_layer = $layer_id";
+							$db->sql_query($sql);
+						}
+						else
+						{
+							// Otherwise, add to the insert query
+							$insert_query .= "($user_id, $layer_id, $this_item), ";
+						}
+					}
+					
+					// Now insert everything new into the dynamo users table if there is anything new
+					if ($insert_query != '')
+					{
+						// Get rid of the last comma first or things break. Really? Really.
+						$insert_query = substr($insert_query, 0, -2);
+						$sql = "INSERT INTO " . DYNAMO_USERS_TABLE . " (dynamo_user_id, dynamo_user_layer, dynamo_user_item) VALUES $insert_query";
+						$db->sql_query($sql);
+					}
+				
+					// Do validation stuff another time
+				
+					$message = $user->lang['UCP_DYNAMO_UPDATED'] . '<br /><br />' . sprintf($user->lang['RETURN_UCP'], '<a href="' . $this->u_action . '">', '</a>');
+					trigger_error($message);
+				}
+			
 				$this->tpl_name = 'ucp_dynamo_edit';
 				$this->page_title = 'Edit avatar';
-				
-				$user_id = $user->data['user_id'];
 				
 				// Get the user's items
 				$sql = "SELECT *
@@ -94,12 +168,18 @@ class ucp_dynamo
 					// Figure out the item's image URL
 					$item_image_url = 'images/dynamo/' . $item_layer . '-' . $item_id . '.png';
 					
-					// Now figure out the user has this item already
-					$selected = ($user_items[$item_layer] == $item_id) ? true : false;
-					
-					// Check if this is the default item
-					// Only enabled when the user does not have an item for this
-					$selected = (!($user_items[$item_layer] > 0) && $item_id == $row['dynamo_layer_default']) ? true : false;
+					// Now figure out if the user has this item already
+					if (!$user_items[$item_layer] > 0)
+					{
+						// Check if this is the default item
+						// Only enabled when the user does not have an item for this
+						$selected = ($item_id == $row['dynamo_layer_default']) ? true : false;
+					}
+					else
+					{
+						// User does have an item for this layer, is this the one?
+						$selected = ($user_items[$item_layer] === $item_id) ? true : false;
+					}
 				
 					$template->assign_block_vars('item', array(
 						'NEW_LAYER'		=> $new_layer,
@@ -110,6 +190,7 @@ class ucp_dynamo
 						'ITEM_NAME'		=> $row['dynamo_item_name'],
 						'LAYER_ID'		=> $item_layer,
 						'ITEM_ID'		=> $item_id,
+						'ITEM_DESC'		=> $row['dynamo_item_desc'],
 						'ITEM_IMAGE'	=> $item_image_url,
 						'LAYER_POSITION'=> $row['dynamo_layer_position'],
 						'IS_MANDATORY'	=> $row['dynamo_layer_mandatory'],
@@ -132,7 +213,6 @@ class ucp_dynamo
 					{
 						// Use this as the item
 						$item_to_use = $this_layer_item;
-						echo $this_layer . '-' . $item_to_use . '.png';
 					}
 					else
 					{
@@ -146,6 +226,7 @@ class ucp_dynamo
 						else
 						{
 							// No item ... pass
+							$item_to_use = 0; // for the item_exists boolean below
 						}
 					}
 					
@@ -157,6 +238,7 @@ class ucp_dynamo
 							'ITEM_ID'			=> $item_to_use,
 							'LAYER_ID'			=> $this_layer,
 							'POSITION'			=> $positions_array[$i],
+							'ITEM_EXISTS'		=> ($item_to_use > 0) ? true : false,
 							'ITEM_IMAGE'		=> $phpbb_root_path . 'images/dynamo/' . $this_layer . '-' . $item_to_use . '.png',
 						));
 					}
@@ -166,7 +248,8 @@ class ucp_dynamo
 
 
 		$template->assign_vars(array(
-			'L_TITLE' => $this->page_title)
+			'U_ACTION'	=> $this->u_action,
+			'L_TITLE' 	=> $this->page_title)
 		);
 
 	}
