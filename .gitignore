@@ -9,17 +9,38 @@
 !contrib/
 
 root/*
-!root/images/
+!root/images
+!root/includes
+!root/language
+!root/styles
 
-root/images/*
 # Sample image files
+root/images/*
 !root/images/dynamo/
 
 # Include files
+root/includes/*
+!root/includes/acp
+root/includes/acp/*
 !root/includes/acp/acp_dynamo.php
+!root/includes/acp/info
+root/includes/acp/info/*
 !root/includes/acp/info/acp_dynamo.php
 
 # Language files
-!root/language/en/mods/dynamo/acp.php
+root/language/*
+!root/language/en
+root/language/en/*
+!root/language/en/mods
+root/language/en/mods/
+!root/language/en/mods/dynamo
 
-# Never mind too much effort to make this file work
+# Template files
+root/styles/*
+!root/styles/prosilver
+root/styles/prosilver/*
+!root/styles/prosilver/template
+root/styles/prosilver/template/*
+!root/styles/prosilver/template/*dynamo*
+
+# Making the effort

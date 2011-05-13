@@ -103,6 +103,9 @@ class ucp_dynamo
 					}
 				
 					// Do validation stuff another time
+					
+					// Now create the actual image, make it the user's avatar (deletes the old one I guess)
+					// Later - for now, just save an avatar image
 				
 					$message = $user->lang['UCP_DYNAMO_UPDATED'] . '<br /><br />' . sprintf($user->lang['RETURN_UCP'], '<a href="' . $this->u_action . '">', '</a>');
 					trigger_error($message);
