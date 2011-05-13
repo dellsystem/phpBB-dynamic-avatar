@@ -5,9 +5,13 @@
 # SVG file for the sample images
 !penguin.svg
 !root/
+# For screenshots and such
+!contrib/
 
 root/*
+!root/images/
 
+root/images/*
 # Sample image files
 !root/images/dynamo/
 
@@ -18,4 +22,4 @@ root/*
 # Language files
 !root/language/en/mods/dynamo/acp.php
 
-# This piece of shit file doesn't even work wtf
+# Never mind too much effort to make this file work
