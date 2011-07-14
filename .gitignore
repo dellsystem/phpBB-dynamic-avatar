@@ -1,6 +1,7 @@
 /*
 # Everything except the specified files
 !readme.md
+!install.xml
 !.gitignore
 # SVG file for the sample images
 !penguin.svg
@@ -13,6 +14,7 @@ root/*
 !root/includes
 !root/language
 !root/styles
+!root/dynamo_mod_install.php
 
 # Sample image files
 root/images/*
