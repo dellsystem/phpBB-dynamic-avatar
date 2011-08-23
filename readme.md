@@ -14,11 +14,11 @@ Because I couldn't think of a better name and I needed a short name for database
 *   Remote avatar must be enabled ...
 *   Which dirs to chmod?
 
-*   [Features, screenshots, download links and more](http://www.dellsystem.me/phpbb-waldo)
+*   [Features, screenshots, download links and more](http://www.dellsystem.me/phpbb-dynamic-avatar)
 *   [Demo board](http://phpbb.dellsystem.me/dynamo) (Read the posts in the only forum for how to use the demo board)
 *   [MOD development topic at phpBB.com](http://www.phpbb.com/community/viewtopic.php?f=70&t=1823845) - Please post support queries here.
 
 Contributing and requesting features
 -----------------------------------
 
-If you'd like to contribute, feel free to fork away and send me a pull request. If there's a specific feature you'd like to see or bug that you think needs fixing, you can 1) code it yourself and send me a pull request; 2) post in the [development topic](http://www.phpbb.com/community/viewtopic.php?f=70&t=2092309) letting me know; 3) add an issue to the issue tracker; or 4) send me a [private message](http://www.phpbb.com/community/ucp.php?i=pm&mode=compose&u=178433) or [email](mailto:dellsystem@phpbb.com).
+If you'd like to contribute, feel free to fork away and send me a pull request. If there's a specific feature you'd like to see or bug that you think needs fixing, you can 1) code it yourself and send me a pull request; 2) post in the [development topic](http://www.phpbb.com/community/viewtopic.php?f=70&t=1823845) letting me know; 3) add an issue to the issue tracker; or 4) send me a [private message](http://www.phpbb.com/community/ucp.php?i=pm&mode=compose&u=178433) or [email](mailto:dellsystem@phpbb.com).
