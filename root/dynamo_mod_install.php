@@ -77,9 +77,8 @@ $versions = array(
 			array('dynamo_mandatory', 0),
 		),
 
-		// Add the module to the ACP
 		'module_add' => array(
-			// Add category Dynamic Avatar MOD under the .MODs tab
+			// Add category Dynamic Avatar MOD under the .MODs tab (ACP)
 			array('acp', 'ACP_CAT_DOT_MODS', 'ACP_DYNAMO_MOD'),
 
 			// Add module General Configuration under the Dynamic Avatar MOD category
@@ -88,10 +87,8 @@ $versions = array(
 					'modes'				=> array('overview', 'settings', 'layers', 'items', 'users'),
 				),
 			),
-		),
 
-		// The UCP module (a whole new category, too)
-		'module_add' => array(
+			// Add the UCP module (under a new category)
 			array('ucp', 0, 'UCP_DYNAMO_MOD'),
 
 			array('ucp', 'UCP_DYNAMO_MOD', array(
