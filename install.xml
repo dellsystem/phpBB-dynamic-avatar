@@ -21,7 +21,7 @@
 	<mod-version>0.0.1</mod-version>
 
 	<installation>
-		<level>medium</level>
+		<level>easy</level>
 		<time>120</time>
 		<target-version>3.0.9</target-version>
 	</installation>
