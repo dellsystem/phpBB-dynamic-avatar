@@ -77,7 +77,7 @@ $versions = array(
 			array('dynamo_mandatory', 0),
 		),
 
-		// Add the module
+		// Add the module to the ACP
 		'module_add' => array(
 			// Add category Dynamic Avatar MOD under the .MODs tab
 			array('acp', 'ACP_CAT_DOT_MODS', 'ACP_DYNAMO_MOD'),
@@ -89,7 +89,18 @@ $versions = array(
 				),
 			),
 		),
-		
+
+		// The UCP module (a whole new category, too)
+		'module_add' => array(
+			array('ucp', 0, 'UCP_DYNAMO_MOD'),
+
+			array('ucp', 'UCP_DYNAMO_MOD', array(
+					'module_basename'		=> 'dynamo',
+					'modes'					=> array('edit'),
+				),
+			),
+		),
+
 		// Create the necessary tables
 		'table_add' => array(
 			array('phpbb_dynamo_items', array(
