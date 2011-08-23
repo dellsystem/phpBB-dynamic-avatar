@@ -27,24 +27,24 @@
 	</installation>
 
 	<history>
-        <entry>
-            <date>2011-08-23</date>
-            <rev-version>0.0.1</rev-version>
-            <changelog lang="en">
-                <change>Initial release - very basic and unstable ALPHA version</change>
-            </changelog>
-        </entry>
+		<entry>
+			<date>2011-08-23</date>
+			<rev-version>0.0.1</rev-version>
+			<changelog lang="en">
+				<change>Initial release - very basic and unstable ALPHA version</change>
+			</changelog>
+		</entry>
 	</history>
 </header>
 
 <action-group>
 	<copy>
-        <file from="root/*.*" to="*.*" />
+		<file from="root/*.*" to="*.*" />
 	</copy>
-    <open src="includes/constants.php">
-        <edit>
-            <find><![CDATA[// Additional tables]]></find>
-            <action type="after-add"><![CDATA[// Dynamo (dynamic avatar) MOD
+	<open src="includes/constants.php">
+		<edit>
+			<find><![CDATA[// Additional tables]]></find>
+			<action type="after-add"><![CDATA[// Dynamo (dynamic avatar) MOD
 define('DYNAMO_LAYERS_TABLE',		$table_prefix . 'dynamo_layers');
 define('DYNAMO_ITEMS_TABLE',		$table_prefix . 'dynamo_items');
 define('DYNAMO_USERS_TABLE',		$table_prefix . 'dynamo_users');]]></action>
