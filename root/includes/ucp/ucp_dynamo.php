@@ -23,6 +23,60 @@ if (!defined('IN_PHPBB'))
 */
 class ucp_dynamo
 {
+
+// From the php.net documentation: http://www.php.net/manual/en/function.imagecopymerge.php
+
+/**
+ * PNG ALPHA CHANNEL SUPPORT for imagecopymerge();
+ * This is a function like imagecopymerge but it handle alpha channel well!!!
+ **/
+
+// A fix to get a function like imagecopymerge WITH ALPHA SUPPORT
+// Main script by aiden dot mail at freemail dot hu
+// Transformed to imagecopymerge_alpha() by rodrigo dot polo at gmail dot com 
+	function imagecopymerge_alpha($dst_im, $src_im, $dst_x, $dst_y, $src_x, $src_y, $src_w, $src_h, $pct){
+		if(!isset($pct)){
+		    return false;
+		}
+		$pct /= 100;
+		// Get image width and height
+		$w = imagesx( $src_im );
+		$h = imagesy( $src_im );
+		// Turn alpha blending off
+		imagealphablending( $src_im, false );
+		// Find the most opaque pixel in the image (the one with the smallest alpha value)
+		$minalpha = 127;
+		for( $x = 0; $x < $w; $x++ )
+		for( $y = 0; $y < $h; $y++ ){
+		    $alpha = ( imagecolorat( $src_im, $x, $y ) >> 24 ) & 0xFF;
+		    if( $alpha < $minalpha ){
+		        $minalpha = $alpha;
+		    }
+		}
+		//loop through image pixels and modify alpha for each
+		for( $x = 0; $x < $w; $x++ ){
+		    for( $y = 0; $y < $h; $y++ ){
+		        //get current alpha value (represents the TANSPARENCY!)
+		        $colorxy = imagecolorat( $src_im, $x, $y );
+		        $alpha = ( $colorxy >> 24 ) & 0xFF;
+		        //calculate new alpha
+		        if( $minalpha !== 127 ){
+		            $alpha = 127 + 127 * $pct * ( $alpha - 127 ) / ( 127 - $minalpha );
+		        } else {
+		            $alpha += 127 * $pct;
+		        }
+		        //get the color index with new alpha
+		        $alphacolorxy = imagecolorallocatealpha( $src_im, ( $colorxy >> 16 ) & 0xFF, ( $colorxy >> 8 ) & 0xFF, $colorxy & 0xFF, $alpha );
+		        //set pixel with the new color + opacity
+		        if( !imagesetpixel( $src_im, $x, $y, $alphacolorxy ) ){
+		            return false;
+		        }
+		    }
+		}
+		// The image copy
+		imagecopy($dst_im, $src_im, $dst_x, $dst_y, $src_x, $src_y, $src_w, $src_h);
+	}
+
 	var $u_action;
 
 	function main($id, $mode)
@@ -46,6 +100,7 @@ class ucp_dynamo
 					$result = $db->sql_query($sql);
 					
 					$layers_to_update = array();
+					$image_urls = array();
 					
 					// Push them to an array so we can get them later
 					while ($row = $db->sql_fetchrow($result))
@@ -75,9 +130,18 @@ class ucp_dynamo
 							$this_item = $layer_default;
 						}
 						
+						// Figure out the image location, add it to the $image_urls array
+						// ONLY if the item_id is not 0
+						if ($this_item > 0)
+						{
+							$image_url = 'images/dynamo/' . $layer_id . '-' . $this_item . '.png';
+							$image_urls[] = $image_url; // like array_push but with less overhead
+						}
+
 						// Check if this layer should be inserted or updated
 						// Does it exist in the layers_to_update array?
-						if ($layers_to_update[$layer_id] == 1)
+						// Short-circuit evaluation so this should be a safe temporary workaround
+						if (array_key_exists($layer_id, $layers_to_update) && $layers_to_update[$layer_id] == 1)
 						{
 							// Have to do like a thousand update queries
 							$sql = "UPDATE " . DYNAMO_USERS_TABLE . "
@@ -106,11 +170,35 @@ class ucp_dynamo
 					
 					// Now create the actual image, make it the user's avatar (deletes the old one I guess)
 					// Later - for now, just save an avatar image
-				
+					// First figure out the images that need to be used$
+					$images = array();
+					$first_image = imagecreatefrompng($image_urls[0]); // this is the one that is modified
+					for ($i = 1; $i < count($image_urls); $i++)
+					{
+						$this_image = imagecreatefrompng($image_urls[$i]);
+						$this->imagecopymerge_alpha($first_image, $this_image, 0, 0, 0, 0, imagesx($this_image), imagesy($this_image), 100);
+					}
+
+					imagesavealpha($first_image, true);
+					imagepng($first_image, $phpbb_root_path . 'images/avatars/dynamo/' . $user_id . '.png'); // Temp
+
+					// For now, pretend it's a remote avatar and modify the user's avatar-related fields accordingly
+					$sql_array = array(
+						'user_avatar' 			=> generate_board_url() . '/images/avatars/dynamo/' . $user_id . '.png',
+						'user_avatar_type'		=> 2, // means remote i guess
+						'user_avatar_width'		=> imagesx($first_image), // maybe this should be set to something ...
+						'user_avatar_height'	=> imagesy($first_image)
+					);
+
+					$sql = "UPDATE " . USERS_TABLE . "
+							SET " . $db->sql_build_array('UPDATE', $sql_array) . "
+							WHERE user_id = " . (int) $user_id;
+					$db->sql_query($sql);
+
 					$message = $user->lang['UCP_DYNAMO_UPDATED'] . '<br /><br />' . sprintf($user->lang['RETURN_UCP'], '<a href="' . $this->u_action . '">', '</a>');
 					trigger_error($message);
 				}
-			
+
 				$this->tpl_name = 'ucp_dynamo_edit';
 				$this->page_title = 'Edit avatar';
 				
@@ -172,8 +260,9 @@ class ucp_dynamo
 					$item_image_url = 'images/dynamo/' . $item_layer . '-' . $item_id . '.png';
 					
 					// Now figure out if the user has this item already
-					if (!$user_items[$item_layer] > 0)
+					if (!array_key_exists($item_layer, $user_items)) // why php why
 					{
+						// User does not have any item for this layer
 						// Check if this is the default item
 						// Only enabled when the user does not have an item for this
 						$selected = ($item_id == $row['dynamo_layer_default']) ? true : false;
@@ -187,7 +276,8 @@ class ucp_dynamo
 					$template->assign_block_vars('item', array(
 						'NEW_LAYER'		=> $new_layer,
 						// None selected - if the user has no item for this layer, or the item_id is 0, and there is no default
-						'NONE_SELECTED'	=> (!($user_items[$item_layer] > 0) && $row['dynamo_layer_default'] == 0) ? 'checked="checked"' : '',
+						// WTF???
+						'NONE_SELECTED'	=> (!array_key_exists($item_layer, $user_items) || $user_items[$item_layer] == 0 && $row['dynamo_layer_default'] == 0) ? 'checked="checked"' : '',
 						'SELECTED'		=> ($selected) ? 'checked="checked"' : '',
 						'NUM_IN_LAYER'	=> $num_in_layer,
 						'ITEM_NAME'		=> $row['dynamo_item_name'],
@@ -210,12 +300,10 @@ class ucp_dynamo
 				for ($i = 0; $i < $num_layers; $i++)
 				{
 					$this_layer = $layers_array[$i];
-					// Figure out the item that should be here
-					$this_layer_item = $user_items[$this_layer];
-					if ($this_layer_item > 0)
+					if (array_key_exists($this_layer, $user_items))
 					{
 						// Use this as the item
-						$item_to_use = $this_layer_item;
+						$item_to_use = $user_items[$this_layer];
 					}
 					else
 					{
