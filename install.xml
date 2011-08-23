@@ -7,7 +7,7 @@
 	<title lang="en">Dynamic Avatar Mod</title>
 	<description lang="en">This MOD provides the ability to edit your avatar, using bodily features and clothes that can be purchased or acquired. In the vein of 2.0x MODs like Live Avatar and Nulavatar, and the dynamic avatar capabilities of the 3.0x MOD Camorea Suite. Useful for RPG forums.</description>
 
-	<author-notes lang="en">Although not required, the Ultimate Points MOD by femu and Wuerzi is supported by this MOD. If you have it installed, you will be able to set prices for items. If not installed, all items are free. Additionally, although some sample images are provided for you to test out the MOD, a comprehensive set of avatar and clothing images is not included; you will need to acquire those images yourself, hopefully legally.</author-notes>
+	<author-notes lang="en">Although not required, the Ultimate Points MOD by femu and Wuerzi is supported by this MOD (or will be in subsequent versions, anyway). If you have it installed, you will be able to set prices for items. If not installed, all items are free. Additionally, although some sample images are provided for you to test out the MOD, a comprehensive set of avatar and clothing images is not included; you will need to acquire those images yourself, hopefully legally.</author-notes>
 
 	<author-group>
 		<author>
@@ -22,16 +22,16 @@
 
 	<installation>
 		<level>medium</level>
-		<time>300</time>
+		<time>120</time>
 		<target-version>3.0.9</target-version>
 	</installation>
 
 	<history>
         <entry>
-            <date>2011-07-14</date>
+            <date>2011-08-23</date>
             <rev-version>0.0.1</rev-version>
             <changelog lang="en">
-                <change>Initial release - very basic ALPHA version</change>
+                <change>Initial release - very basic and unstable ALPHA version</change>
             </changelog>
         </entry>
 	</history>
@@ -39,7 +39,17 @@
 
 <action-group>
 	<copy>
+        <file from="root/*.*" to="*.*" />
 	</copy>
+    <open src="includes/constants.php">
+        <edit>
+            <find><![CDATA[// Additional tables]]></find>
+            <action type="after-add"><![CDATA[// Dynamo (dynamic avatar) MOD
+define('DYNAMO_LAYERS_TABLE',		$table_prefix . 'dynamo_layers');
+define('DYNAMO_ITEMS_TABLE',		$table_prefix . 'dynamo_items');
+define('DYNAMO_USERS_TABLE',		$table_prefix . 'dynamo_users');]]></action>
+        </edit>
+    </open>
     <diy-instructions lang="en">Navigate to dynamo_mod_install.php in the root of your forum and follow the install instructions.
 
 You can configure this MOD in the ACP, under the .MODs tab.</diy-instructions>
