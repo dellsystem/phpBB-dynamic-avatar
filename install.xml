@@ -48,9 +48,11 @@
 define('DYNAMO_LAYERS_TABLE',		$table_prefix . 'dynamo_layers');
 define('DYNAMO_ITEMS_TABLE',		$table_prefix . 'dynamo_items');
 define('DYNAMO_USERS_TABLE',		$table_prefix . 'dynamo_users');]]></action>
-        </edit>
-    </open>
-    <diy-instructions lang="en">Navigate to dynamo_mod_install.php in the root of your forum and follow the install instructions.
+		</edit>
+	</open>
+	<diy-instructions lang="en">Navigate to dynamo_mod_install.php in the root of your forum and follow the install instructions.
+
+Make sure to enable remote avatars (ACP, Avatar settings) and change the maximum avatar dimensions (the supplied demo images have a width of 100px and a height of 120px - this isn't a necessary step but it may become one eventually?). Make sure also to chmod the /images/avatars/dynamo/ directory so that it is writable by whatever user your server's PHP process runs under (777 is always a safe bet).
 
 You can configure this MOD in the ACP, under the .MODs tab.</diy-instructions>
 </action-group>
