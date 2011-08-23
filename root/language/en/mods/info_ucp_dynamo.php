@@ -25,6 +25,7 @@ if (empty($lang) || !is_array($lang))
 // Merge the following language entries into the lang array
 $lang = array_merge($lang, array(
 	'UCP_DYNAMO_UPDATED'		=> 'Successfully updated dynamic avatar.',
+	'UCP_DYNAMO_MOD'			=> 'Dynamic avatar',
 ));
 
 ?>
