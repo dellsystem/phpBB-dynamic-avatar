@@ -1,0 +1,37 @@
+<!-- INCLUDE overall_header.html -->
+
+<h1>{L_ACP_DYNAMO_ITEMS} :: {ITEM_ADD_EDIT}</h1>
+
+<p>{MODE_DESCRIPTION}</p>
+
+<form id="acp_dynamo" method="post" action="{U_ACTION}" enctype="multipart/form-data">
+
+	<fieldset>
+		<legend>Item settings</legend>
+		<dl>
+			<dt><label for="dynamo_item_name">Item name:</label></dt>
+			<dd><input type="text" name="dynamo_item_name" value="{ITEM_NAME}" /></dd>
+		</dl>
+		<dl>
+			<dt><label for="dynamo_item_desc">Item description:</label></span></dt>
+			<dd><input type="text" name="dynamo_item_desc" value="{ITEM_DESC}" /></dd>
+		</dl>
+		<dl>
+			<dt><label for="dynamo_item_layer">Layer:</label><br /><span>Choose the layer this item will belong to. You can choose to set it to no layer if you want to make it unavailable for now.</span></dt>
+			<dd>{LAYER_DROPDOWN}</dd>
+		</dl>
+		<dl>
+			<dt><label for="uploadfile">Image file:</label><br /><span>Upload the image file for this item from your computer.</span></dt>
+			<dd><input type="file" name="uploadfile" /></dd>
+	</fieldset>
+	
+	<fieldset>
+		<legend>{L_ACP_SUBMIT_CHANGES}</legend> 
+		<p class="submit-buttons"> 
+			<input class="button1" type="submit" name="submit" value="{L_SUBMIT}" />&nbsp;
+			<input class="button2" type="reset" id="reset" name="reset" value="{L_RESET}" /> 
+		</p>
+	</fieldset>
+</form>
+
+<!-- INCLUDE overall_footer.html -->

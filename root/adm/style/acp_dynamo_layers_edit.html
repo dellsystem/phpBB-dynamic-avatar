@@ -1,0 +1,45 @@
+<!-- INCLUDE overall_header.html -->
+
+<h1>{L_ACP_DYNAMO_LAYERS} :: {LAYER_ADD_EDIT}</h1>
+
+<p>{MODE_DESCRIPTION}</p>
+
+<form id="acp_dynamo" method="post" action="{U_ACTION}">
+
+	<fieldset>
+		<legend>Layer settings</legend>
+		<dl>
+			<dt><label for="dynamo_layer_name">Layer name:</label></dt>
+			<dd><input type="text" name="dynamo_layer_name" value="{LAYER_NAME}" /></dd>
+		</dl>
+		<dl>
+			<dt><label for="dynamo_layer_desc">Layer description:</label></span></dt>
+			<dd><input type="text" name="dynamo_layer_desc" value="{LAYER_DESC}" /></dd>
+		</dl>
+		<dl>
+			<dt><label for="dynamo_layer_position">Layer position:</label><br /><span>Choose the position in terms of ordering etc</span></dt>
+			<dd>{POSITION_DROPDOWN}</dd>
+		</dl>
+		<dl>
+			<dt><label for="dynamo_layer_mandatory">Set layer to mandatory:</label><br /><span>If this is enabled, then a user must select an item for this layer.</span></dt>
+			<dd>
+				<label><input type="radio" class="radio" name="dynamo_layer_mandatory" value="1"<!-- IF LAYER_MANDATORY --> id="dynamo_mandatory" checked="checked"<!-- ENDIF --> /> {L_YES}</label>
+				<label><input type="radio" class="radio" name="dynamo_layer_mandatory" value="0"<!-- IF not LAYER_MANDATORY --> id="dynamo_mandatory" checked="checked"<!-- ENDIF --> /> {L_NO}</label>
+			</dd>
+		</dl>
+		<dl>
+			<dt><label for="dynamo_layer_default">Default item:</label><br /><span>If desired, select the default item. If there is only one item associated with this layer, you have no choice.</span></dt>
+			<dd>{DEFAULT_DROPDOWN}</dd>
+		</dl>
+	</fieldset>
+	
+	<fieldset>
+		<legend>{L_ACP_SUBMIT_CHANGES}</legend> 
+		<p class="submit-buttons"> 
+			<input class="button1" type="submit" name="submit" value="{L_SUBMIT}" />&nbsp;
+			<input class="button2" type="reset" id="reset" name="reset" value="{L_RESET}" /> 
+		</p>
+	</fieldset>
+</form>
+
+<!-- INCLUDE overall_footer.html -->
