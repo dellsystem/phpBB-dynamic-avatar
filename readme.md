@@ -3,6 +3,8 @@ Dynamo - dynamic avatar MOD for phpBB
 
 This MOD provides the ability to edit your avatar, using bodily features and clothes that can be purchased or acquired. In the vein of 2.0x MODs like Live Avatar and Nulavatar, and the dynamic avatar capabilities of the 3.0x MOD Camorea Suite. Useful for RPG forums.
 
+[![Up-to-date features list, screenshots, link to the demo board and downloads](http://dellsystem.me/images/mod-information.png)](http://dellsystem.me/phpbb-dynamic-avatar)
+
 **Why is it called _Dynamo_?**
 
 Because I couldn't think of a better name and I needed a short name for database tables and config field names.
