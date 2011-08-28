@@ -45,7 +45,7 @@
 			<td style="text-align: center;"><label for="{item.LAYER_ID}-0">None</label><br /><input type="radio" name="layer-{item.LAYER_ID}" value="0" id="{item.LAYER_ID}-0" {item.NONE_SELECTED} onclick="changeImage({item.LAYER_ID}, 0, {item.LAYER_POSITION});" /></td>
 		<!-- ENDIF -->
 <!-- ENDIF -->
-			<td style="text-align: center;"><label for="{item.LAYER_ID}-{item.ITEM_ID}"><img src="{item.ITEM_IMAGE}" onclick="changeImage({item.LAYER_ID}, {item.ITEM_ID}, {item.LAYER_POSITION});" title="{item.ITEM_DESC}" alt="{item.ITEM_NAME}" /></label><br />{item.ITEM_NAME}<br /><input type="radio" name="layer-{item.LAYER_ID}" value="{item.ITEM_ID}" id="{item.LAYER_ID}-{item.ITEM_ID}" {item.SELECTED} /></td>
+			<td style="text-align: center;"><label for="{item.LAYER_ID}-{item.ITEM_ID}"><img src="{item.ITEM_IMAGE}" onclick="changeImage({item.LAYER_ID}, {item.ITEM_ID}, {item.LAYER_POSITION});" title="{item.ITEM_DESC}" alt="{item.ITEM_NAME}" /></label><br />{item.ITEM_NAME}<br /><input type="radio" name="layer-{item.LAYER_ID}" value="{item.ITEM_ID}" id="{item.LAYER_ID}-{item.ITEM_ID}" onclick="changeImage({item.LAYER_ID}, {item.ITEM_ID}, {item.LAYER_POSITION});" {item.SELECTED} /></td>
 			<!-- IF item.NUM_IN_LAYER % 6 == 0 -->
 			</tr>
 			<tr>
