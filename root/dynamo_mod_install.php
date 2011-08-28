@@ -79,10 +79,10 @@ $versions = array(
 
 		'module_add' => array(
 			// Add category Dynamic Avatar MOD under the .MODs tab (ACP)
-			array('acp', 'ACP_CAT_DOT_MODS', 'ACP_DYNAMO_MOD'),
+			array('acp', 'ACP_CAT_DOT_MODS', 'ACP_DYNAMO'),
 
 			// Add module General Configuration under the Dynamic Avatar MOD category
-			array('acp', 'ACP_DYNAMO_MOD', array(
+			array('acp', 'ACP_DYNAMO', array(
 					'module_basename'		=> 'dynamo',
 					'modes'				=> array('overview', 'settings', 'layers', 'items', 'users'),
 				),
