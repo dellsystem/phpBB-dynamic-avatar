@@ -8,7 +8,6 @@ function changeImage(layer_id, item_id, position) {
 		// If the item id is 0, then just make the image empty lol
 		if (item_id == 0) {
 			// Delete the whole div
-			console.log("delete shit");
 			theDiv.parentNode.removeChild(theDiv);
 		} else {
 			theImg.setAttribute('src', 'images/dynamo/' + layer_id + '-' + item_id + '.png');
