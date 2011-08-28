@@ -67,6 +67,48 @@ $logo_img = '../contrib/penguin.png';
 * The version numbering must otherwise be compatible with the version_compare function - http://php.net/manual/en/function.version-compare.php
 */
 $versions = array(
+	'0.0.2'	=> array(
+		// Adding some new fixtures just for fun
+		'table_row_insert' => array(
+			array('phpbb_dynamo_items', array(
+				array(
+					'dynamo_item_id'		=> 21,
+					'dynamo_item_layer'		=> 12,
+					'dynamo_item_name'		=> 'Blue balloon',
+					'dynamo_item_desc'		=> 'Bright and blue',
+				),
+				array(
+					'dynamo_item_id'		=> 22,
+					'dynamo_item_layer'		=> 12,
+					'dynamo_item_name'		=> 'Red balloon',
+					'dynamo_item_desc'		=> 'A brilliantly scarlet balloon',
+				),
+				array(
+					'dynamo_item_id'		=> 23,
+					'dynamo_item_layer'		=> 12,
+					'dynamo_item_name'		=> 'Green balloon',
+					'dynamo_item_desc'		=> 'Shiny',
+				),
+				array(
+					'dynamo_item_id'		=> 24,
+					'dynamo_item_layer'		=> 12,
+					'dynamo_item_name'		=> 'Yellow balloon',
+					'dynamo_item_desc'		=> 'Like a miniature sun',
+				),
+			)),
+			array('phpbb_dynamo_layers', array(
+				array(
+					'dynamo_layer_id'			=> 12,
+					'dynamo_layer_mandatory'	=> 0,
+					'dynamo_layer_default'		=> 0,
+					'dynamo_layer_name'			=> 'Balloon',
+					'dynamo_layer_desc'			=> 'A nice little balloon',
+					'dynamo_layer_position'		=> 9,
+				),
+			)),
+		),
+	),
+
 	// Version 0.0.1
 	'0.0.1'	=> array(
 		// Add the configs
