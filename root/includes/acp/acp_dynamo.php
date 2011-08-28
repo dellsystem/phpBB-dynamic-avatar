@@ -56,6 +56,7 @@ class acp_dynamo
 				
 			break;
 			case 'layers':
+				$this_title = 'ACP_DYNAMO_LAYERS';
 				// the get variables for the various modes
 				$add_get = request_var('add', 0);
 				$edit_get = request_var('edit', 0);
@@ -103,6 +104,7 @@ class acp_dynamo
 					$result = $db->sql_query($sql);
 					
 					$position_dropdown = '<select name="dynamo_layer_position">';
+					$previous_layer = '';
 					while ($row = $db->sql_fetchrow($result))
 					{
 						$position_dropdown .= '<option value="' . $row['dynamo_layer_position'] . '">';
