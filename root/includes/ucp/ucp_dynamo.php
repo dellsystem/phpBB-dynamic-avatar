@@ -89,6 +89,7 @@ class ucp_dynamo
 		switch ($mode)
 		{
 			case 'edit':
+				$user->add_lang('mods/dynamo/ucp');
 				if ($submit)
 				{
 					// Get all the values we need, using the layers as stored in the db for security-ish
