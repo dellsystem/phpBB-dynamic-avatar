@@ -18,7 +18,7 @@
 		</author>
 	</author-group>
 
-	<mod-version>0.0.1</mod-version>
+	<mod-version>0.0.2</mod-version>
 
 	<installation>
 		<level>easy</level>
@@ -27,6 +27,15 @@
 	</installation>
 
 	<history>
+		<entry>
+			<date>2011-08-31</date>
+			<rev-version>0.0.2</rev-version>
+			<changelog lang="en">
+				<change>Fixed bug in ACP dynamic avatar module</change>
+				<change>Clicking on radio buttons in UCP module works now</change>
+				<change>More language constants</change>
+			</changelog>
+		</entry>
 		<entry>
 			<date>2011-08-23</date>
 			<rev-version>0.0.1</rev-version>
