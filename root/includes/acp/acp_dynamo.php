@@ -589,6 +589,25 @@ class acp_dynamo
 			case 'users':
 				$this_template = 'acp_dynamo_users';
 				$this_title = 'ACP_DYNAMO_USERS';
+
+				// Get all the users who have dynamic avatars. There is probably a better way to do this.
+				$sql = "SELECT DISTINCT dynamo_user_id, username, user_avatar
+						FROM " . DYNAMO_USERS_TABLE . "
+						LEFT JOIN " . USERS_TABLE . "
+						ON dynamo_user_id = user_id";
+				$result = $db->sql_query($sql);
+
+				$i = 1;
+				while ($row = $db->sql_fetchrow($result))
+				{
+					$template->assign_block_vars('users', array(
+						'USERNAME'		=> $row['username'],
+						'AVATAR_URL'	=> $row['user_avatar'],
+						'INDEX'			=> $i,
+					));
+					$i++;
+				}
+
 				$template_vars = array();
 			break;
 		}
