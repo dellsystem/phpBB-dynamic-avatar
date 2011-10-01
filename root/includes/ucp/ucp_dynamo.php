@@ -111,7 +111,8 @@ class ucp_dynamo
 					
 					// Get info for each layer
 					$sql = "SELECT dynamo_layer_id, dynamo_layer_default, dynamo_layer_mandatory
-							FROM " . DYNAMO_LAYERS_TABLE;
+							FROM " . DYNAMO_LAYERS_TABLE . "
+							ORDER BY dynamo_layer_position ASC";
 					$result = $db->sql_query($sql);
 					
 					$insert_query = '';
