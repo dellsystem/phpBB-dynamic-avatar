@@ -43,6 +43,21 @@ $lang = array_merge($lang, array(
 	'ACP_DYNAMO_BASE_EXPLAIN'		=> 'If this is enabled, users will be able to change items in the layers marked as "base".',
 	'ACP_DYNAMO_MANDATORY'			=> 'Set dynamic avatar to mandatory',
 	'ACP_DYNAMO_MANDATORY_EXPLAIN'	=> 'If this is enabled, then the only type of avatar a user can have is a dynamic avatar. <strong>Note: not yet implemented.</strong>',
+
+	// Items page
+	'ACP_DYNAMO_ITEMS_EXPLAIN'		=> 'Here you can manage the items associated with each layer. Items are grouped by layer, which are themselves sorted by their position (top to bottom).',
+	'ACP_DYNAMO_CREATE_ITEM'		=> 'Create new item',
+	'ACP_DYNAMO_ITEM_SETTINGS'		=> 'Item settings',
+	'ACP_DYNAMO_ITEM_NAME'			=> 'Item name',
+	'ACP_DYNAMO_ITEM_DESC'			=> 'Item description',
+	'ACP_DYNAMO_LAYER'				=> 'Layer',
+	'ACP_DYNAMO_LAYER_EXPLAIN'		=> 'Choose the layer this item will belong to. You can choose to set it to no layer if you want to make it unavailable for now.',
+	'ACP_DYNAMO_IMAGE'				=> 'Image file',
+	'ACP_DYNAMO_IMAGE_EXPLAIN'		=> 'Upload the image file for this item from your computer.',
+	'ACP_DYNAMO_ADD_ITEM'			=> 'Add an item',
+	'ACP_DYNAMO_ADD_ITEM_EXPLAIN'	=> 'Here you can add a new item using an image file on your computer and assign it to the desired layer.',
+	'ACP_DYNAMO_EDIT_ITEM'			=> 'Edit an item',
+	'ACP_DYNAMO_EDIT_ITEM_EXPLAIN'	=> 'Here you can edit the details for an item. Note that uploading a new image here to overwrite the old work won\'t work as that feature has not yet been implemented.',
 ));
 
 ?>

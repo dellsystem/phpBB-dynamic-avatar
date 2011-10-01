@@ -446,11 +446,10 @@ class acp_dynamo
 					$layer_dropdown .= '</select>';
 					
 					$template_vars = array(
-						'ITEM_ADD_EDIT'		=> 'Add a new item',
+						'IN_ADD_MODE'		=> true,
 						'U_ACTION'			=> $this->u_action . '&amp;add=1',
 						'LAYER_DROPDOWN'	=> $layer_dropdown,
 						'ITEM_NAME'			=> request_var('dynamo_item_name', ''),
-						'MODE_DESCRIPTION'	=> 'Here you can add a new item', // lang constants later
 					);
 				}
 				else if ($edit_item_id > 0)
@@ -515,7 +514,7 @@ class acp_dynamo
 					
 					$layer_dropdown = '<select name="dynamo_item_layer">';
 					// There should always be an "uncategorised" option
-					$layer_dropdown .= '<option value="0">Uncategorised</option>';
+					$layer_dropdown .= '<option value="0">Uncategorised</option>'; // errr
 					
 					while ($row = $db->sql_fetchrow($result))
 					{
@@ -530,7 +529,7 @@ class acp_dynamo
 					$layer_dropdown .= '</select>';
 					
 					$template_vars = array(
-						'ITEM_ADD_EDIT'		=> 'Edit ' . $item_name,
+						'IN_ADD_MODE'		=> false,
 						'ITEM_NAME'			=> $item_name,
 						'ITEM_DESC'			=> $item['dynamo_item_desc'],
 						'LAYER_DROPDOWN'	=> $layer_dropdown,
