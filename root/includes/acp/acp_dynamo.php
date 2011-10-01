@@ -28,7 +28,34 @@ class acp_dynamo
 			case 'overview':
 				$this_template = 'acp_dynamo_overview';
 				$this_title = 'ACP_DYNAMO_OVERVIEW';
-				$template_vars = array();
+
+				// Figure out the number of users
+				$sql = "SELECT COUNT(DISTINCT dynamo_user_id) as num_users
+						FROM " . DYNAMO_USERS_TABLE;
+				$result = $db->sql_query($sql);
+				$row = $db->sql_fetchrow($result);
+				$num_users = $row['num_users'];
+
+				// Figure out the number of items
+				$sql = "SELECT COUNT(dynamo_item_id) as num_items
+						FROM " . DYNAMO_ITEMS_TABLE;
+				$result = $db->sql_query($sql);
+				$row = $db->sql_fetchrow($result);
+				$num_items = $row['num_items'];
+
+				// Figure out the number of layers
+				$sql = "SELECT COUNT(dynamo_layer_id) as num_layers
+						FROM " . DYNAMO_LAYERS_TABLE;
+				$result = $db->sql_query($sql);
+				$row = $db->sql_fetchrow($result);
+				$num_layers = $row['num_layers'];
+
+				$template_vars = array(
+					'DYNAMO_MOD_ENABLED'	=> $config['dynamo_enabled'], // does this even do anything?
+					'DYNAMO_NUM_USERS'		=> $num_users,
+					'DYNAMO_NUM_ITEMS'		=> $num_items,
+					'DYNAMO_NUM_LAYERS'		=> $num_layers,
+				);
 			break;
 			case 'settings':
 				$this_template = 'acp_dynamo_settings';
