@@ -181,11 +181,12 @@ class ucp_dynamo
 					}
 
 					imagesavealpha($first_image, true);
-					imagepng($first_image, $phpbb_root_path . 'images/avatars/dynamo/' . $user_id . '.png'); // Temp
+					$avatar_filename = 'images/avatars/dynamo/' . $user_id . '_' . time() . '.png';
+					imagepng($first_image, $phpbb_root_path . $avatar_filename); // Temp
 
 					// For now, pretend it's a remote avatar and modify the user's avatar-related fields accordingly
 					$sql_array = array(
-						'user_avatar' 			=> generate_board_url() . '/images/avatars/dynamo/' . $user_id . '.png',
+						'user_avatar' 			=> generate_board_url() . '/' . $avatar_filename,
 						'user_avatar_type'		=> 2, // means remote i guess
 						'user_avatar_width'		=> imagesx($first_image), // maybe this should be set to something ...
 						'user_avatar_height'	=> imagesy($first_image)
