@@ -87,8 +87,14 @@ class acp_dynamo
 						$actual_position = $desired_position + 1;
 						
 						// Now add it to the database - the ID should be auto_incremented
-						$sql = "INSERT INTO " . DYNAMO_LAYERS_TABLE . " (dynamo_layer_name, dynamo_layer_desc, dynamo_layer_default, dynamo_layer_mandatory, dynamo_layer_position)
-								VALUES ('$desired_name', '$desired_desc', $desired_default, $desired_mandatory, $actual_position)";
+						$insert_array = array(
+							'dynamo_layer_name'			=> $desired_name,
+							'dynamo_layer_desc'			=> $desired_desc,
+							'dynamo_layer_default'		=> $desired_default,
+							'dynamo_layer_mandatory'	=> $desired_mandatory,
+							'dynamo_layer_position'		=> $actual_position,
+						);
+						$sql = "INSERT INTO " . DYNAMO_LAYERS_TABLE . " " . $db->sql_build_array('INSERT', $insert_array);
 						$db->sql_query($sql);
 							
 						trigger_error($user->lang['ACP_DYNAMO_ADDED_LAYER'] . adm_back_link($this->u_action));
@@ -172,12 +178,15 @@ class acp_dynamo
 						}
 						
 						// Ugh so many db queries
+						$update_array = array(
+							'dynamo_layer_name'			=> $desired_name,
+							'dynamo_layer_desc'			=> $desired_desc,
+							'dynamo_layer_mandatory'	=> $desired_mandatory,
+							'dynamo_layer_default'		=> $desired_default,
+							'dynamo_layer_position'		=> $desired_position,
+						);
 						$sql = "UPDATE " . DYNAMO_LAYERS_TABLE . "
-								SET dynamo_layer_name = '$desired_name',
-									dynamo_layer_desc = '$desired_desc',
-									dynamo_layer_mandatory = $desired_mandatory,
-									dynamo_layer_default = $desired_default,
-									dynamo_layer_position = $desired_position
+								SET " . $db->sql_build_array('UPDATE', $update_array) . "
 								WHERE dynamo_layer_id = $edit_get";
 						$db->sql_query($sql);
 						
@@ -375,10 +384,15 @@ class acp_dynamo
 							$file->move_file($destination, true);
 						}
 						
-						
+						$insert_array = array(
+							'dynamo_item_id'	=> $item_id, // need this to avoid discrepancies lol
+							'dynamo_item_name' 	=> $desired_name,
+							'dynamo_item_desc'	=> $desired_desc,
+							'dynamo_item_layer'	=> $desired_layer
+						);
+
 						// Might as well not ignore the ID since we have it
-						$sql = "INSERT INTO " . DYNAMO_ITEMS_TABLE . " (dynamo_item_id, dynamo_item_name, dynamo_item_desc, dynamo_item_layer)
-								VALUES ($item_id, '$desired_name', '$desired_desc', $desired_layer)";
+						$sql = "INSERT INTO " . DYNAMO_ITEMS_TABLE . " " . $db->sql_build_array('INSERT', $insert_array);
 						$db->sql_query($sql);
 						
 						trigger_error($user->lang['ACP_DYNAMO_ADDED_ITEM'] . adm_back_link($this->u_action));
@@ -433,17 +447,20 @@ class acp_dynamo
 							// Stop assuming PNG (temp solution)
 							$old_file_name = $phpbb_root_path . 'images/dynamo/' . $old_layer . '-' . $edit_item_id . '.png';
 							$new_file_name = $phpbb_root_path . 'images/dynamo/' . $desired_layer . '-' . $edit_item_id . '.png';
-							if (!@move_uploaded_file($old_file_name, $new_file_name))
+							if (!rename($old_file_name, $new_file_name))
 							{
-								// not working yet lol
-								echo 'wtf';
+								trigger_error("shit something went wrong lol" . adm_back_link($this->u_action));
 							}
 						}
-						
+
+						$update_array = array(
+							'dynamo_item_name' 	=> $desired_name,
+							'dynamo_item_desc' 	=> $desired_desc,
+							'dynamo_item_layer' => $desired_layer
+						);
+
 						$sql = "UPDATE " . DYNAMO_ITEMS_TABLE . "
-								SET dynamo_item_name = '$desired_name',
-									dynamo_item_desc = '$desired_desc',
-									dynamo_item_layer = '$desired_layer'
+								SET " . $db->sql_build_array('UPDATE', $update_array) . "
 								WHERE dynamo_item_id = $edit_item_id";
 						$db->sql_query($sql);
 					
