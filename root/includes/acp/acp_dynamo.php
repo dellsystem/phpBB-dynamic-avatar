@@ -351,7 +351,7 @@ class acp_dynamo
 						$desired_name = request_var('dynamo_item_name', '');
 						$desired_desc = request_var('dynamo_item_desc', '');
 						$desired_layer = request_var('dynamo_item_layer', 0);
-						
+
 						// First get the next item ID from the database
 						$sql = "SELECT dynamo_item_id
 								FROM " . DYNAMO_ITEMS_TABLE . "
@@ -359,9 +359,9 @@ class acp_dynamo
 								LIMIT 1";
 						$result = $db->sql_query($sql);
 						$row = $db->sql_fetchrow($result);
-						
+
 						$item_id = $row['dynamo_item_id'] + 1;
-						
+
 						// Now upload the file - include functions_upload.php
 						// Init upload class
 						include_once($phpbb_root_path . 'includes/functions_upload.' . $phpEx);
