@@ -58,6 +58,21 @@ $lang = array_merge($lang, array(
 	'ACP_DYNAMO_ADD_ITEM_EXPLAIN'	=> 'Here you can add a new item using an image file on your computer and assign it to the desired layer.',
 	'ACP_DYNAMO_EDIT_ITEM'			=> 'Edit an item',
 	'ACP_DYNAMO_EDIT_ITEM_EXPLAIN'	=> 'Here you can edit the details for an item. Note that uploading a new image here to overwrite the old work won\'t work as that feature has not yet been implemented.',
+    
+    // Layers page
+    'ACP_DYNAMO_LAYER_EXPLAIN'		=> 'Here you can view all the layers you have created and edit them etc',
+    'ACP_DYNAMO_LAYER_SETTINGS'     => 'Layer settings',
+    'ACP_DYNAMO_LAYER_NAME'         => 'Layer name',
+    'ACP_DYNAMO_LAYER_DESC'			=> 'Layer description',
+    'ACP_DYNAMO_LAYER_POS'          => 'Layer position',
+    'ACP_DYNAMO_LAYER_POS_EXPLAIN'  => 'Choose the position in terms of ordering etc',
+    'ACP_DYNAMO_LAYER_MAND'         => 'Mandatory?',
+    'ACP_DYNAMO_LAYER_OPTION'       => 'Options',
+    'ACP_DYNAMO_LAYER_MAND_DESC'    => 'Set layer to mandatory',
+    'ACP_DYNAMO_LAYER_MAND_EXPLAIN' => 'If this is enabled, then a user must select an item for this layer.',
+    'ACP_DYNAMO_LAYER_DEFAULT'      => 'Default item',
+    'ACP_DYNAMO_LAYER_DEFAULT_EXPLAIN' => 'If desired, select the default item. If there is only one item associated with this layer, you have no choice.',
+    
 ));
 
 ?>
