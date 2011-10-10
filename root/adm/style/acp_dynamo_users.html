@@ -2,6 +2,28 @@
 
 <h1>{L_ACP_DYNAMO_USERS}</h1>
 
-<p>Blah blah blah</p>
+<p>{L_ACP_DYNAMO_USERS_EXPLAIN}</p>
+
+<!-- IF .users -->
+<table cellspacing="1">
+	<col class="col1" /><col class="col2" /><col class="col1" /><col class="col2" /><col class="col1" />
+	<thead>
+		<tr>
+			<th colspan="5">{L_USERS}</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+<!-- BEGIN users -->
+			<td style="text-align: center;"><img src="{users.AVATAR_URL}" /><br /><strong>{users.USERNAME}</strong></td>
+			<!-- IF users.INDEX % 5 == 0 -->
+			</tr>
+			<tr>
+			<!-- ENDIF -->
+<!-- END users -->
+		</tr>
+	</tbody>
+</table>
+<!-- ENDIF -->
 
 <!-- INCLUDE overall_footer.html -->
