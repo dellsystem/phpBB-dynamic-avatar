@@ -72,7 +72,7 @@ $lang = array_merge($lang, array(
     'ACP_DYNAMO_LAYER_MAND_EXPLAIN' => 'If this is enabled, then a user must select an item for this layer.',
     'ACP_DYNAMO_LAYER_DEFAULT'      => 'Default item',
     'ACP_DYNAMO_LAYER_DEFAULT_EXPLAIN' => 'If desired, select the default item. If there is only one item associated with this layer, you have no choice.',
-    
+    'ACP_DYNAMO_LAYER_ID'	=> 'Layer ID',
 ));
 
 ?>
