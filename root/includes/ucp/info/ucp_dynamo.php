@@ -21,7 +21,7 @@ class ucp_dynamo_info
 			'version'	=> '0.0.1',
 			'modes'		=> array(
 				//Gotta fix the below
-				'edit'	=> array('title' => 'Edit avatar', 'auth' => '', 'cat' => array('UCP_PROFILE')))
+				'edit'	=> array('title' => 'Edit avatar', 'auth' => 'acl_u_dynamo', 'cat' => array('UCP_PROFILE')))
 		);
 	}
 
