@@ -69,6 +69,8 @@ class acp_dynamo
 					set_config('dynamo_use_points', request_var('dynamo_use_points', 0));
 					set_config('dynamo_change_base', request_var('dynamo_change_base', 0));
 					set_config('dynamo_mandatory', request_var('dynamo_mandatory', 0));
+					set_config('dynamo_width', request_var('dynamo_width', 0));
+					set_config('dynamo_height', utf8_normalize_nfc(request_var('dynamo_height', '',  true)));
 					
 					trigger_error($user->lang['CONFIG_UPDATED'] . adm_back_link($this->u_action));
 				}
@@ -79,6 +81,8 @@ class acp_dynamo
 					'DYNAMO_USE_POINTS'		=> $config['dynamo_use_points'],
 					'DYNAMO_CHANGE_BASE'	=> $config['dynamo_change_base'],
 					'DYNAMO_MANDATORY'		=> $config['dynamo_mandatory'],
+					'DYNAMO_WIDTH'			=> $config['dynamo_width'],
+					'DYNAMO_HEIGHT'			=> $config['dynamo_height'],
 				);
 				
 			break;
