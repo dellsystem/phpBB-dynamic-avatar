@@ -132,6 +132,7 @@ $versions = array(
 			array('dynamo_use_points', 0),
 			array('dynamo_change_base', 0),
 			array('dynamo_mandatory', 0),
+			array('avatar_dimension', 0), 
 		),
 
 		'module_add' => array(
