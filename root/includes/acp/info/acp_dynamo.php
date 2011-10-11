@@ -23,11 +23,11 @@ class acp_dynamo_info
 			'version'	=> '0.0.1',
 			'modes'		=> array(
 				// Uses acl_a_forum for now because the proper auth field isn't working atm lol
-				'overview'		=> array('title' => 'ACP_DYNAMO_OVERVIEW', 'auth' => 'acl_a_forum', 'cat' => array('ACP_DYNAMO')),
-				'settings'		=> array('title' => 'ACP_DYNAMO_SETTINGS', 'auth' => 'acl_a_forum', 'cat' => array('ACP_DYNAMO')),
-				'layers'		=> array('title' => 'ACP_DYNAMO_LAYERS', 'auth' => 'acl_a_forum', 'cat' => array('ACP_DYNAMO')),
-				'items'			=> array('title' => 'ACP_DYNAMO_ITEMS', 'auth' => 'acl_a_forum', 'cat' => array('ACP_DYNAMO')),
-				'users'			=> array('title' => 'ACP_DYNAMO_USERS', 'auth' => 'acl_a_forum', 'cat' => array('ACP_DYNAMO')),
+				'overview'		=> array('title' => 'ACP_DYNAMO_OVERVIEW', 'auth' => 'acl_a_dynamo_overview', 'cat' => array('ACP_DYNAMO')),
+				'settings'		=> array('title' => 'ACP_DYNAMO_SETTINGS', 'auth' => 'acl_a_dynamo_settings', 'cat' => array('ACP_DYNAMO')),
+				'layers'		=> array('title' => 'ACP_DYNAMO_LAYERS', 'auth' => 'acl_a_dynamo_layers', 'cat' => array('ACP_DYNAMO')),
+				'items'			=> array('title' => 'ACP_DYNAMO_ITEMS', 'auth' => 'acl_a_dynamo_items', 'cat' => array('ACP_DYNAMO')),
+				'users'			=> array('title' => 'ACP_DYNAMO_USERS', 'auth' => 'acl_a_dynamo_users', 'cat' => array('ACP_DYNAMO')),
 			),
 		);
 	}
