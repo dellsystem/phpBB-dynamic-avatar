@@ -2,6 +2,34 @@
 
 <h1>{L_ACP_DYNAMO_OVERVIEW}</h1>
 
-<p>Blah blah blah</p>
+<p>{L_ACP_DYNAMO_OVERVIEW_EXPLAIN}</p>
+
+<table cellspacing="1">
+	<col class="col1" /><col class="col2" />
+	<thead>
+		<tr>
+			<th>{L_STATISTIC}</th>
+			<th>{L_VALUE}</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>{L_ACP_DYNAMO_MOD_STATUS}</td>
+			<td><!-- IF DYNAMO_MOD_ENABLED --><strong>{L_ENABLED}</strong><!-- ELSE -->{L_DISABLED}<!-- ENDIF --></td>
+		</tr>
+		<tr>
+			<td>{L_ACP_DYNAMO_NUM_USERS}</td>
+			<td>{DYNAMO_NUM_USERS}</td>
+		</tr>
+		<tr>
+			<td>{L_ACP_DYNAMO_NUM_LAYERS}</td>
+			<td>{DYNAMO_NUM_LAYERS}</td>
+		</tr>
+		<tr>
+			<td>{L_ACP_DYNAMO_NUM_ITEMS}</td>
+			<td>{DYNAMO_NUM_ITEMS}</td>
+		</tr>
+	</tbody>
+</table>
 
 <!-- INCLUDE overall_footer.html -->
