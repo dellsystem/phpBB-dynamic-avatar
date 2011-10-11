@@ -111,7 +111,8 @@ class ucp_dynamo
 					
 					// Get info for each layer
 					$sql = "SELECT dynamo_layer_id, dynamo_layer_default, dynamo_layer_mandatory
-							FROM " . DYNAMO_LAYERS_TABLE;
+							FROM " . DYNAMO_LAYERS_TABLE . "
+							ORDER BY dynamo_layer_position ASC";
 					$result = $db->sql_query($sql);
 					
 					$insert_query = '';
@@ -181,11 +182,12 @@ class ucp_dynamo
 					}
 
 					imagesavealpha($first_image, true);
-					imagepng($first_image, $phpbb_root_path . 'images/avatars/dynamo/' . $user_id . '.png'); // Temp
+					$avatar_filename = 'images/avatars/dynamo/' . $user_id . '_' . time() . '.png';
+					imagepng($first_image, $phpbb_root_path . $avatar_filename); // Temp
 
 					// For now, pretend it's a remote avatar and modify the user's avatar-related fields accordingly
 					$sql_array = array(
-						'user_avatar' 			=> generate_board_url() . '/images/avatars/dynamo/' . $user_id . '.png',
+						'user_avatar' 			=> generate_board_url() . '/' . $avatar_filename,
 						'user_avatar_type'		=> 2, // means remote i guess
 						'user_avatar_width'		=> imagesx($first_image), // maybe this should be set to something ...
 						'user_avatar_height'	=> imagesy($first_image)

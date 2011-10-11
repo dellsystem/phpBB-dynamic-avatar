@@ -67,6 +67,21 @@ $logo_img = '../contrib/penguin.png';
 * The version numbering must otherwise be compatible with the version_compare function - http://php.net/manual/en/function.version-compare.php
 */
 $versions = array(
+	'0.0.3' => array(
+		'permission_add' => array(
+			'u_dynamo',
+			'a_dynamo_overview',
+			'a_dynamo_settings',
+			'a_dynamo_users',
+			'a_dynamo_layers',
+			'a_dynamo_items',
+		),
+		'permission_set' => array(
+			array('ROLE_ADMIN_FULL', array('a_dynamo_overview', 'a_dynamo_settings', 'a_dynamo_users', 'a_dynamo_layers', 'a_dynamo_items')),
+			array('ROLE_USER_STANDARD', 'u_dynamo'),
+			array('ROLE_USER_FULL', 'u_dynamo'),
+		),
+	),
 	'0.0.2'	=> array(
 		// Adding some new fixtures just for fun
 		'table_row_insert' => array(
