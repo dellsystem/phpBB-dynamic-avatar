@@ -43,6 +43,10 @@ $lang = array_merge($lang, array(
 	'ACP_DYNAMO_BASE_EXPLAIN'		=> 'If this is enabled, users will be able to change items in the layers marked as "base".',
 	'ACP_DYNAMO_MANDATORY'			=> 'Set dynamic avatar to mandatory',
 	'ACP_DYNAMO_MANDATORY_EXPLAIN'	=> 'If this is enabled, then the only type of avatar a user can have is a dynamic avatar. <strong>Note: not yet implemented.</strong>',
+	'ACP_AVATAR_DIMENSION'      => 'Set dynamic avatar width',
+	'ACP_AVATAR_DIMENSION_EXPLAIN'   => 'Define the number of pixels of width and height you want for your dynamic avatar(most avatars are between 50-150 pixels). <strong>Note: not yet implemented.</strong>',
+	'ACP_AVATAR_PIXEL'      => 'pixels',
+
 
 	// Items page
 	'ACP_DYNAMO_ITEMS_EXPLAIN'		=> 'Here you can manage the items associated with each layer. Items are grouped by layer, which are themselves sorted by their position (top to bottom).',
