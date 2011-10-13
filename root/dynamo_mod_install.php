@@ -132,6 +132,8 @@ $versions = array(
 			array('dynamo_use_points', 0),
 			array('dynamo_change_base', 0),
 			array('dynamo_mandatory', 0),
+			array('dynamo_width', 100),
+			array('dynamo_height', 120),
 		),
 
 		'module_add' => array(
