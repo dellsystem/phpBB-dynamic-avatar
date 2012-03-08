@@ -278,5 +278,9 @@ define('ZEBRA_TABLE',				$table_prefix . 'zebra');
 
 // Additional tables
 
+// Dynamo (dynamic avatar) MOD
+define('DYNAMO_LAYERS_TABLE',		$table_prefix . 'dynamo_layers');
+define('DYNAMO_ITEMS_TABLE',		$table_prefix . 'dynamo_items');
+define('DYNAMO_USERS_TABLE',		$table_prefix . 'dynamo_users');
 
 ?>
