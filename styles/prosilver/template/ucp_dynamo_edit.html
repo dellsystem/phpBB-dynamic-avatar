@@ -1,0 +1,72 @@
+<!-- INCLUDE ucp_header.html -->
+
+<!-- the JS file for the dynamic part -->
+<script src="{T_TEMPLATE_PATH}/dynamo.js"></script>
+
+<h2>{L_TITLE}</h2>
+
+<div class="panel">
+	<div class="inner"><span class="corners-top"><span></span></span>
+	
+	<p>{L_DYNAMO_EXPLAIN}</p>
+	
+	<form method="post" name="dynamo" action="{U_ACTION}">
+	
+<!-- tables tables everywhere -->
+<table>
+	<tr>
+		<td style="width: 50%; vertical-align: top; text-align: center;" id="item-images">
+			<!-- BEGIN images -->
+			<!-- IF images.ITEM_EXISTS -->
+			<div id="{images.LAYER_ID}" style="position: absolute; z-index: {images.POSITION};"><img src="{images.ITEM_IMAGE}" /></div>
+			<!-- ENDIF -->
+			<!-- END images -->
+		</td>
+		<td>
+	<!-- BEGIN item -->
+<!-- IF item.NEW_LAYER && item.FIRST_LAYER == false -->
+		</tr>
+	</tbody>
+</table>
+<br />
+<!-- ENDIF -->
+<!-- IF item.NEW_LAYER -->
+<table cellspacing="1">
+	<col class="col1" /><col class="col2" /><col class="col1" /><col class="col2" /><col class="col1" />
+	<thead>
+		<tr>
+			<th colspan="6" style="text-align: left;">{item.LAYER_NAME}</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+		<!-- IF item.IS_MANDATORY == 0 -->
+			<td style="text-align: center;"><label for="{item.LAYER_ID}-0">None</label><br /><input type="radio" name="layer-{item.LAYER_ID}" value="0" id="{item.LAYER_ID}-0" {item.NONE_SELECTED} onclick="changeImage({item.LAYER_ID}, 0, {item.LAYER_POSITION});" /></td>
+		<!-- ENDIF -->
+<!-- ENDIF -->
+			<td style="text-align: center;"><label for="{item.LAYER_ID}-{item.ITEM_ID}"><img src="{item.ITEM_IMAGE}" onclick="changeImage({item.LAYER_ID}, {item.ITEM_ID}, {item.LAYER_POSITION});" title="{item.ITEM_DESC}" alt="{item.ITEM_NAME}" /></label><br />{item.ITEM_NAME}<br /><input type="radio" name="layer-{item.LAYER_ID}" value="{item.ITEM_ID}" id="{item.LAYER_ID}-{item.ITEM_ID}" onclick="changeImage({item.LAYER_ID}, {item.ITEM_ID}, {item.LAYER_POSITION});" {item.SELECTED} /></td>
+			<!-- IF item.NUM_IN_LAYER % 6 == 0 -->
+			</tr>
+			<tr>
+			<!-- ENDIF -->
+<!-- END item -->
+<!-- IF .item -->
+<!-- for the very end of the loop, if there is content in it -->
+		</tr>
+	</tbody>
+</table>
+<!-- ENDIF -->
+		</td>
+	</tr>
+</table>
+<fieldset class="submit-buttons">
+	<input type="reset" value="{L_RESET}" name="reset" class="button2" />&nbsp; 
+	<input type="submit" name="submit" value="{L_SUBMIT}" class="button1" />
+</fieldset>
+
+</form>
+
+	<span class="corners-bottom"><span></span></span></div>
+</div>
+
+<!-- INCLUDE ucp_footer.html -->

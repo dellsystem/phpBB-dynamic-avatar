@@ -1,0 +1,50 @@
+<!-- INCLUDE overall_header.html -->
+
+<h1>{L_ACP_DYNAMO_SETTINGS}</h1>
+
+<p>Blah blah blah</p>
+
+<form id="acp_dynamo" method="post" action="{U_ACTION}">
+
+	<fieldset>
+		<legend>{L_ACP_DYNAMO_SETTINGS}</legend>
+		<dl>
+			<dt><label for="dynamo_enabled">Enable dynamic avatar:</label></dt>
+			<dd>
+				<label><input type="radio" class="radio" name="dynamo_enabled" value="1"<!-- IF DYNAMO_ENABLED --> id="dynamo_enabled" checked="checked"<!-- ENDIF --> /> {L_YES}</label>
+				<label><input type="radio" class="radio" name="dynamo_enabled" value="0"<!-- IF not DYNAMO_ENABLED --> id="dynamo_enabled" checked="checked"<!-- ENDIF --> /> {L_NO}</label>
+			</dd>
+		</dl>
+		<dl>
+			<dt><label for="dynamo_use_points">Use a points MOD:</label><br /><span>If there is a points MOD installed and enabled on your board, then you can use them together blah blah</span></dt>
+			<dd>
+				<label><input type="radio" class="radio" name="dynamo_use_points" value="1"<!-- IF DYNAMO_USE_POINTS --> id="dynamo_use_points" checked="checked"<!-- ENDIF --> /> {L_YES}</label>
+				<label><input type="radio" class="radio" name="dynamo_use_points" value="0"<!-- IF not DYNAMO_USE_POINTS --> id="dynamo_use_points" checked="checked"<!-- ENDIF --> /> {L_NO}</label>
+			</dd>
+		</dl>
+		<dl>
+			<dt><label for="dynamo_change_base">Allow users to change base:</label><br /><span>If this is enabled, users will be able to change items in the layers marked as "base".</span></dt>
+			<dd>
+				<label><input type="radio" class="radio" name="dynamo_change_base" value="1"<!-- IF DYNAMO_CHANGE_BASE --> id="dynamo_change_base" checked="checked"<!-- ENDIF --> /> {L_YES}</label>
+				<label><input type="radio" class="radio" name="dynamo_change_base" value="0"<!-- IF not DYNAMO_CHANGE_BASE --> id="dynamo_change_base" checked="checked"<!-- ENDIF --> /> {L_NO}</label>
+			</dd>
+		</dl>
+		<dl>
+			<dt><label for="dynamo_mandatory">Set dynamic avatar to mandatory:</label><br /><span>If this is enabled, then the only type of avatar a user can have is a dynamic avatar.</span></dt>
+			<dd>
+				<label><input type="radio" class="radio" name="dynamo_mandatory" value="1"<!-- IF DYNAMO_MANDATORY --> id="dynamo_mandatory" checked="checked"<!-- ENDIF --> /> {L_YES}</label>
+				<label><input type="radio" class="radio" name="dynamo_mandatory" value="0"<!-- IF not DYNAMO_MANDATORY --> id="dynamo_mandatory" checked="checked"<!-- ENDIF --> /> {L_NO}</label>
+			</dd>
+		</dl>
+	</fieldset>
+	
+	<fieldset>
+		<legend>{L_ACP_SUBMIT_CHANGES}</legend> 
+		<p class="submit-buttons"> 
+			<input class="button1" type="submit" name="submit" value="{L_SUBMIT}" />&nbsp;
+			<input class="button2" type="reset" id="reset" name="reset" value="{L_RESET}" /> 
+		</p>
+	</fieldset>
+</form>
+
+<!-- INCLUDE overall_footer.html -->
