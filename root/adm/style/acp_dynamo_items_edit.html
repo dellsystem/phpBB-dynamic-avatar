@@ -8,6 +8,12 @@
 
 	<fieldset>
 		<legend>{L_ACP_DYNAMO_ITEM_SETTINGS}</legend>
+		<!-- IF ITEM_IMAGE -->
+		<dl>
+			<dt><label>{L_ITEM_PREVIEW}:</label></dt>
+			<dd><img src="{ITEM_IMAGE}" title="{ITEM_NAME}" alt="{L_ITEM_PREVIEW}" /></dd>
+		</dl>
+		<!-- ENDIF -->
 		<dl>
 			<dt><label for="dynamo_item_name">{L_ACP_DYNAMO_ITEM_NAME}:</label></dt>
 			<dd><input type="text" name="dynamo_item_name" value="{ITEM_NAME}" /></dd>
