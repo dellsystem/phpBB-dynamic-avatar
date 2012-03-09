@@ -27,8 +27,36 @@ class acp_dynamo
 		{
 			case 'overview':
 				$this_template = 'acp_dynamo_overview';
-				$this_title = 'ACP_DYNAMO_OVERVIEW';
-				$template_vars = array();
+
+				// Figure out the number of users
+				$sql = "SELECT COUNT(DISTINCT dynamo_user_id) as num_users
+						FROM " . DYNAMO_USERS_TABLE;
+				$result = $db->sql_query($sql);
+				$row = $db->sql_fetchrow($result);
+				$num_users = $row['num_users'];
+
+				// Figure out the number of items
+				$sql = "SELECT COUNT(dynamo_item_id) as num_items
+						FROM " . DYNAMO_ITEMS_TABLE;
+				$result = $db->sql_query($sql);
+				$row = $db->sql_fetchrow($result);
+				$num_items = $row['num_items'];
+
+				// Figure out the number of layers
+				$sql = "SELECT COUNT(dynamo_layer_id) as num_layers
+						FROM " . DYNAMO_LAYERS_TABLE;
+				$result = $db->sql_query($sql);
+				$row = $db->sql_fetchrow($result);
+				$num_layers = $row['num_layers'];
+
+				$template_vars = array(
+					'DYNAMO_MOD_ENABLED'	=> $config['dynamo_enabled'], // does this even do anything?
+					'DYNAMO_NUM_USERS'		=> $num_users,
+					'DYNAMO_NUM_ITEMS'		=> $num_items,
+					'DYNAMO_NUM_LAYERS'		=> $num_layers,
+					'L_TITLE'				=> $user->lang['DYNAMO_OVERVIEW'],
+					'L_TITLE_EXPLAIN'		=> $user->lang['DYNAMO_OVERVIEW_EXPLAIN'],
+				);
 			break;
 			case 'settings':
 				$this_template = 'acp_dynamo_settings';
@@ -47,6 +75,8 @@ class acp_dynamo
 				}
 				
 				$template_vars = array(
+					'L_TITLE'				=> $user->lang['SETTINGS'],
+					'L_TITLE_EXPLAIN'		=> $user->lang['DYNAMO_SETTINGS_EXPLAIN'],
 					'U_ACTION' 				=> $this->u_action,
 					'DYNAMO_ENABLED'		=> $config['dynamo_enabled'],
 					'DYNAMO_USE_POINTS'		=> $config['dynamo_use_points'],
@@ -87,8 +117,14 @@ class acp_dynamo
 						$actual_position = $desired_position + 1;
 						
 						// Now add it to the database - the ID should be auto_incremented
-						$sql = "INSERT INTO " . DYNAMO_LAYERS_TABLE . " (dynamo_layer_name, dynamo_layer_desc, dynamo_layer_default, dynamo_layer_mandatory, dynamo_layer_position)
-								VALUES ('$desired_name', '$desired_desc', $desired_default, $desired_mandatory, $actual_position)";
+						$insert_array = array(
+							'dynamo_layer_name'			=> $desired_name,
+							'dynamo_layer_desc'			=> $desired_desc,
+							'dynamo_layer_default'		=> $desired_default,
+							'dynamo_layer_mandatory'	=> $desired_mandatory,
+							'dynamo_layer_position'		=> $actual_position,
+						);
+						$sql = "INSERT INTO " . DYNAMO_LAYERS_TABLE . " " . $db->sql_build_array('INSERT', $insert_array);
 						$db->sql_query($sql);
 							
 						trigger_error($user->lang['ACP_DYNAMO_ADDED_LAYER'] . adm_back_link($this->u_action));
@@ -122,11 +158,11 @@ class acp_dynamo
 					$position_dropdown .= '</option></select>';
 					
 					$template_vars = array(
-						'LAYER_ADD_EDIT'	=> 'Add a new layer', // the page title basically, change this later
-						'MODE_DESCRIPTION'	=> 'Add a layer',
+						'L_TITLE'			=> $user->lang['ADD_LAYER'],
+						'L_TITLE_EXPLAIN'	=> $user->lang['ADD_LAYER_EXPLAIN'],
 						'LAYER_NAME'		=> request_var('dynamo_layer_name', ''), // from the quick "add layer" form thing
 						'POSITION_DROPDOWN'	=> $position_dropdown,
-						'DEFAULT_DROPDOWN'	=> 'You can add items after creating the layer',
+						'DEFAULT_DROPDOWN'	=> $user->lang['ADD_ITEMS_AFTER'],
 					);
 				}
 				else if ($edit_get > 0)
@@ -172,12 +208,15 @@ class acp_dynamo
 						}
 						
 						// Ugh so many db queries
+						$update_array = array(
+							'dynamo_layer_name'			=> $desired_name,
+							'dynamo_layer_desc'			=> $desired_desc,
+							'dynamo_layer_mandatory'	=> $desired_mandatory,
+							'dynamo_layer_default'		=> $desired_default,
+							'dynamo_layer_position'		=> $desired_position,
+						);
 						$sql = "UPDATE " . DYNAMO_LAYERS_TABLE . "
-								SET dynamo_layer_name = '$desired_name',
-									dynamo_layer_desc = '$desired_desc',
-									dynamo_layer_mandatory = $desired_mandatory,
-									dynamo_layer_default = $desired_default,
-									dynamo_layer_position = $desired_position
+								SET " . $db->sql_build_array('UPDATE', $update_array) . "
 								WHERE dynamo_layer_id = $edit_get";
 						$db->sql_query($sql);
 						
@@ -249,15 +288,14 @@ class acp_dynamo
 					$default_dropdown .= '</select>';
 					
 					$template_vars = array(
-						// the page title basically, change this later (language constants etc)
-						'LAYER_ADD_EDIT'	=> 'Editing the layer ' . $layer_name,
+						'L_TITLE'			=> sprintf($user->lang['EDITING_LAYER'], $layer_name),
+						'L_TITLE_EXPLAIN'	=> $user->lang['EDITING_LAYER_EXPLAIN'],
 						'LAYER_NAME'		=> $layer_name,
 						'LAYER_DESC'		=> $layer['dynamo_layer_desc'],
-						'MODE_DESCRIPTION'	=> 'Edit a layer',
 						'POSITION_DROPDOWN'	=>	$position_dropdown,
 						'LAYER_MANDATORY'	=> $layer['dynamo_layer_mandatory'],
 						// Move this shit to the template file someday
-						'DEFAULT_DROPDOWN'	=> ($num_items > 0) ? $default_dropdown : 'No items for this layer',
+						'DEFAULT_DROPDOWN'	=> ($num_items > 0) ? $default_dropdown : $user->lang['NO_LAYER_ITEMS'],
 					);
 				}
 				else if ($delete_get > 0)
@@ -321,7 +359,9 @@ class acp_dynamo
 					
 					// Regular template variables (just one lol)
 					$template_vars = array(
-							'U_ADD_ACTION' 		=> $this->u_action . '&amp;add=1', // Form for adding a new layer
+						'L_TITLE'			=> $user->lang['DYNAMO_LAYERS'],
+						'L_TITLE_EXPLAIN'	=> $user->lang['DYNAMO_LAYERS_EXPLAIN'],
+						'U_ADD_ACTION' 		=> $this->u_action . '&amp;add=1', // Form for adding a new layer
 					);
 				}
 			break;
@@ -342,7 +382,7 @@ class acp_dynamo
 						$desired_name = request_var('dynamo_item_name', '');
 						$desired_desc = request_var('dynamo_item_desc', '');
 						$desired_layer = request_var('dynamo_item_layer', 0);
-						
+
 						// First get the next item ID from the database
 						$sql = "SELECT dynamo_item_id
 								FROM " . DYNAMO_ITEMS_TABLE . "
@@ -350,9 +390,9 @@ class acp_dynamo
 								LIMIT 1";
 						$result = $db->sql_query($sql);
 						$row = $db->sql_fetchrow($result);
-						
+
 						$item_id = $row['dynamo_item_id'] + 1;
-						
+
 						// Now upload the file - include functions_upload.php
 						// Init upload class
 						include_once($phpbb_root_path . 'includes/functions_upload.' . $phpEx);
@@ -375,10 +415,15 @@ class acp_dynamo
 							$file->move_file($destination, true);
 						}
 						
-						
+						$insert_array = array(
+							'dynamo_item_id'	=> $item_id, // need this to avoid discrepancies lol
+							'dynamo_item_name' 	=> $desired_name,
+							'dynamo_item_desc'	=> $desired_desc,
+							'dynamo_item_layer'	=> $desired_layer
+						);
+
 						// Might as well not ignore the ID since we have it
-						$sql = "INSERT INTO " . DYNAMO_ITEMS_TABLE . " (dynamo_item_id, dynamo_item_name, dynamo_item_desc, dynamo_item_layer)
-								VALUES ($item_id, '$desired_name', '$desired_desc', $desired_layer)";
+						$sql = "INSERT INTO " . DYNAMO_ITEMS_TABLE . " " . $db->sql_build_array('INSERT', $insert_array);
 						$db->sql_query($sql);
 						
 						trigger_error($user->lang['ACP_DYNAMO_ADDED_ITEM'] . adm_back_link($this->u_action));
@@ -405,11 +450,11 @@ class acp_dynamo
 					$layer_dropdown .= '</select>';
 					
 					$template_vars = array(
-						'ITEM_ADD_EDIT'		=> 'Add a new item',
+						'L_TITLE'			=> $user->lang['ADDING_ITEM'],
+						'L_TITLE_EXPLAIN'	=> $user->lang['ADDING_ITEM_EXPLAIN'],
 						'U_ACTION'			=> $this->u_action . '&amp;add=1',
 						'LAYER_DROPDOWN'	=> $layer_dropdown,
 						'ITEM_NAME'			=> request_var('dynamo_item_name', ''),
-						'MODE_DESCRIPTION'	=> 'Here you can add a new item', // lang constants later
 					);
 				}
 				else if ($edit_item_id > 0)
@@ -433,17 +478,20 @@ class acp_dynamo
 							// Stop assuming PNG (temp solution)
 							$old_file_name = $phpbb_root_path . 'images/dynamo/' . $old_layer . '-' . $edit_item_id . '.png';
 							$new_file_name = $phpbb_root_path . 'images/dynamo/' . $desired_layer . '-' . $edit_item_id . '.png';
-							if (!@move_uploaded_file($old_file_name, $new_file_name))
+							if (!rename($old_file_name, $new_file_name))
 							{
-								// not working yet lol
-								echo 'wtf';
+								trigger_error("shit something went wrong lol" . adm_back_link($this->u_action));
 							}
 						}
-						
+
+						$update_array = array(
+							'dynamo_item_name' 	=> $desired_name,
+							'dynamo_item_desc' 	=> $desired_desc,
+							'dynamo_item_layer' => $desired_layer
+						);
+
 						$sql = "UPDATE " . DYNAMO_ITEMS_TABLE . "
-								SET dynamo_item_name = '$desired_name',
-									dynamo_item_desc = '$desired_desc',
-									dynamo_item_layer = '$desired_layer'
+								SET " . $db->sql_build_array('UPDATE', $update_array) . "
 								WHERE dynamo_item_id = $edit_item_id";
 						$db->sql_query($sql);
 					
@@ -471,7 +519,7 @@ class acp_dynamo
 					
 					$layer_dropdown = '<select name="dynamo_item_layer">';
 					// There should always be an "uncategorised" option
-					$layer_dropdown .= '<option value="0">Uncategorised</option>';
+					$layer_dropdown .= '<option value="0">Uncategorised</option>'; // errr
 					
 					while ($row = $db->sql_fetchrow($result))
 					{
@@ -486,7 +534,9 @@ class acp_dynamo
 					$layer_dropdown .= '</select>';
 					
 					$template_vars = array(
-						'ITEM_ADD_EDIT'		=> 'Edit ' . $item_name,
+						'L_TITLE'			=> sprintf($user->lang['EDITING_ITEM'], $item_name),
+						'L_TITLE_EXPLAIN'	=> $user->lang['EDITING_ITEM_EXPLAIN'],
+						'ITEM_IMAGE'		=> $phpbb_root_path . 'images/dynamo/' . $item['dynamo_item_layer'] . '-' . $item['dynamo_item_id'] . '.png',
 						'ITEM_NAME'			=> $item_name,
 						'ITEM_DESC'			=> $item['dynamo_item_desc'],
 						'LAYER_DROPDOWN'	=> $layer_dropdown,
@@ -547,10 +597,10 @@ class acp_dynamo
 						$num_in_layer = ($new_layer) ? 1 : $num_in_layer + 1;
 						
 						$item_id = $row['dynamo_item_id'];
-					
+
 						// Figure out the item's image URL
 						$item_image_url = '../images/dynamo/' . $item_layer . '-' . $item_id . '.png';
-					
+
 						$template->assign_block_vars('item', array(
 							'NEW_LAYER'		=> $new_layer,
 							'NUM_IN_LAYER'	=> $num_in_layer,
@@ -565,14 +615,38 @@ class acp_dynamo
 					}
 					
 					$template_vars = array(
-							'U_ADD_ACTION' 		=> $this->u_action . '&amp;add=1', // Form for adding a new item
+						'L_TITLE'				=> $user->lang['DYNAMO_ITEMS'],
+						'L_TITLE_EXPLAIN'		=> $user->lang['DYNAMO_ITEMS_EXPLAIN'],
+						'U_ADD_ACTION' 			=> $this->u_action . '&amp;add=1', // Form for adding a new item
 					);
 				}
 			break;
 			case 'users':
 				$this_template = 'acp_dynamo_users';
 				$this_title = 'ACP_DYNAMO_USERS';
-				$template_vars = array();
+
+				// Get all the users who have dynamic avatars. There is probably a better way to do this.
+				$sql = "SELECT DISTINCT dynamo_user_id, username, user_avatar
+						FROM " . DYNAMO_USERS_TABLE . "
+						LEFT JOIN " . USERS_TABLE . "
+						ON dynamo_user_id = user_id";
+				$result = $db->sql_query($sql);
+
+				$i = 1;
+				while ($row = $db->sql_fetchrow($result))
+				{
+					$template->assign_block_vars('users', array(
+						'USERNAME'		=> $row['username'],
+						'AVATAR_URL'	=> $row['user_avatar'],
+						'INDEX'			=> $i,
+					));
+					$i++;
+				}
+
+				$template_vars = array(
+					'L_TITLE'				=> $user->lang['DYNAMO_USERS'],
+					'L_TITLE_EXPLAIN'		=> $user->lang['DYNAMO_USERS_EXPLAIN']
+				);
 			break;
 		}
 		$this->tpl_name = $this_template;
