@@ -178,7 +178,10 @@ class ucp_dynamo
 					for ($i = 1; $i < count($image_urls); $i++)
 					{
 						$this_image = imagecreatefrompng($image_urls[$i]);
-						$this->imagecopymerge_alpha($first_image, $this_image, 0, 0, 0, 0, imagesx($this_image), imagesy($this_image), 100);
+						// If an image is larger than the default then it will look weird
+						// Should find the largest width/height, and use that below
+						// Then resize it etc (so no cropping, preferrably)
+						$this->imagecopymerge_alpha($first_image, $this_image, 0, 0, 0, 0, $config['dynamo_width'], $config['dynamo_height'], 100);
 					}
 
 					imagesavealpha($first_image, true);
@@ -189,8 +192,8 @@ class ucp_dynamo
 					$sql_array = array(
 						'user_avatar' 			=> generate_board_url() . '/' . $avatar_filename,
 						'user_avatar_type'		=> 2, // means remote i guess
-						'user_avatar_width'		=> imagesx($first_image), // maybe this should be set to something ...
-						'user_avatar_height'	=> imagesy($first_image)
+						'user_avatar_width'		=> $config['dynamo_width'],
+						'user_avatar_height'	=> $config['dynamo_height'],
 					);
 
 					$sql = "UPDATE " . USERS_TABLE . "

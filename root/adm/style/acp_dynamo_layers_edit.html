@@ -1,43 +1,60 @@
 <!-- INCLUDE overall_header.html -->
 
-<h1>{L_ACP_DYNAMO_LAYERS} :: {LAYER_ADD_EDIT}</h1>
+<h1>{L_TITLE}</h1>
 
-<p>{MODE_DESCRIPTION}</p>
+<p>{L_TITLE_EXPLAIN}</p>
 
 <form id="acp_dynamo" method="post" action="{U_ACTION}">
-
 	<fieldset>
-		<legend>{L_ACP_DYNAMO_LAYER_SETTINGS}</legend>
+		<legend>{L_LAYER_SETTINGS}</legend>
 		<dl>
-			<dt><label for="dynamo_layer_name">{L_ACP_DYNAMO_LAYER_NAME}:</label></dt>
+			<dt><label for="dynamo_layer_name">{L_LAYER_NAME}:</label></dt>
 			<dd><input type="text" name="dynamo_layer_name" value="{LAYER_NAME}" /></dd>
 		</dl>
 		<dl>
-			<dt><label for="dynamo_layer_desc">{L_ACP_DYNAMO_LAYER_DESC}:</label></span></dt>
+			<dt><label for="dynamo_layer_desc">{L_LAYER_DESCRIPTION}:</label></span></dt>
 			<dd><input type="text" name="dynamo_layer_desc" value="{LAYER_DESC}" /></dd>
 		</dl>
 		<dl>
-			<dt><label for="dynamo_layer_position">{L_ACP_DYNAMO_LAYER_POS}:</label><br /><span>{L_ACP_DYNAMO_LAYER_POS_EXPLAIN}</span></dt>
-			<dd>{POSITION_DROPDOWN}</dd>
+			<dt><label for="dynamo_layer_position">{L_LAYER_POSITION}:</label><br /><span>{L_LAYER_POSITION_EXPLAIN}</span></dt>
+			<dd><select name="dynamo_layer_position">
+				<!-- BEGIN layers_dropdown -->
+				<option value="{layers_dropdown.POSITION}"<!-- IF layers_dropdown.POSITION == CURRENT_POSITION --> selected="selected" <!-- ENDIF -->>{layers_dropdown.POSITION_TEXT} <!-- IF layers_dropdown.POSITION == CURRENT_POSITION --> (keep it where it is)<!-- ENDIF --></option>
+				<!-- END layers_dropdown -->
+				<option value="{LAST_POSITION}">{L_LAST_LAYER}</option>
+			</select></dd>
 		</dl>
 		<dl>
-			<dt><label for="dynamo_layer_mandatory">{L_ACP_DYNAMO_LAYER_MAND_DESC}:</label><br /><span>{L_ACP_DYNAMO_LAYER_MAND_EXPLAIN}</span></dt>
+			<dt><label for="dynamo_layer_mandatory">{L_LAYER_MANDATORY}:</label><br /><span>{L_LAYER_MANDATORY_EXPLAIN}</span></dt>
 			<dd>
 				<label><input type="radio" class="radio" name="dynamo_layer_mandatory" value="1"<!-- IF LAYER_MANDATORY --> id="dynamo_mandatory" checked="checked"<!-- ENDIF --> /> {L_YES}</label>
 				<label><input type="radio" class="radio" name="dynamo_layer_mandatory" value="0"<!-- IF not LAYER_MANDATORY --> id="dynamo_mandatory" checked="checked"<!-- ENDIF --> /> {L_NO}</label>
 			</dd>
 		</dl>
 		<dl>
-			<dt><label for="dynamo_layer_default">{L_ACP_DYNAMO_LAYER_DEFAULT}:</label><br /><span>{L_ACP_DYNAMO_LAYER_DEFAULT_EXPLAIN}</span></dt>
-			<dd>{DEFAULT_DROPDOWN}</dd>
+			<dt><label for="dynamo_layer_default">{L_DEFAULT_ITEM}:</label><br /><span>{L_DEFAULT_ITEM_EXPLAIN}</span></dt>
+			<dd><!-- IF LAYER_HAS_ITEMS -->
+				<select name="dynamo_layer_default">
+					<option value="0"<!-- IF LAYER_MANDATORY --> style="display: none;"<!-- ENDIF -->>{L_NO_DEFAULT_ITEM}</option>
+					<!-- BEGIN items_dropdown -->
+						<option value="{items_dropdown.ITEM_ID}"<!-- IF items_dropdown.ITEM_ID == CURRENT_ITEM --> selected="selected"<!-- ENDIF -->>{items_dropdown.ITEM_NAME}</option>
+					<!-- END items_dropdown -->
+				</select>
+			<!-- ELSE -->
+				<!-- IF IN_CREATE -->
+					{L_ADD_ITEMS_AFTER}
+				<!-- ELSE -->
+					{L_NO_LAYER_ITEMS}
+				<!-- ENDIF -->
+			<!-- ENDIF --></dd>
 		</dl>
 	</fieldset>
-	
+
 	<fieldset>
-		<legend>{L_ACP_SUBMIT_CHANGES}</legend> 
-		<p class="submit-buttons"> 
+		<legend>{L_ACP_SUBMIT_CHANGES}</legend>
+		<p class="submit-buttons">
 			<input class="button1" type="submit" name="submit" value="{L_SUBMIT}" />&nbsp;
-			<input class="button2" type="reset" id="reset" name="reset" value="{L_RESET}" /> 
+			<input class="button2" type="reset" id="reset" name="reset" value="{L_RESET}" />
 		</p>
 	</fieldset>
 </form>

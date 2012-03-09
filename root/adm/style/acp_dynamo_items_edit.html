@@ -1,13 +1,12 @@
 <!-- INCLUDE overall_header.html -->
 
-<h1>{L_ACP_DYNAMO_ITEMS} :: <!-- IF IN_ADD_MODE -->{L_ACP_DYNAMO_ADD_ITEM}<!-- ELSE -->{L_ACP_DYNAMO_EDIT_ITEM} ({ITEM_NAME})<!-- ENDIF --></h1>
+<h1>{L_TITLE}</h1>
 
-<p><!-- IF IN_ADD_MODE -->{L_ACP_DYNAMO_ADD_ITEM_EXPLAIN}<!-- ELSE -->{L_ACP_DYNAMO_EDIT_ITEM_EXPLAIN}<!-- ENDIF --></p>
+<p>{L_TITLE_EXPLAIN}</p>
 
 <form id="acp_dynamo" method="post" action="{U_ACTION}" enctype="multipart/form-data">
-
 	<fieldset>
-		<legend>{L_ACP_DYNAMO_ITEM_SETTINGS}</legend>
+		<legend>{L_ITEM_SETTINGS}</legend>
 		<!-- IF ITEM_IMAGE -->
 		<dl>
 			<dt><label>{L_ITEM_PREVIEW}:</label></dt>
@@ -15,27 +14,32 @@
 		</dl>
 		<!-- ENDIF -->
 		<dl>
-			<dt><label for="dynamo_item_name">{L_ACP_DYNAMO_ITEM_NAME}:</label></dt>
+			<dt><label for="dynamo_item_name">{L_ITEM_NAME}:</label></dt>
 			<dd><input type="text" name="dynamo_item_name" value="{ITEM_NAME}" /></dd>
 		</dl>
 		<dl>
-			<dt><label for="dynamo_item_desc">{L_ACP_DYNAMO_ITEM_DESC}:</label></span></dt>
+			<dt><label for="dynamo_item_desc">{L_ITEM_DESCRIPTION}:</label></dt>
 			<dd><input type="text" name="dynamo_item_desc" value="{ITEM_DESC}" /></dd>
 		</dl>
 		<dl>
-			<dt><label for="dynamo_item_layer">{L_ACP_DYNAMO_LAYER}:</label><br /><span>{L_ACP_DYNAMO_LAYER_EXPLAIN}</span></dt>
-			<dd>{LAYER_DROPDOWN}</dd>
+			<dt><label for="dynamo_item_layer">{L_LAYER}:</label><br /><span>{L_ITEM_LAYER_DESC}</span></dt>
+			<dd><select name="dynamo_item_layer">
+				<option value="0">{L_UNCATEGORISED}</option>
+				<!-- BEGIN layer_dropdown -->
+				<option value="{layer_dropdown.LAYER_ID}"<!-- IF layer_dropdown.LAYER_ID == CURRENT_ID --> selected="selected"<!-- ENDIF -->>{layer_dropdown.LAYER_NAME}</option>
+				<!-- END layer_dropdown -->
+			</select></dd>
 		</dl>
 		<dl>
-			<dt><label for="uploadfile">{L_ACP_DYNAMO_IMAGE}:</label><br /><span>{L_ACP_DYNAMO_IMAGE_EXPLAIN}</span></dt>
+			<dt><label for="uploadfile">{L_IMAGE_FILE}:</label><br /><span>{L_IMAGE_FILE_DESC}</span></dt>
 			<dd><input type="file" name="uploadfile" /></dd>
 	</fieldset>
-	
+
 	<fieldset>
-		<legend>{L_ACP_SUBMIT_CHANGES}</legend> 
-		<p class="submit-buttons"> 
+		<legend>{L_ACP_SUBMIT_CHANGES}</legend>
+		<p class="submit-buttons">
 			<input class="button1" type="submit" name="submit" value="{L_SUBMIT}" />&nbsp;
-			<input class="button2" type="reset" id="reset" name="reset" value="{L_RESET}" /> 
+			<input class="button2" type="reset" id="reset" name="reset" value="{L_RESET}" />
 		</p>
 	</fieldset>
 </form>

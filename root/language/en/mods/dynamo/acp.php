@@ -24,55 +24,78 @@ if (empty($lang) || !is_array($lang))
 
 // Merge the following language entries into the lang array
 $lang = array_merge($lang, array(
-	// Users page
-	'ACP_DYNAMO_USERS_EXPLAIN'		=> 'Here you can view the dynamic avatar for every user who has one.',
+	// acp_dynamo_overview.html
+	'DYNAMO_OVERVIEW'			=> 'Overview',
+	'DYNAMO_OVERVIEW_EXPLAIN'	=> 'Just has some information about the dynamic avatar MOD on your board. I\'m not really sure what should go on this page, to be honest. Hit me up if you have suggestions.',
+	'MOD_STATUS'				=> 'Dynamic avatar MOD status',
+	'NUM_LAYERS'				=> 'Number of layers available',
+	'NUM_USERS'					=> 'Number of users with a dynamic avatar',
+	'NUM_ITEMS'					=> 'Number of items available',
 
-	// Overview page
-	'ACP_DYNAMO_OVERVIEW_EXPLAIN'	=> 'Just has some information about the dynamic avatar MOD on your board. I\'m not really sure what should go on this page, to be honest. Hit me up if you have suggestions.',
-	'ACP_DYNAMO_MOD_STATUS'			=> 'Dynamic avatar MOD status',
-	'ACP_DYNAMO_NUM_LAYERS'			=> 'Number of layers available',
-	'ACP_DYNAMO_NUM_USERS'			=> 'Number of users with a dynamic avatar',
-	'ACP_DYNAMO_NUM_ITEMS'			=> 'Number of items available',
+	// acp_dynamo_settings.html
+	'DYNAMO_SETTINGS_EXPLAIN'	=> 'Here you can modify the settings of your dynamic avatar MOD.',
+	'POINTS_MOD'				=> 'Use a points MOD',
+	'MOD_ENABLE'				=> 'Enable dynamic avatar',
+	'POINTS_MOD_DESC'			=> 'If there is a points MOD installed and enabled on your board, then you can use the points-related features of this MOD. <strong>Note: not yet functional.</strong>',
+	'CHANGE_BASE'				=> 'Allow users to change base',
+	'CHANGE_BASE_DESC'			=> 'If this is enabled, users will be able to change items in the layers marked as "base".',
+	'MANDATORY'					=> 'Set dynamic avatar to mandatory',
+	'MANDATORY_DESC'			=> 'If this is enabled, then the only type of avatar a user can have is a dynamic avatar. <strong>Note: not yet implemented.</strong>',
+	'DYNAMO_WIDTH'				=> 'Dynamic avatar width',
+	'DYNAMO_WIDTH_DESC'			=> 'Set this to the width, in pixels, of the images you upload. If you upload an image of a different width, you will be able to crop or enlarge it as necessary. <strong>Note: Not yet implemented.</strong>',
+	'DYNAMO_HEIGHT'				=> 'Dynamic avatar height',
+	'DYNAMO_HEIGHT_DESC'		=> 'See above, for height.',
 
-	// Settings page
-	'ACP_DYNAMO_SETTINGS_EXPLAIN'	=> 'Here you can modify the settings for the dynamic avatar MOD.',
-	'ACP_DYNAMO_ENABLE'				=> 'Enable dynamic avatar MOD',
-	'ACP_DYNAMO_USE_POINTS'			=> 'Use a points MOD',
-	'ACP_DYNAMO_USE_POINTS_EXPLAIN'	=> 'If there is a points MOD installed and enabled on your board, then you can use the points-related features of this MOD. <strong>Note: not yet functional.</strong>',
-	'ACP_DYNAMO_BASE'				=> 'Allow users to change base',
-	'ACP_DYNAMO_BASE_EXPLAIN'		=> 'If this is enabled, users will be able to change items in the layers marked as "base".',
-	'ACP_DYNAMO_MANDATORY'			=> 'Set dynamic avatar to mandatory',
-	'ACP_DYNAMO_MANDATORY_EXPLAIN'	=> 'If this is enabled, then the only type of avatar a user can have is a dynamic avatar. <strong>Note: not yet implemented.</strong>',
+	// acp_dynamo_items.html
+	'DYNAMO_ITEMS'				=> 'Items',
+	'DYNAMO_ITEMS_EXPLAIN'		=> 'Here you can manage the items associated with each layer. Items are grouped by layer, which are themselves sorted by their position (top to bottom).',
+	'CREATE_NEW_ITEM'			=> 'Create new item',
 
-	// Items page
-	'ACP_DYNAMO_ITEMS_EXPLAIN'		=> 'Here you can manage the items associated with each layer. Items are grouped by layer, which are themselves sorted by their position (top to bottom).',
-	'ACP_DYNAMO_CREATE_ITEM'		=> 'Create new item',
-	'ACP_DYNAMO_ITEM_SETTINGS'		=> 'Item settings',
-	'ACP_DYNAMO_ITEM_NAME'			=> 'Item name',
-	'ACP_DYNAMO_ITEM_DESC'			=> 'Item description',
-	'ACP_DYNAMO_LAYER'				=> 'Layer',
-	'ACP_DYNAMO_LAYER_EXPLAIN'		=> 'Choose the layer this item will belong to. You can choose to set it to no layer if you want to make it unavailable for now.',
-	'ACP_DYNAMO_IMAGE'				=> 'Image file',
-	'ACP_DYNAMO_IMAGE_EXPLAIN'		=> 'Upload the image file for this item from your computer.',
-	'ACP_DYNAMO_ADD_ITEM'			=> 'Add an item',
-	'ACP_DYNAMO_ADD_ITEM_EXPLAIN'	=> 'Here you can add a new item using an image file on your computer and assign it to the desired layer.',
-	'ACP_DYNAMO_EDIT_ITEM'			=> 'Edit an item',
-	'ACP_DYNAMO_EDIT_ITEM_EXPLAIN'	=> 'Here you can edit the details for an item. Note that uploading a new image here to overwrite the old work won\'t work as that feature has not yet been implemented.',
-    
-    // Layers page
-    'ACP_DYNAMO_LAYER_EXPLAIN'		=> 'Here you can view all the layers you have created and edit them etc',
-    'ACP_DYNAMO_LAYER_SETTINGS'     => 'Layer settings',
-    'ACP_DYNAMO_LAYER_NAME'         => 'Layer name',
-    'ACP_DYNAMO_LAYER_DESC'			=> 'Layer description',
-    'ACP_DYNAMO_LAYER_POS'          => 'Layer position',
-    'ACP_DYNAMO_LAYER_POS_EXPLAIN'  => 'Choose the position in terms of ordering etc',
-    'ACP_DYNAMO_LAYER_MAND'         => 'Mandatory?',
-    'ACP_DYNAMO_LAYER_OPTION'       => 'Options',
-    'ACP_DYNAMO_LAYER_MAND_DESC'    => 'Set layer to mandatory',
-    'ACP_DYNAMO_LAYER_MAND_EXPLAIN' => 'If this is enabled, then a user must select an item for this layer.',
-    'ACP_DYNAMO_LAYER_DEFAULT'      => 'Default item',
-    'ACP_DYNAMO_LAYER_DEFAULT_EXPLAIN' => 'If desired, select the default item. If there is only one item associated with this layer, you have no choice.',
-    
+	// acp_dynamo_items_edit.html
+	'ADDING_ITEM'				=> 'Add a new item',
+	'ADDING_ITEM_EXPLAIN'		=> 'Here you can add a new item using an image file on your computer and assign it to the desired layer.',
+	'EDITING_ITEM'				=> 'Editing item %s',
+	'EDITING_ITEM_EXPLAIN'		=> 'Here you can edit the details for an item. Note that uploading a new image here to overwrite the old work won\'t work as that feature has not yet been implemented.',
+	'ITEM_LAYER_DESC'			=> 'Choose the layer this item will belong to. You can choose to set it to no layer if you want to make it unavailable for now.',
+	'ITEM_PREVIEW'				=> 'Item preview',
+	'ITEM_SETTINGS'				=> 'Item settings',
+	'ITEM_NAME'					=> 'Item name',
+	'ITEM_DESCRIPTION'			=> 'Item description',
+	'LAYER'						=> 'Layer',
+	'IMAGE_FILE'				=> 'Image file',
+	'IMAGE_FILE_DESC'			=> 'Upload the image file for this item from your computer.',
+	'UNCATEGORISED'				=> 'Uncategorised',
+
+	// acp_dynamo_users.html
+	'DYNAMO_USERS'				=> 'Users',
+	'DYNAMO_USERS_EXPLAIN'		=> 'Here you can view the dynamic avatar for every user who has one.',
+
+	// acp_dynamo_layers.html
+	'DYNAMO_LAYERS'				=> 'Layers',
+	'DYNAMO_LAYERS_EXPLAIN'		=> 'Here you can view all the layers you have created and edit them.',
+	'LAYER_ID'					=> 'Layer ID',
+	'LAYER_NAME'				=> 'Layer name',
+	'LAYER_DESCRIPTION'			=> 'Layer description',
+	'LAYER_POSITION'			=> 'Layer position',
+	'LAYER_MANDATORY'			=> 'Mandatory layer?',
+	'DEFAULT_ITEM'				=> 'Default item',
+	'CREATE_NEW_LAYER'			=> 'Create new layer',
+
+	// acp_layers_edit.html
+	'EDITING_LAYER'				=> 'Editing layer %s',
+	'EDITING_LAYER_EXPLAIN'		=> 'Edit the properties of a layer.',
+	'LAYER_SETTINGS'			=> 'Layer settings',
+	'LAYER_POSITION_EXPLAIN'	=> 'Choose the position of the layer.',
+	'LAYER_MANDATORY_EXPLAIN'	=> 'If this is enabled, then users must select an item for this layer',
+	'DEFAULT_ITEM_EXPLAIN'		=> 'If desired, select the default item. If there is only one item associated with this layer, you have no choice.',
+	'NO_LAYER_ITEMS'			=> 'No items for this layer',
+	'ADD_LAYER'					=> 'Add a layer',
+	'ADD_LAYER_EXPLAIN'			=> 'Create a new layer.',
+	'ADD_ITEMS_AFTER'			=> 'You can set a default item after creating the layer and adding images.',
+	'LAYER_AT_BOTTOM'			=> 'At the very bottom',
+	'IMMEDIATELY_BELOW'			=> 'Immediately below %s',
+	'NO_DEFAULT_ITEM'			=> 'No default item',
+	'LAYER_AT_TOP'				=> 'At the very top',
 ));
 
 ?>

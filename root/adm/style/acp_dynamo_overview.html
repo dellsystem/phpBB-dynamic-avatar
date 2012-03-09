@@ -1,8 +1,8 @@
 <!-- INCLUDE overall_header.html -->
 
-<h1>{L_ACP_DYNAMO_OVERVIEW}</h1>
+<h1>{L_TITLE}</h1>
 
-<p>{L_ACP_DYNAMO_OVERVIEW_EXPLAIN}</p>
+<p>{L_TITLE_EXPLAIN}</p>
 
 <table cellspacing="1">
 	<col class="col1" /><col class="col2" />
@@ -14,20 +14,28 @@
 	</thead>
 	<tbody>
 		<tr>
-			<td>{L_ACP_DYNAMO_MOD_STATUS}</td>
+			<td>{L_MOD_STATUS}</td>
 			<td><!-- IF DYNAMO_MOD_ENABLED --><strong>{L_ENABLED}</strong><!-- ELSE -->{L_DISABLED}<!-- ENDIF --></td>
 		</tr>
 		<tr>
-			<td>{L_ACP_DYNAMO_NUM_USERS}</td>
+			<td>{L_NUM_USERS}</td>
 			<td>{DYNAMO_NUM_USERS}</td>
 		</tr>
 		<tr>
-			<td>{L_ACP_DYNAMO_NUM_LAYERS}</td>
+			<td>{L_NUM_LAYERS}</td>
 			<td>{DYNAMO_NUM_LAYERS}</td>
 		</tr>
 		<tr>
-			<td>{L_ACP_DYNAMO_NUM_ITEMS}</td>
+			<td>{L_NUM_ITEMS}</td>
 			<td>{DYNAMO_NUM_ITEMS}</td>
+		</tr>
+		<tr>
+			<td>{L_DYNAMO_WIDTH}</td>
+			<td>{DYNAMO_WIDTH}</td>
+		</tr>
+		<tr>
+			<td>{L_DYNAMO_HEIGHT}</td>
+			<td>{DYNAMO_HEIGHT}</td>
 		</tr>
 	</tbody>
 </table>
