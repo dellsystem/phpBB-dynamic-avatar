@@ -41,6 +41,10 @@ $lang = array_merge($lang, array(
 	'CHANGE_BASE_DESC'			=> 'If this is enabled, users will be able to change items in the layers marked as "base".',
 	'MANDATORY'					=> 'Set dynamic avatar to mandatory',
 	'MANDATORY_DESC'			=> 'If this is enabled, then the only type of avatar a user can have is a dynamic avatar. <strong>Note: not yet implemented.</strong>',
+	'DYNAMO_WIDTH'				=> 'Dynamic avatar width',
+	'DYNAMO_WIDTH_DESC'			=> 'Set this to the width, in pixels, of the images you upload. If you upload an image of a different width, you will be able to crop or enlarge it as necessary. <strong>Note: Not yet implemented.</strong>',
+	'DYNAMO_HEIGHT'				=> 'Dynamic avatar height',
+	'DYNAMO_HEIGHT_DESC'		=> 'See above, for height.',
 
 	// acp_dynamo_items.html
 	'DYNAMO_ITEMS'				=> 'Items',

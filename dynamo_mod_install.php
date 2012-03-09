@@ -81,6 +81,10 @@ $versions = array(
 			array('ROLE_USER_STANDARD', 'u_dynamo'),
 			array('ROLE_USER_FULL', 'u_dynamo'),
 		),
+		'config_add' => array(
+			array('dynamo_width', 100),
+			array('dynamo_height', 120),
+		),
 	),
 	'0.0.2'	=> array(
 		// Adding some new fixtures just for fun
