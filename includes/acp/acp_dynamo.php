@@ -138,31 +138,32 @@ class acp_dynamo
 							FROM " . DYNAMO_LAYERS_TABLE . "
 							ORDER BY dynamo_layer_position DESC";
 					$result = $db->sql_query($sql);
-					
-					$position_dropdown = '<select name="dynamo_layer_position">';
+
 					$previous_layer = '';
+
 					while ($row = $db->sql_fetchrow($result))
 					{
-						$position_dropdown .= '<option value="' . $row['dynamo_layer_position'] . '">';
-					
-						$position_dropdown .= ($previous_layer == '') ? 'At the very top' : 'Immediately below ' . $previous_layer;
-						
-						$position_dropdown .= '</option>';
+						$template->assign_block_vars('layers_dropdown', array(
+							'POSITION'		=> $row['dynamo_layer_position'],
+							'PREVIOUS'		=> $previous_layer,
+							'POSITION_TEXT'	=> ($previous_layer == '') ? $user->lang['AT_VERY_TOP'] : sprintf($user->lang['IMMEDIATELY_BELOW'], $previous_layer),
+						));
+
 						$previous_layer = $row['dynamo_layer_name'];
-						$last_position = $row['dynamo_layer_position'] - 1; // keeps updating
+						$last_position = $row['dynamo_layer_position'] - 1;
 					}
-					
+
 					// Add this to the end, always, so there is at least one option
-					$position_dropdown .= '<option value="' . $last_position . '">At the very bottom';
-					$position_dropdown .= ($previous_layer == '') ? '' : ' - immediately below ' . $previous_layer;
-					$position_dropdown .= '</option></select>';
-					
+					$l_last_layer = $user->lang['LAYER_AT_BOTTOM'];
+					$l_last_layer .= ($previous_layer == '') ? '' : ' - ' . sprintf($user->lang['IMMEDIATELY_BELOW'], $previous_layer);
+
 					$template_vars = array(
+						'L_LAST_LAYER'		=> $l_last_layer,
+						'LAST_POSITION'		=> $last_position, // used for the dropdown
 						'L_TITLE'			=> $user->lang['ADD_LAYER'],
 						'L_TITLE_EXPLAIN'	=> $user->lang['ADD_LAYER_EXPLAIN'],
 						'LAYER_NAME'		=> request_var('dynamo_layer_name', ''), // from the quick "add layer" form thing
-						'POSITION_DROPDOWN'	=> $position_dropdown,
-						'DEFAULT_DROPDOWN'	=> $user->lang['ADD_ITEMS_AFTER'],
+						'IN_CREATE'			=> true,
 					);
 				}
 				else if ($edit_get > 0)
@@ -237,30 +238,29 @@ class acp_dynamo
 					$layer_name = $layer['dynamo_layer_name'];
 					$layer_mandatory = $layer['dynamo_layer_mandatory'];
 					$layer_default = $layer['dynamo_layer_default'];
-					
+
 					// Now get the information for all the layers, for the position dropdown menu
 					$sql = "SELECT dynamo_layer_id, dynamo_layer_name, dynamo_layer_position
 							FROM " . DYNAMO_LAYERS_TABLE . "
 							ORDER BY dynamo_layer_position DESC";
 					$result = $db->sql_query($sql);
-					
-					$position_dropdown = '<select name="dynamo_layer_position">';
+
 					$previous_layer = '';
 					while ($row = $db->sql_fetchrow($result))
 					{
-						$position_layer_id = $row['dynamo_layer_id'];
-						
-						$position_dropdown .= '<option value="' . $row['dynamo_layer_position'] . ' "';
-						// If it's this layer, indicate that, and make it selected
-						$position_dropdown .= ($position_layer_id == $edit_get) ? ' selected="selected">Keep it where it is - ' : '>';
-						
-						$position_dropdown .= ($previous_layer == '') ? 'At the very top' : 'Immediately below ' . $previous_layer;
-						
-						$position_dropdown .= '</option>';
+						$template->assign_block_vars('layers_dropdown', array(
+							'POSITION'		=> $row['dynamo_layer_position'],
+							'PREVIOUS'		=> $previous_layer,
+							'POSITION_TEXT'	=> ($previous_layer == '') ? $user->lang['AT_VERY_TOP'] : sprintf($user->lang['IMMEDIATELY_BELOW'], $previous_layer),
+						));
+
 						$previous_layer = $row['dynamo_layer_name'];
+						$last_position = $row['dynamo_layer_position'] - 1;
 					}
-					$position_dropdown .= '</select>';
-					
+
+					$l_last_layer = $user->lang['LAYER_AT_BOTTOM'];
+					$l_last_layer .= ($previous_layer == '') ? '' : ' - ' . sprintf($user->lang['IMMEDIATELY_BELOW'], $previous_layer);
+
 					// Now get the items associated with this layer
 					// Three db queries isn't fun, try to optimise this later
 					$sql = "SELECT dynamo_item_id, dynamo_item_name
@@ -268,34 +268,30 @@ class acp_dynamo
 							WHERE dynamo_item_layer = $edit_get
 							ORDER BY dynamo_item_id ASC";
 					$result = $db->sql_query($sql);
-					
-					// Make the dropdown for the default item selection
-					$default_dropdown = '<select name="dynamo_layer_default">';
-					
+
 					// If the layer is NOT mandatory, let there be an option to choose no default item
 					// Self note: layers that have no item don't show up anyway so this is okay
-					$default_dropdown .= (!$layer_mandatory) ? '<option value="0">No default item</option>' : '';
-					
+					// Moved to template file
 					$num_items = 0;
 					while ($row = $db->sql_fetchrow($result))
 					{
 						$num_items++;
-						$default_dropdown .= '<option value="' . $row['dynamo_item_id'] . '"';
-						// If this one is the current default item
-						$default_dropdown .= ($row['dynamo_item_id'] == $layer_default) ? ' selected="selected"' : '';
-						$default_dropdown .= '>' . $row['dynamo_item_name'] . '</option>';
+						$template->assign_block_vars('items_dropdown', array(
+							'ITEM_ID'		=> $row['dynamo_item_id'],
+							'ITEM_NAME'		=> $row['dynamo_item_name'],
+						));
 					}
-					$default_dropdown .= '</select>';
 					
 					$template_vars = array(
+						'CURRENT_ITEM'		=> $layer_default,
+						'L_LAST_LAYER'		=> $l_last_layer,
 						'L_TITLE'			=> sprintf($user->lang['EDITING_LAYER'], $layer_name),
 						'L_TITLE_EXPLAIN'	=> $user->lang['EDITING_LAYER_EXPLAIN'],
 						'LAYER_NAME'		=> $layer_name,
 						'LAYER_DESC'		=> $layer['dynamo_layer_desc'],
-						'POSITION_DROPDOWN'	=>	$position_dropdown,
 						'LAYER_MANDATORY'	=> $layer['dynamo_layer_mandatory'],
-						// Move this shit to the template file someday
-						'DEFAULT_DROPDOWN'	=> ($num_items > 0) ? $default_dropdown : $user->lang['NO_LAYER_ITEMS'],
+						'LAYER_HAS_ITEMS'	=> $num_items > 0,
+						'CURRENT_POSITION'	=> $layer['dynamo_layer_position'],
 					);
 				}
 				else if ($delete_get > 0)
@@ -435,25 +431,19 @@ class acp_dynamo
 							FROM " . DYNAMO_LAYERS_TABLE . "
 							ORDER BY dynamo_layer_position DESC";
 					$result = $db->sql_query($sql);
-					
-					$layer_dropdown = '<select name="dynamo_item_layer">';
-					// There should always be an "uncategorised" option
-					$layer_dropdown .= '<option value="0">Uncategorised</option>';
-					
+
 					while ($row = $db->sql_fetchrow($result))
 					{
-						$layer_id = $row['dynamo_layer_id'];
-						$layer_name = $row['dynamo_layer_name'];
-						$layer_dropdown .= '<option value="' . $layer_id . '">' . $layer_name . '</option>';
+						$template->assign_block_vars('layer_dropdown', array(
+							'LAYER_ID'		=> $row['dynamo_layer_id'],
+							'LAYER_NAME'	=> $row['dynamo_layer_name'],
+						));
 					}
-					
-					$layer_dropdown .= '</select>';
-					
+
 					$template_vars = array(
 						'L_TITLE'			=> $user->lang['ADDING_ITEM'],
 						'L_TITLE_EXPLAIN'	=> $user->lang['ADDING_ITEM_EXPLAIN'],
 						'U_ACTION'			=> $this->u_action . '&amp;add=1',
-						'LAYER_DROPDOWN'	=> $layer_dropdown,
 						'ITEM_NAME'			=> request_var('dynamo_item_name', ''),
 					);
 				}
@@ -507,39 +497,31 @@ class acp_dynamo
 							WHERE dynamo_item_id = $edit_item_id";
 					$result = $db->sql_query($sql);
 					$item = $db->sql_fetchrow($result);
-					
+
 					$item_name = $item['dynamo_item_name'];
-					
+
 					// Make the layer dropdown - get all the layers from the db
 					// Make this some sort of helper function later
 					$sql = "SELECT dynamo_layer_name, dynamo_layer_id
 							FROM " . DYNAMO_LAYERS_TABLE . "
 							ORDER BY dynamo_layer_position DESC";
 					$result = $db->sql_query($sql);
-					
-					$layer_dropdown = '<select name="dynamo_item_layer">';
-					// There should always be an "uncategorised" option
-					$layer_dropdown .= '<option value="0">Uncategorised</option>'; // errr
-					
+
 					while ($row = $db->sql_fetchrow($result))
 					{
-						$layer_id = $row['dynamo_layer_id'];
-						$layer_name = $row['dynamo_layer_name'];
-						$layer_dropdown .= '<option value="' . $layer_id . '"';
-						// If this layer is the current layer
-						$layer_dropdown .= ($layer_id == $item['dynamo_item_layer']) ? ' selected="selected"' : '';
-						$layer_dropdown .= '>' . $layer_name . '</option>';
+						$template->assign_block_vars('layer_dropdown', array(
+							'LAYER_ID'		=> $row['dynamo_layer_id'],
+							'LAYER_NAME'	=> $row['dynamo_layer_name'],
+						));
 					}
-					
-					$layer_dropdown .= '</select>';
-					
+
 					$template_vars = array(
+						'CURRENT_LAYER'		=> $item['dynamo_item_layer'],
 						'L_TITLE'			=> sprintf($user->lang['EDITING_ITEM'], $item_name),
 						'L_TITLE_EXPLAIN'	=> $user->lang['EDITING_ITEM_EXPLAIN'],
 						'ITEM_IMAGE'		=> $phpbb_root_path . 'images/dynamo/' . $item['dynamo_item_layer'] . '-' . $item['dynamo_item_id'] . '.png',
 						'ITEM_NAME'			=> $item_name,
 						'ITEM_DESC'			=> $item['dynamo_item_desc'],
-						'LAYER_DROPDOWN'	=> $layer_dropdown,
 					);
 				}
 				else if ($delete_item_id > 0)

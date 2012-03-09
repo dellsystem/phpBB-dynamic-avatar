@@ -23,7 +23,12 @@
 		</dl>
 		<dl>
 			<dt><label for="dynamo_item_layer">{L_LAYER}:</label><br /><span>{L_ITEM_LAYER_DESC}</span></dt>
-			<dd>{LAYER_DROPDOWN}</dd>
+			<dd><select name="dynamo_item_layer">
+				<option value="0">{L_UNCATEGORISED}</option>
+				<!-- BEGIN layer_dropdown -->
+				<option value="{layer_dropdown.LAYER_ID}"<!-- IF layer_dropdown.LAYER_ID == CURRENT_ID --> selected="selected"<!-- ENDIF -->>{layer_dropdown.LAYER_NAME}</option>
+				<!-- END layer_dropdown -->
+			</select></dd>
 		</dl>
 		<dl>
 			<dt><label for="uploadfile">{L_IMAGE_FILE}:</label><br /><span>{L_IMAGE_FILE_DESC}</span></dt>

@@ -17,7 +17,12 @@
 		</dl>
 		<dl>
 			<dt><label for="dynamo_layer_position">{L_LAYER_POSITION}:</label><br /><span>{L_LAYER_POSITION_EXPLAIN}</span></dt>
-			<dd>{POSITION_DROPDOWN}</dd>
+			<dd><select name="dynamo_layer_position">
+				<!-- BEGIN layers_dropdown -->
+				<option value="{layers_dropdown.POSITION}"<!-- IF layers_dropdown.POSITION == CURRENT_POSITION --> selected="selected" <!-- ENDIF -->>{layers_dropdown.POSITION_TEXT} <!-- IF layers_dropdown.POSITION == CURRENT_POSITION --> (keep it where it is)<!-- ENDIF --></option>
+				<!-- END layers_dropdown -->
+				<option value="{LAST_POSITION}">{L_LAST_LAYER}</option>
+			</select></dd>
 		</dl>
 		<dl>
 			<dt><label for="dynamo_layer_mandatory">{L_LAYER_MANDATORY}:</label><br /><span>{L_LAYER_MANDATORY_EXPLAIN}</span></dt>
@@ -28,7 +33,20 @@
 		</dl>
 		<dl>
 			<dt><label for="dynamo_layer_default">{L_DEFAULT_ITEM}:</label><br /><span>{L_DEFAULT_ITEM_EXPLAIN}</span></dt>
-			<dd>{DEFAULT_DROPDOWN}</dd>
+			<dd><!-- IF LAYER_HAS_ITEMS -->
+				<select name="dynamo_layer_default">
+					<option value="0"<!-- IF LAYER_MANDATORY --> style="display: none;"<!-- ENDIF -->>{L_NO_DEFAULT_ITEM}</option>
+					<!-- BEGIN items_dropdown -->
+						<option value="{items_dropdown.ITEM_ID}"<!-- IF items_dropdown.ITEM_ID == CURRENT_ITEM --> selected="selected"<!-- ENDIF -->>{items_dropdown.ITEM_NAME}</option>
+					<!-- END items_dropdown -->
+				</select>
+			<!-- ELSE -->
+				<!-- IF IN_CREATE -->
+					{L_ADD_ITEMS_AFTER}
+				<!-- ELSE -->
+					{L_NO_LAYER_ITEMS}
+				<!-- ENDIF -->
+			<!-- ENDIF --></dd>
 		</dl>
 	</fieldset>
 

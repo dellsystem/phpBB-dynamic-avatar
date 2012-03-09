@@ -60,6 +60,7 @@ $lang = array_merge($lang, array(
 	'LAYER'						=> 'Layer',
 	'IMAGE_FILE'				=> 'Image file',
 	'IMAGE_FILE_DESC'			=> 'Upload the image file for this item from your computer.',
+	'UNCATEGORISED'				=> 'Uncategorised',
 
 	// acp_dynamo_users.html
 	'DYNAMO_USERS'				=> 'Users',
@@ -87,6 +88,10 @@ $lang = array_merge($lang, array(
 	'ADD_LAYER'					=> 'Add a layer',
 	'ADD_LAYER_EXPLAIN'			=> 'Create a new layer.',
 	'ADD_ITEMS_AFTER'			=> 'You can set a default item after creating the layer and adding images.',
+	'LAYER_AT_BOTTOM'			=> 'At the very bottom',
+	'IMMEDIATELY_BELOW'			=> 'Immediately below %s',
+	'NO_DEFAULT_ITEM'			=> 'No default item',
+	'LAYER_AT_TOP'				=> 'At the very top',
 ));
 
 ?>
