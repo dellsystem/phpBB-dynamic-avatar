@@ -15,7 +15,7 @@ class acp_dynamo
 {
 	var $u_action;
 
-	function move_layer($layer_id, $desired_position)
+	function move_layer($layer_id, $desired_position = 0, $step = 0)
 	{
 		global $db;
 		// First get this layer's current position
@@ -25,6 +25,13 @@ class acp_dynamo
 		$result = $db->sql_query($sql);
 		$row = $db->sql_fetchrow($result);
 		$old_position = $row['dynamo_layer_position'];
+
+		// If $desired_position is 0, use the "step"
+		// For moving up/down by 1 when you don't know the actual position
+		if ($desired_position == 0)
+		{
+			$desired_position = $old_position + $step;
+		}
 
 		// Move all the ones between
 		if ($desired_position != $old_position)
@@ -344,28 +351,8 @@ class acp_dynamo
 					// Check if we need to move something up or down
 					if ($layer_id = max($move_down, $move_up))
 					{
-						// First get this one's position
-						$sql = "SELECT dynamo_layer_position
-								FROM " . DYNAMO_LAYERS_TABLE . "
-								WHERE dynamo_layer_id = $layer_id";
-						$result = $db->sql_query($sql);
-						$row = $db->sql_fetchrow($result);
-						$old_position = $row['dynamo_layer_position'];
-
-						// First, change the other one ...
-						$op = ($move_down) ? '+' : '-'; // the other way around cuz it's the other
-						$new_position = ($move_down) ? $old_position - 1 : $old_position + 1;
-
-						$sql = "UPDATE " . DYNAMO_LAYERS_TABLE . "
-								SET dynamo_layer_position = dynamo_layer_position $op 1
-								WHERE dynamo_layer_position = $new_position";
-						$db->sql_query($sql);
-
-						// Now update the original
-						$sql = "UPDATE " . DYNAMO_LAYERS_TABLE . "
-								SET dynamo_layer_position = $new_position
-								WHERE dynamo_layer_id = $layer_id";
-						$db->sql_query($sql);
+						$step = ($move_down > 0) ? -1 : 1;
+						$this->move_layer($layer_id, 0, $step);
 					}
 
 					// Left join so that even if there is no default_item we still get results lol
