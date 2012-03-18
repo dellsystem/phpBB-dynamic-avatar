@@ -11,9 +11,9 @@
 			<th>{L_LAYER_ID}</th>
 			<th>{L_LAYER_NAME}</th>
 			<th>{L_LAYER_DESCRIPTION}</th>
-			<th>{L_LAYER_POSITION}</th>
 			<th>{L_LAYER_MANDATORY}</th>
 			<th>{L_DEFAULT_ITEM}</th>
+			<th>{L_LAYER_POSITION}</th>
 			<th>{L_OPTIONS}</th>
 		</tr>
 	</thead>
@@ -23,10 +23,22 @@
 			<td>{layers.LAYER_ID}</td>
 			<td>{layers.LAYER_NAME}</td>
 			<td>{layers.LAYER_DESC}</td>
-			<td>{layers.LAYER_POSITION}</td>
 			<td>{layers.LAYER_MANDATORY}</td>
 			<td>{layers.DEFAULT_ITEM}</td>
-			<td style="text-align: center;"><a href="{layers.U_EDIT}">{L_EDIT}</a> | <a href="{layers.U_DELETE}">{L_DELETE}</a></td>
+			<td>{layers.LAYER_POSITION}</td>
+			<td>
+				<!-- IF layers.LAYER_POSITION == MAX_POSITION -->
+				{ICON_MOVE_UP_DISABLED}
+				<!-- ELSE -->
+				<a href="{layers.U_MOVE_UP}">{ICON_MOVE_UP}</a>
+				<!-- ENDIF -->
+				<!-- IF layers.LAYER_POSITION == MIN_POSITION -->
+				{ICON_MOVE_DOWN_DISABLED}
+				<!-- ELSE -->
+				<a href="{layers.U_MOVE_DOWN}">{ICON_MOVE_DOWN}</a>
+				<!-- ENDIF -->
+				<a href="{layers.U_EDIT}" title="{L_EDIT}">{ICON_EDIT}</a>
+				<a href="{layers.U_DELETE}" title="{L_DELETE}">{ICON_DELETE}</a></td>
 		</tr>
 		<!-- END layers -->
 	</tbody>

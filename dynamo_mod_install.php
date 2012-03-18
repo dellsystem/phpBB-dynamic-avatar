@@ -66,8 +66,21 @@ $logo_img = '../contrib/penguin.png';
 * You must use correct version numbering.  Unless you know exactly what you can use, only use X.X.X (replacing X with an integer).
 * The version numbering must otherwise be compatible with the version_compare function - http://php.net/manual/en/function.version-compare.php
 */
+
+function fix_table_index($action, $version)
+{
+   global $umil, $config;
+   // If updating from 0.0.1 or 0.0.2
+   $current = $config['dynamo_version'];
+   if ($action == 'update' && ($current == '0.0.1' || $current == '0.0.2'))
+   {
+      // Remove the position index (unique key)
+      $umil->db->sql_query('ALTER TABLE phpbb_dynamo_layers DROP INDEX position');
+   }
+}
+
 $versions = array(
-	'0.0.3' => array(
+	'0.1.0' => array(
 		'permission_add' => array(
 			'u_dynamo',
 			'a_dynamo_overview',
@@ -84,6 +97,14 @@ $versions = array(
 		'config_add' => array(
 			array('dynamo_width', 100),
 			array('dynamo_height', 120),
+		),
+		// Remove the layer table position index because it makes updating
+		// positions that much harder
+		// Can't use the table_index_remove function because it doesn't do
+		// unique (or primary) keys, sadly ... so, custom (MySQL-only function)
+		//
+		'custom' => array(
+			'fix_table_index',
 		),
 	),
 	'0.0.2'	=> array(
@@ -181,9 +202,9 @@ $versions = array(
 					'dynamo_layer_position' => array('UINT', 0),
 				),
 				'PRIMARY_KEY'	=> 'dynamo_layer_id',
-				'KEYS'		=> array(
-					'position' => array('UNIQUE', array('dynamo_layer_position')),
-				),
+				// The `position` index (UNIQUE) was removed in 0.1.0
+				// Should be handled when updating from 0.0.1 or 0.0.2
+				// in fix_table_index
 			)),
 
 			array('phpbb_dynamo_users', array(

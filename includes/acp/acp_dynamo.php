@@ -15,6 +15,37 @@ class acp_dynamo
 {
 	var $u_action;
 
+	function move_layer($layer_id, $desired_position)
+	{
+		global $db;
+		// First get this layer's current position
+		$sql = "SELECT dynamo_layer_position
+				FROM " . DYNAMO_LAYERS_TABLE . "
+				WHERE dynamo_layer_id = $layer_id";
+		$result = $db->sql_query($sql);
+		$row = $db->sql_fetchrow($result);
+		$old_position = $row['dynamo_layer_position'];
+
+		// Move all the ones between
+		if ($desired_position != $old_position)
+		{
+			$lower_bound = min($desired_position - 1, $old_position);
+			$upper_bound = max($desired_position + 1, $old_position);
+			$op = ($desired_position > $old_position) ? '-' : '+';
+			$sql = "UPDATE " . DYNAMO_LAYERS_TABLE . "
+					SET dynamo_layer_position = dynamo_layer_position $op 1
+					WHERE dynamo_layer_position > $lower_bound
+					AND dynamo_layer_position < $upper_bound";
+			$db->sql_query($sql);
+
+			// Now update the layer itself
+			$sql = "UPDATE " . DYNAMO_LAYERS_TABLE . "
+					SET dynamo_layer_position = $desired_position
+					WHERE dynamo_layer_id = $layer_id";
+			$db->sql_query($sql);
+		}
+	}
+
 	function main($id, $mode)
 	{
 		global $phpbb_root_path, $db, $phpEx, $auth, $user, $template, $config;
@@ -97,6 +128,8 @@ class acp_dynamo
 				$add_get = request_var('add', 0);
 				$edit_get = request_var('edit', 0);
 				$delete_get = request_var('delete', 0);
+				$move_down = request_var('move_down', 0);
+				$move_up = request_var('move_up', 0);
 
 				// If we need to add a layer, the add get var will be 1
 				if ($add_get == 1)
@@ -104,23 +137,19 @@ class acp_dynamo
 					// If the form was submitted, process the shit and stop
 					if ($submit)
 					{
+						// Get the maximum position first
+						$sql = "SELECT MAX(dynamo_layer_position) as max_position
+								FROM " . DYNAMO_LAYERS_TABLE;
+						$result = $db->sql_query($sql);
+						$row = $db->sql_fetchrow($result);
+						$max_position = $row['max_position'];
+								
 						$desired_name = request_var('dynamo_layer_name', '');
 						$desired_desc = request_var('dynamo_layer_desc', '');
 						$desired_position = request_var('dynamo_layer_position', 0);
 						$desired_mandatory = request_var('dynamo_layer_mandatory', 0);
 						$desired_default = 0; // Because it's a new layer, so it has no items
-
-						// Handle the positions ... make this a different function later?
-						// The desired position will be one less than the actual position it should get
-						// So if $desired_position is 0, set it to 1 ... confusing, might change it later
-
-						// First, update all the positions > $desired_position
-						$sql = "UPDATE " . DYNAMO_LAYERS_TABLE . "
-								SET dynamo_layer_position = dynamo_layer_position + 1
-								WHERE dynamo_layer_position > $desired_position";
-						$db->sql_query($sql);
-
-						$actual_position = $desired_position + 1;
+						$actual_position = $max_position + 1;
 
 						// Now add it to the database - the ID should be auto_incremented
 						$insert_array = array(
@@ -132,6 +161,11 @@ class acp_dynamo
 						);
 						$sql = "INSERT INTO " . DYNAMO_LAYERS_TABLE . " " . $db->sql_build_array('INSERT', $insert_array);
 						$db->sql_query($sql);
+						$layer_id = $db->sql_nextid();
+						
+						// Move all the other layers, and set this to the right position
+						// If it's 0, it means "below the current 1", so the pos should be 1
+						$this->move_layer($layer_id, $desired_position + 1);
 
 						trigger_error($user->lang['ACP_DYNAMO_ADDED_LAYER'] . adm_back_link($this->u_action));
 					}
@@ -152,7 +186,7 @@ class acp_dynamo
 						$template->assign_block_vars('layers_dropdown', array(
 							'POSITION'		=> $row['dynamo_layer_position'],
 							'PREVIOUS'		=> $previous_layer,
-							'POSITION_TEXT'	=> ($previous_layer == '') ? $user->lang['AT_VERY_TOP'] : sprintf($user->lang['IMMEDIATELY_BELOW'], $previous_layer),
+							'POSITION_TEXT'	=> ($previous_layer == '') ? $user->lang['LAYER_AT_TOP'] : sprintf($user->lang['IMMEDIATELY_BELOW'], $previous_layer),
 						));
 
 						$previous_layer = $row['dynamo_layer_name'];
@@ -184,48 +218,20 @@ class acp_dynamo
 						$desired_mandatory = request_var('dynamo_layer_mandatory', 0);
 						$desired_default = request_var('dynamo_layer_default', 0);
 
-						// First get the old position from the db
-						$sql = "SELECT dynamo_layer_position
-								FROM " . DYNAMO_LAYERS_TABLE . "
-								WHERE dynamo_layer_id = $edit_get";
-						$result = $db->sql_query($sql);
-						$row = $db->sql_fetchrow($result);
-						$old_position = $row['dynamo_layer_position'];
-
-						// If the position was changed, then edit the other layers' positions
-						// It's not any sort of key or index so this is safe
-						if ($desired_position > $old_position)
-						{
-							// If the new position is greater, move the ones in between up
-							$sql = "UPDATE " . DYNAMO_LAYERS_TABLE . "
-									SET dynamo_layer_position = dynamo_layer_position - 1
-									WHERE dynamo_layer_position > $old_position
-									AND dynamo_layer_position <= $desired_position";
-							$db->sql_query($sql);
-						}
-						else if ($desired_position < $old_position)
-						{
-							// Old position is greater, so moving up, move in-betweens down
-							$sql = "UPDATE " . DYNAMO_LAYERS_TABLE . "
-									SET dynamo_layer_position = dynamo_layer_position + 1
-									WHERE dynamo_layer_position >= $desired_position
-									AND dynamo_layer_position < $old_position";
-							$db->sql_query($sql);
-							// reuse this code for the adding one
-						}
-
-						// Ugh so many db queries
+						// First update all non-position things
 						$update_array = array(
 							'dynamo_layer_name'			=> $desired_name,
 							'dynamo_layer_desc'			=> $desired_desc,
 							'dynamo_layer_mandatory'	=> $desired_mandatory,
 							'dynamo_layer_default'		=> $desired_default,
-							'dynamo_layer_position'		=> $desired_position,
 						);
 						$sql = "UPDATE " . DYNAMO_LAYERS_TABLE . "
 								SET " . $db->sql_build_array('UPDATE', $update_array) . "
 								WHERE dynamo_layer_id = $edit_get";
 						$db->sql_query($sql);
+
+						// Now move it
+						$this->move_layer($edit_get, $desired_position + 1);
 
 						trigger_error($user->lang['ACP_DYNAMO_EDITED_LAYER'] . adm_back_link($this->u_action));
 					}
@@ -257,7 +263,7 @@ class acp_dynamo
 						$template->assign_block_vars('layers_dropdown', array(
 							'POSITION'		=> $row['dynamo_layer_position'],
 							'PREVIOUS'		=> $previous_layer,
-							'POSITION_TEXT'	=> ($previous_layer == '') ? $user->lang['AT_VERY_TOP'] : sprintf($user->lang['IMMEDIATELY_BELOW'], $previous_layer),
+							'POSITION_TEXT'	=> ($previous_layer == '') ? $user->lang['LAYER_AT_TOP'] : sprintf($user->lang['IMMEDIATELY_BELOW'], $previous_layer),
 						));
 
 						$previous_layer = $row['dynamo_layer_name'];
@@ -298,6 +304,7 @@ class acp_dynamo
 						'LAYER_MANDATORY'	=> $layer['dynamo_layer_mandatory'],
 						'LAYER_HAS_ITEMS'	=> $num_items > 0,
 						'CURRENT_POSITION'	=> $layer['dynamo_layer_position'],
+						'LAST_POSITION'		=> $last_position,
 					);
 				}
 				else if ($delete_get > 0)
@@ -334,6 +341,33 @@ class acp_dynamo
 					$this_template = 'acp_dynamo_layers';
 					$this_title = 'ACP_DYNAMO_LAYERS';
 
+					// Check if we need to move something up or down
+					if ($layer_id = max($move_down, $move_up))
+					{
+						// First get this one's position
+						$sql = "SELECT dynamo_layer_position
+								FROM " . DYNAMO_LAYERS_TABLE . "
+								WHERE dynamo_layer_id = $layer_id";
+						$result = $db->sql_query($sql);
+						$row = $db->sql_fetchrow($result);
+						$old_position = $row['dynamo_layer_position'];
+
+						// First, change the other one ...
+						$op = ($move_down) ? '+' : '-'; // the other way around cuz it's the other
+						$new_position = ($move_down) ? $old_position - 1 : $old_position + 1;
+
+						$sql = "UPDATE " . DYNAMO_LAYERS_TABLE . "
+								SET dynamo_layer_position = dynamo_layer_position $op 1
+								WHERE dynamo_layer_position = $new_position";
+						$db->sql_query($sql);
+
+						// Now update the original
+						$sql = "UPDATE " . DYNAMO_LAYERS_TABLE . "
+								SET dynamo_layer_position = $new_position
+								WHERE dynamo_layer_id = $layer_id";
+						$db->sql_query($sql);
+					}
+
 					// Left join so that even if there is no default_item we still get results lol
 					$sql = "SELECT l.dynamo_layer_id, l.dynamo_layer_name, l.dynamo_layer_desc, l.dynamo_layer_position, l.dynamo_layer_mandatory, l.dynamo_layer_default, i.dynamo_item_name
 							FROM " . DYNAMO_LAYERS_TABLE . " l
@@ -341,25 +375,36 @@ class acp_dynamo
 							ON l.dynamo_layer_default = i.dynamo_item_id
 							ORDER BY l.dynamo_layer_position DESC";
 					$result = $db->sql_query($sql);
+					
+					// For disabling move up/move down icons
+					$min_position = 0;
+					$max_position = 0;
 
 					while ($row = $db->sql_fetchrow($result))
 					{
+						$position = $row['dynamo_layer_position'];
+						$max_position = ($position > $max_position) ? $position : $max_position;
+						$min_position = ($position < $min_position || $min_position == 0) ? $position : $min_position;
 						// Get all the layers from the database
 						$layer_id = $row['dynamo_layer_id'];
 						$template->assign_block_vars('layers', array(
 							'LAYER_ID' 			=> $layer_id,
 							'LAYER_NAME'		=> $row['dynamo_layer_name'],
 							'LAYER_DESC'		=> $row['dynamo_layer_desc'],
-							'LAYER_POSITION'	=> $row['dynamo_layer_position'],
+							'LAYER_POSITION'	=> $position,
 							'LAYER_MANDATORY'	=> ($row['dynamo_layer_mandatory']) ? 'Yes' : 'No',
 							'DEFAULT_ITEM'		=> ($row['dynamo_layer_default'] == 0) ? 'None' : '<strong>' . $row['dynamo_item_name'] . '</strong>',
 							'U_EDIT'			=> $this->u_action . '&amp;edit=' . $layer_id,
 							'U_DELETE'			=> $this->u_action . '&amp;delete=' . $layer_id,
+							'U_MOVE_DOWN'		=> $this->u_action . '&amp;move_down=' . $layer_id,
+							'U_MOVE_UP'			=> $this->u_action . '&amp;move_up=' . $layer_id,
 							)
 						);
 					}
 
 					$template_vars = array(
+						'MAX_POSITION'		=> $max_position,
+						'MIN_POSITION'		=> $min_position,
 						'L_TITLE'			=> $user->lang['DYNAMO_LAYERS'],
 						'L_TITLE_EXPLAIN'	=> $user->lang['DYNAMO_LAYERS_EXPLAIN'],
 						'U_ADD_ACTION' 		=> $this->u_action . '&amp;add=1', // Form for adding a new layer
