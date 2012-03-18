@@ -117,6 +117,8 @@ class acp_dynamo
 					'L_TITLE_EXPLAIN'		=> $user->lang['DYNAMO_OVERVIEW_EXPLAIN'],
 					'DYNAMO_WIDTH'			=> $config['dynamo_width'],
 					'DYNAMO_HEIGHT'			=> $config['dynamo_height'],
+					'DYNAMO_IMAGE_FP'		=> $config['dynamo_image_fp'],
+					'DYNAMO_AVATAR_FP'		=> $config['dynamo_avatar_fp'],
 				);
 			break;
 			case 'settings':
