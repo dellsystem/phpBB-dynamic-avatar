@@ -15,6 +15,27 @@ class acp_dynamo
 {
 	var $u_action;
 
+	// Get the path for an item's image from its layer ID and item ID
+	// Returns a path relative to the board root (e.g. `image/dynamo/
+	// Depends on $config['dynamo_image_fp'];
+	// Modes: entire path, just the image filename, just the dirs
+	function get_item_image_path($mode = 'entire', $layer_id = 0, $item_id = 0)
+	{
+		global $config, $phpbb_root_path;
+		$filename = $layer_id . '-' . $item_id . '.png';
+		$dirs = $phpbb_root_path . $config['dynamo_image_fp'];
+
+		switch ($mode)
+		{
+			case 'entire':
+				return $dirs . '/' . $filename;
+			case 'filename':
+				return $filename;
+			case 'dirs':
+				return $dirs;
+		}
+	}
+
 	function move_layer($layer_id, $desired_position = 0, $step = 0)
 	{
 		global $db;
@@ -112,6 +133,8 @@ class acp_dynamo
 					set_config('dynamo_mandatory', request_var('dynamo_mandatory', 0));
 					set_config('dynamo_width', request_var('dynamo_width', 0));
 					set_config('dynamo_height', request_var('dynamo_height', 0));
+					set_config('dynamo_image_fp', request_var('dynamo_image_fp', ''));
+					set_config('dynamo_avatar_fp', request_var('dynamo_avatar_fp', ''));
 
 					trigger_error($user->lang['CONFIG_UPDATED'] . adm_back_link($this->u_action));
 				}
@@ -126,6 +149,8 @@ class acp_dynamo
 					'DYNAMO_MANDATORY'		=> $config['dynamo_mandatory'],
 					'DYNAMO_WIDTH'			=> $config['dynamo_width'],
 					'DYNAMO_HEIGHT'			=> $config['dynamo_height'],
+					'DYNAMO_IMAGE_FP'		=> $config['dynamo_image_fp'],
+					'DYNAMO_AVATAR_FP'		=> $config['dynamo_avatar_fp'],
 				);
 
 			break;
@@ -437,13 +462,10 @@ class acp_dynamo
 						if (!empty($_FILES['uploadfile']['name']))
 						{
 							$file = $upload->form_upload('uploadfile');
-							$prefix = $desired_layer . '-';
-							$file->realname = $prefix . $item_id . '.png';
+							$file->realname = $this->get_item_image_filepath('filename', $desired_layer, $item_id);
 
-							// Make a config option to set this later
-							$destination = 'images/dynamo';
 							// Move file and overwrite any existing image
-							$file->move_file($destination, true);
+							$file->move_file($this->get_item_image_filepath('dirs'), true);
 						}
 
 						$insert_array = array(
@@ -500,12 +522,11 @@ class acp_dynamo
 
 						if ($old_layer != $desired_layer)
 						{
-							// Stop assuming PNG (temp solution)
-							$old_file_name = $phpbb_root_path . 'images/dynamo/' . $old_layer . '-' . $edit_item_id . '.png';
-							$new_file_name = $phpbb_root_path . 'images/dynamo/' . $desired_layer . '-' . $edit_item_id . '.png';
+							$old_file_name = $this->get_item_image_path('entire', $old_layer, $edit_item_id);
+							$new_file_name = $this->get_item_image_path('entire', $desired_layer, $edit_item_id);
 							if (!rename($old_file_name, $new_file_name))
 							{
-								trigger_error("shit something went wrong lol" . adm_back_link($this->u_action));
+								trigger_error("Can't move the image file attached to the item. Please file a bug report." . adm_back_link($this->u_action));
 							}
 						}
 
@@ -554,7 +575,7 @@ class acp_dynamo
 						'CURRENT_LAYER'		=> $item['dynamo_item_layer'],
 						'L_TITLE'			=> sprintf($user->lang['EDITING_ITEM'], $item_name),
 						'L_TITLE_EXPLAIN'	=> $user->lang['EDITING_ITEM_EXPLAIN'],
-						'ITEM_IMAGE'		=> $phpbb_root_path . 'images/dynamo/' . $item['dynamo_item_layer'] . '-' . $item['dynamo_item_id'] . '.png',
+						'ITEM_IMAGE'		=> $this->get_item_image_path('entire', $item['dynamo_item_layer'], $item['dynamo_item_id']),
 						'ITEM_NAME'			=> $item_name,
 						'ITEM_DESC'			=> $item['dynamo_item_desc'],
 					);
@@ -616,7 +637,7 @@ class acp_dynamo
 						$item_id = $row['dynamo_item_id'];
 
 						// Figure out the item's image URL
-						$item_image_url = '../images/dynamo/' . $item_layer . '-' . $item_id . '.png';
+						$item_image_url = $this->get_item_image_path('entire', $item_layer, $item_id);
 
 						$template->assign_block_vars('item', array(
 							'NEW_LAYER'		=> $new_layer,

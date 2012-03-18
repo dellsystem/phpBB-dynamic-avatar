@@ -97,6 +97,8 @@ $versions = array(
 		'config_add' => array(
 			array('dynamo_width', 100),
 			array('dynamo_height', 120),
+			array('dynamo_image_fp', 'images/dynamo'),
+			array('dynamo_avatar_fp', 'images/avatars/dynamo'),
 		),
 		// Remove the layer table position index because it makes updating
 		// positions that much harder
