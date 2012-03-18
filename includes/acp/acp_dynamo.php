@@ -15,27 +15,6 @@ class acp_dynamo
 {
 	var $u_action;
 
-	// Get the path for an item's image from its layer ID and item ID
-	// Returns a path relative to the board root (e.g. `image/dynamo/
-	// Depends on $config['dynamo_image_fp'];
-	// Modes: entire path, just the image filename, just the dirs
-	function get_item_image_path($mode = 'entire', $layer_id = 0, $item_id = 0)
-	{
-		global $config, $phpbb_root_path;
-		$filename = $layer_id . '-' . $item_id . '.png';
-		$dirs = $phpbb_root_path . $config['dynamo_image_fp'];
-
-		switch ($mode)
-		{
-			case 'entire':
-				return $dirs . '/' . $filename;
-			case 'filename':
-				return $filename;
-			case 'dirs':
-				return $dirs;
-		}
-	}
-
 	function move_layer($layer_id, $desired_position = 0, $step = 0)
 	{
 		global $db;
@@ -78,6 +57,7 @@ class acp_dynamo
 	{
 		global $phpbb_root_path, $db, $phpEx, $auth, $user, $template, $config;
 
+		include($phpbb_root_path . 'includes/functions_dynamo.' . $phpEx);
 		$user->add_lang('mods/dynamo/acp');
 		$action	= request_var('action', '');
 		$submit = (isset($_POST['submit'])) ? true : false;
@@ -464,10 +444,10 @@ class acp_dynamo
 						if (!empty($_FILES['uploadfile']['name']))
 						{
 							$file = $upload->form_upload('uploadfile');
-							$file->realname = $this->get_item_image_filepath('filename', $desired_layer, $item_id);
+							$file->realname = get_item_image_path('filename', $desired_layer, $item_id);
 
 							// Move file and overwrite any existing image
-							$file->move_file($this->get_item_image_filepath('dirs'), true);
+							$file->move_file(get_item_image_path('dirs'), true);
 						}
 
 						$insert_array = array(
@@ -524,8 +504,8 @@ class acp_dynamo
 
 						if ($old_layer != $desired_layer)
 						{
-							$old_file_name = $this->get_item_image_path('entire', $old_layer, $edit_item_id);
-							$new_file_name = $this->get_item_image_path('entire', $desired_layer, $edit_item_id);
+							$old_file_name = get_item_image_path('entire', $old_layer, $edit_item_id);
+							$new_file_name = get_item_image_path('entire', $desired_layer, $edit_item_id);
 							if (!rename($old_file_name, $new_file_name))
 							{
 								trigger_error("Can't move the image file attached to the item. Please file a bug report." . adm_back_link($this->u_action));
@@ -577,7 +557,7 @@ class acp_dynamo
 						'CURRENT_LAYER'		=> $item['dynamo_item_layer'],
 						'L_TITLE'			=> sprintf($user->lang['EDITING_ITEM'], $item_name),
 						'L_TITLE_EXPLAIN'	=> $user->lang['EDITING_ITEM_EXPLAIN'],
-						'ITEM_IMAGE'		=> $this->get_item_image_path('entire', $item['dynamo_item_layer'], $item['dynamo_item_id']),
+						'ITEM_IMAGE'		=> get_item_image_path('entire', $item['dynamo_item_layer'], $item['dynamo_item_id']),
 						'ITEM_NAME'			=> $item_name,
 						'ITEM_DESC'			=> $item['dynamo_item_desc'],
 					);
@@ -639,7 +619,7 @@ class acp_dynamo
 						$item_id = $row['dynamo_item_id'];
 
 						// Figure out the item's image URL
-						$item_image_url = $this->get_item_image_path('entire', $item_layer, $item_id);
+						$item_image_url = get_item_image_path('entire', $item_layer, $item_id);
 
 						$template->assign_block_vars('item', array(
 							'NEW_LAYER'		=> $new_layer,
