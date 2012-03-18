@@ -100,11 +100,8 @@ $versions = array(
 			array('dynamo_image_fp', 'images/dynamo'),
 			array('dynamo_avatar_fp', 'images/avatars/dynamo'),
 		),
-		// Remove the layer table position index because it makes updating
-		// positions that much harder
-		// Can't use the table_index_remove function because it doesn't do
-		// unique (or primary) keys, sadly ... so, custom (MySQL-only function)
-		//
+		// Remove the layer table position index because it makes updating positions that much harder
+		// Can't use the table_index_remove function because it doesn't do unique (or primary) keys, sadly ... so, custom (MySQL-only function)
 		'custom' => array(
 			'fix_table_index',
 		),
