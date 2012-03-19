@@ -25,13 +25,8 @@ $(document).ready(function() {
 		}
 	});
 
-	// Restore all the original items
-	$('#restore-original').click(function() {
-		restoreLayers('original');
-	});
-
-	// Restore all the default items (no item for layers without a default)
-	$('#restore-default').click(function() {
-		restoreLayers('default');
+	// Restore all the original/default items
+	$('input[type="reset"]').click(function() {
+		restoreLayers($(this).attr('data-suffix'));
 	});
 });
