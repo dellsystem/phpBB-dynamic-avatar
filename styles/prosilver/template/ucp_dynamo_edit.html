@@ -3,6 +3,63 @@
 <!-- the JS file for the dynamic part -->
 <script src="{T_TEMPLATE_PATH}/jquery-1.7.1.min.js"></script>
 <script src="{T_TEMPLATE_PATH}/dynamo.js"></script>
+<style type="text/css">
+#dynamo-wrap {
+	height: 300px;
+	width: 100%;
+	position: relative;
+}
+
+#preview-pane {
+	width: 200px;
+	height: 100%;
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	margin: 0 auto;
+}
+
+#preview-pane img {
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom: 0;
+	margin: auto;
+}
+
+#inventory-pane {
+	position: absolute;
+	left: 200px;
+	right: 150px;
+	height: 100%;
+	overflow: auto;
+}
+
+#inventory-pane label {
+	display: inline-block;
+	text-align: center;
+	margin-bottom: 15px;
+}
+
+#layers-pane {
+	width: 150px;
+	height: 100%;
+	position: absolute;
+	top: 0px;
+	right: 0px;
+	overflow: auto;
+}
+
+.cplist li {
+	height: 40px;
+	font-size: 1.1em;
+	font-weight: bold;
+	line-height: 40px;
+	cursor: pointer;
+	padding-left: 10px;
+}
+</style>
 
 <h2>{L_TITLE}</h2>
 
@@ -12,52 +69,26 @@
 	<p>{L_DYNAMO_EXPLAIN}</p>
 	
 	<form method="post" name="dynamo" action="{U_ACTION}">
-	
-<!-- tables tables everywhere -->
-<table>
-	<tr>
-		<td style="width: 50%; vertical-align: top; text-align: center;" id="item-images">
+	<div id="dynamo-wrap">
+		<div id="preview-pane" class="bg1">
 			<!-- BEGIN images -->
-			<img id="layer-{images.LAYER_ID}" style="z-index: {images.POSITION}; position: absolute; width: {IMAGE_WIDTH}px; height: {IMAGE_HEIGHT}px;" src="<!-- IF images.ITEM_EXISTS -->{images.ITEM_IMAGE}<!-- ELSE -->images/spacer.gif<!-- ENDIF -->" data-original="{images.ITEM_ID}" data-default="{images.DEFAULT_ITEM}" />
+			<img id="layer-{images.LAYER_ID}" style="z-index: {images.POSITION}; width: {IMAGE_WIDTH}px; height: {IMAGE_HEIGHT}px;" src="<!-- IF images.ITEM_EXISTS -->{images.ITEM_IMAGE}<!-- ELSE -->images/spacer.gif<!-- ENDIF -->" data-original="{images.ITEM_ID}" data-default="{images.DEFAULT_ITEM}" />
 			<!-- END images -->
-		</td>
-		<td>
-	<!-- BEGIN item -->
-<!-- IF item.NEW_LAYER && item.FIRST_LAYER == false -->
-		</tr>
-	</tbody>
-</table>
-<br />
-<!-- ENDIF -->
-<!-- IF item.NEW_LAYER -->
-<table cellspacing="1">
-	<col class="col1" /><col class="col2" /><col class="col1" /><col class="col2" /><col class="col1" />
-	<thead>
-		<tr>
-			<th colspan="6" style="text-align: left;">{item.LAYER_NAME}</th>
-		</tr>
-	</thead>
-	<tbody>
-		<tr>
-		<!-- IF item.IS_MANDATORY == 0 -->
-			<td style="text-align: center;"><label>None<br /><input type="radio" id="layer-{item.LAYER_ID}-0-radio" name="layer-{item.LAYER_ID}" value="0" class="item-button" data-layer="{item.LAYER_ID}" data-item="0" {item.NONE_SELECTED} /></label></td>
-		<!-- ENDIF -->
-<!-- ENDIF -->
-			<td style="text-align: center;"><label><img src="{item.ITEM_IMAGE}" title="{item.ITEM_DESC}" alt="{item.ITEM_NAME}" /><br />{item.ITEM_NAME}<br /><input type="radio" id="layer-{item.LAYER_ID}-{item.ITEM_ID}-radio" name="layer-{item.LAYER_ID}" value="{item.ITEM_ID}" class="item-button" data-layer="{item.LAYER_ID}" data-item="{item.ITEM_ID}" {item.SELECTED} /></label></td>
-			<!-- IF item.NUM_IN_LAYER % 6 == 0 -->
-			</tr>
-			<tr>
-			<!-- ENDIF -->
-<!-- END item -->
-<!-- IF .item -->
-<!-- for the very end of the loop, if there is content in it -->
-		</tr>
-	</tbody>
-</table>
-<!-- ENDIF -->
-		</td>
-	</tr>
-</table>
+		</div>
+		<div id="inventory-pane" class="panel">
+			<!-- BEGIN item -->
+			<label><img src="{item.ITEM_IMAGE}" title="{item.ITEM_DESC}" alt="{item.ITEM_NAME}" /><br />{item.ITEM_NAME}<br /><input type="radio" id="layer-{item.LAYER_ID}-{item.ITEM_ID}-radio" name="layer-{item.LAYER_ID}" value="{item.ITEM_ID}" class="item-button" data-layer="{item.LAYER_ID}" data-item="{item.ITEM_ID}" {item.SELECTED} /></label>
+			<!-- END item -->
+		</div>
+		<div id="layers-pane">
+			<ul class="topiclist cplist">
+				<!-- BEGIN layers -->
+				<li class="row bg1" data-layer="{layers.LAYER_ID}">{layers.LAYER_NAME}</li>
+				<!-- END layers -->
+			</ul>
+		</div>
+	</div>
+
 <fieldset class="submit-buttons">
 	<input type="reset" value="{L_RESTORE_ORIGINAL}" name="reset" class="button2" data-suffix="original" />&nbsp;
 	<input type="reset" value="{L_RESTORE_DEFAULT}" name="reset" class="button2" data-suffix="default" />&nbsp;

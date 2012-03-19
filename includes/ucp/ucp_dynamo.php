@@ -256,6 +256,10 @@ class ucp_dynamo
 						array_push($defaults_array, $row['dynamo_layer_default']);
 						array_push($positions_array, $row['dynamo_layer_position']);
 						$num_layers++; // for use in determining first-layerness and in the length of the array lol
+						$template->assign_block_vars('layers', array(
+							'LAYER_ID'		=> $row['dynamo_item_layer'],
+							'LAYER_NAME'	=> $row['dynamo_layer_name'],
+						));
 					}
 					
 					// For determining if we need a new row or not

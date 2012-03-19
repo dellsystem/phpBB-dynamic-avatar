@@ -3,7 +3,7 @@
 $(document).ready(function() {
 	// Abstractified so it can be used by both "restore" buttons
 	var restoreLayers = function(suffix) {
-		$('#item-images').find('img').each(function() {
+		$('#preview-pane').find('img').each(function() {
 			var thisID = $(this).attr('id');
 			var imageID = $(this).attr('data-' + suffix);
 			var radio = '#' + thisID + '-' + imageID + '-radio';
@@ -28,5 +28,28 @@ $(document).ready(function() {
 	// Restore all the original/default items
 	$('input[type="reset"]').click(function() {
 		restoreLayers($(this).attr('data-suffix'));
+	});
+
+	// Helper function for only showing things in the current layer
+	var showOnlyLayer = function(layerID) {
+		// First remove the bg2 class from everything
+		$('#layers-pane').find('.bg2').removeClass('bg2');
+		$('#layers-pane li[data-layer="' + layerID + '"]').addClass('bg2');
+		$('#inventory-pane label').each(function() {
+			var input = $(this).find('input');
+			if ($(input).attr('data-layer') != layerID) {
+				$(this).hide();
+			} else {
+				$(this).show();
+			}
+		});
+	};
+
+	// Hide all the items except those in the current layer
+	var currentLayer = $('#layers-pane li:first-child').attr('data-layer');
+	showOnlyLayer(currentLayer);
+
+	$('#layers-pane li').click(function() {
+		showOnlyLayer($(this).attr('data-layer'));
 	});
 });
