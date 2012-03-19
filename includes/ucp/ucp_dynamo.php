@@ -82,7 +82,8 @@ class ucp_dynamo
 	function main($id, $mode)
 	{
 		global $template, $user, $db, $config, $phpEx, $phpbb_root_path;
-		
+
+		include($phpbb_root_path . 'includes/functions_dynamo.' . $phpEx);
 		$submit = (isset($_POST['submit'])) ? true : false;
 		$user_id = $user->data['user_id'];
 
@@ -136,7 +137,7 @@ class ucp_dynamo
 						// ONLY if the item_id is not 0
 						if ($this_item > 0)
 						{
-							$image_url = 'images/dynamo/' . $layer_id . '-' . $this_item . '.png';
+							$image_url = get_item_image_path('entire', $layer_id, $this_item);
 							$image_urls[] = $image_url; // like array_push but with less overhead
 						}
 
@@ -185,12 +186,12 @@ class ucp_dynamo
 					}
 
 					imagesavealpha($first_image, true);
-					$avatar_filename = 'images/avatars/dynamo/' . $user_id . '_' . time() . '.png';
-					imagepng($first_image, $phpbb_root_path . $avatar_filename); // Temp
+					$avatar_path = get_avatar_image_path($user_id);
+					imagepng($first_image, $avatar_path);
 
 					// For now, pretend it's a remote avatar and modify the user's avatar-related fields accordingly
 					$sql_array = array(
-						'user_avatar' 			=> generate_board_url() . '/' . $avatar_filename,
+						'user_avatar' 			=> generate_board_url() . '/' . $avatar_path,
 						'user_avatar_type'		=> 2, // means remote i guess
 						'user_avatar_width'		=> $config['dynamo_width'],
 						'user_avatar_height'	=> $config['dynamo_height'],
@@ -263,8 +264,8 @@ class ucp_dynamo
 					$item_id = $row['dynamo_item_id'];
 				
 					// Figure out the item's image URL
-					$item_image_url = 'images/dynamo/' . $item_layer . '-' . $item_id . '.png';
-					
+					$item_image_url = get_item_image_path('entire', $item_layer, $item_id);
+
 					// Now figure out if the user has this item already
 					if (!array_key_exists($item_layer, $user_items)) // why php why
 					{
@@ -336,7 +337,7 @@ class ucp_dynamo
 							'LAYER_ID'			=> $this_layer,
 							'POSITION'			=> $positions_array[$i],
 							'ITEM_EXISTS'		=> ($item_to_use > 0) ? true : false,
-							'ITEM_IMAGE'		=> $phpbb_root_path . 'images/dynamo/' . $this_layer . '-' . $item_to_use . '.png',
+							'ITEM_IMAGE'		=> get_item_image_path('entire', $this_layer, $item_to_use),
 						));
 					}
 				}

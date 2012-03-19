@@ -42,4 +42,14 @@ function get_item_image_path($mode = 'entire', $layer_id = 0, $item_id = 0)
 			return $dirs;
 	}
 }
+
+/**
+* Get the path for a user's dynamic avatar
+* Where it should be saved etc
+*/
+function get_avatar_image_path($user_id)
+{
+	global $config, $phpbb_root_path;
+	return $phpbb_root_path . $config['dynamo_avatar_fp'] . '/' . $user_id . '_' . time() . '.png';
+}
 ?>
