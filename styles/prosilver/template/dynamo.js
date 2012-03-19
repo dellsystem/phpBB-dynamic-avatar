@@ -1,6 +1,18 @@
 // Going jQuery-less is just not worth it
 
 $(document).ready(function() {
+	// Abstractified so it can be used by both "restore" buttons
+	var restoreLayers = function(suffix) {
+		$('#item-images').find('img').each(function() {
+			var thisID = $(this).attr('id');
+			var imageID = $(this).attr('data-' + suffix);
+			var radio = '#' + thisID + '-' + imageID + '-radio';
+			if (!$(radio).attr('checked')) {
+				$(radio).attr('checked', 'true').change();
+			}
+		});
+	};
+
 	// Click an image, and it will change it in the demo
 	$('.item-button').change(function(event) {
 		var layerID = $(this).attr('data-layer');
@@ -17,13 +29,11 @@ $(document).ready(function() {
 
 	// Restore all the original items
 	$('#restore-original').click(function() {
-		$('#item-images').find('img').each(function() {
-			var thisID = $(this).attr('id');
-			var original = $(this).attr('data-original');
-			var radio = '#' + thisID + '-' + original + '-radio';
-			if (!$(radio).attr('checked')) {
-				$(radio).attr('checked', 'true').change();
-			}
-		});
+		restoreLayers('original');
+	});
+
+	// Restore all the default items (no item for layers without a default)
+	$('#restore-default').click(function() {
+		restoreLayers('default');
 	});
 });

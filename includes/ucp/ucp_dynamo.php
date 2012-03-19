@@ -333,6 +333,7 @@ class ucp_dynamo
 					{
 						// so bad
 						$template->assign_block_vars('images', array(
+							'DEFAULT_ITEM'		=> $defaults_array[$i],
 							'ITEM_ID'			=> $item_to_use,
 							'LAYER_ID'			=> $this_layer,
 							'POSITION'			=> $positions_array[$i],
