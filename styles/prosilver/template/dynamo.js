@@ -7,9 +7,7 @@ $(document).ready(function() {
 			var thisID = $(this).attr('id');
 			var imageID = $(this).attr('data-' + suffix);
 			var radio = '#' + thisID + '-' + imageID + '-radio';
-			if (!$(radio).attr('checked')) {
-				$(radio).attr('checked', 'true').change();
-			}
+			$(radio).attr('checked', 'true').change();
 		});
 	};
 
