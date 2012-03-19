@@ -1,6 +1,7 @@
 <!-- INCLUDE ucp_header.html -->
 
 <!-- the JS file for the dynamic part -->
+<script src="{T_TEMPLATE_PATH}/jquery-1.7.1.min.js"></script>
 <script src="{T_TEMPLATE_PATH}/dynamo.js"></script>
 
 <h2>{L_TITLE}</h2>
@@ -17,9 +18,7 @@
 	<tr>
 		<td style="width: 50%; vertical-align: top; text-align: center;" id="item-images">
 			<!-- BEGIN images -->
-			<!-- IF images.ITEM_EXISTS -->
-			<div id="{images.LAYER_ID}" style="position: absolute; z-index: {images.POSITION};"><img src="{images.ITEM_IMAGE}" /></div>
-			<!-- ENDIF -->
+			<img id="layer-{images.LAYER_ID}" style="z-index: {images.POSITION}; position: absolute; width: {IMAGE_WIDTH}px; height: {IMAGE_HEIGHT}px;" src="<!-- IF images.ITEM_EXISTS -->{images.ITEM_IMAGE}<!-- ELSE -->images/spacer.gif<!-- ENDIF -->" data-original="{images.ITEM_ID}" />
 			<!-- END images -->
 		</td>
 		<td>
@@ -41,10 +40,10 @@
 	<tbody>
 		<tr>
 		<!-- IF item.IS_MANDATORY == 0 -->
-			<td style="text-align: center;"><label for="{item.LAYER_ID}-0">None</label><br /><input type="radio" name="layer-{item.LAYER_ID}" value="0" id="{item.LAYER_ID}-0" {item.NONE_SELECTED} onclick="changeImage({item.LAYER_ID}, 0, {item.LAYER_POSITION});" /></td>
+			<td style="text-align: center;"><label>None<br /><input type="radio" id="layer-{item.LAYER_ID}-0-radio" name="layer-{item.LAYER_ID}" value="0" class="item-button" data-layer="{item.LAYER_ID}" data-item="0" {item.NONE_SELECTED} /></label></td>
 		<!-- ENDIF -->
 <!-- ENDIF -->
-			<td style="text-align: center;"><label for="{item.LAYER_ID}-{item.ITEM_ID}"><img src="{item.ITEM_IMAGE}" onclick="changeImage({item.LAYER_ID}, {item.ITEM_ID}, {item.LAYER_POSITION});" title="{item.ITEM_DESC}" alt="{item.ITEM_NAME}" /></label><br />{item.ITEM_NAME}<br /><input type="radio" name="layer-{item.LAYER_ID}" value="{item.ITEM_ID}" id="{item.LAYER_ID}-{item.ITEM_ID}" onclick="changeImage({item.LAYER_ID}, {item.ITEM_ID}, {item.LAYER_POSITION});" {item.SELECTED} /></td>
+			<td style="text-align: center;"><label><img src="{item.ITEM_IMAGE}" title="{item.ITEM_DESC}" alt="{item.ITEM_NAME}" /><br />{item.ITEM_NAME}<br /><input type="radio" id="layer-{item.LAYER_ID}-{item.ITEM_ID}-radio" name="layer-{item.LAYER_ID}" value="{item.ITEM_ID}" class="item-button" data-layer="{item.LAYER_ID}" data-item="{item.ITEM_ID}" {item.SELECTED} /></label></td>
 			<!-- IF item.NUM_IN_LAYER % 6 == 0 -->
 			</tr>
 			<tr>
@@ -60,7 +59,7 @@
 	</tr>
 </table>
 <fieldset class="submit-buttons">
-	<input type="reset" value="{L_RESET}" name="reset" class="button2" />&nbsp; 
+	<input type="reset" value="Restore original items" name="reset" class="button2" id="restore-original" />&nbsp;
 	<input type="submit" name="submit" value="{L_SUBMIT}" class="button1" />
 </fieldset>
 

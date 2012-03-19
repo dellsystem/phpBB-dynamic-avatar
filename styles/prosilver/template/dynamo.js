@@ -1,20 +1,29 @@
-// Click an image, and it will change it in the avatar etc
-function changeImage(layer_id, item_id, position) {
-	// I can totally do this without jQuery
-	// If the image already exists, just change the img src
-	var theDiv = document.getElementById(layer_id);
-	var theImg = (theDiv != null) ? theDiv.firstChild : null;
-	if (theImg != null) {
-		// If the item id is 0, then just make the image empty lol
-		if (item_id == 0) {
-			// Delete the whole div
-			theDiv.parentNode.removeChild(theDiv);
+// Going jQuery-less is just not worth it
+
+$(document).ready(function() {
+	// Click an image, and it will change it in the demo
+	$('.item-button').change(function(event) {
+		var layerID = $(this).attr('data-layer');
+		var itemID = $(this).attr('data-item');
+		var selector = '#layer-' + layerID;
+
+		if (itemID == 0) {
+			$('#layer-' + layerID).attr('src', 'images/spacer.gif');
 		} else {
-			theImg.setAttribute('src', 'images/dynamo/' + layer_id + '-' + item_id + '.png');
+			var imageSrc = $(this).parent().find('img').attr('src');
+			$(selector).attr('src', imageSrc);
 		}
-	} else {
-		// Doesn't exist, append the div
-		var toAppend = '<div id="' + layer_id + '" style="position: absolute; z-index: ' + position + ';"><img src="images/dynamo/' + layer_id + '-' + item_id + '.png" /></div>';
-		document.getElementById("item-images").innerHTML += toAppend;
-	}
-}
+	});
+
+	// Restore all the original items
+	$('#restore-original').click(function() {
+		$('#item-images').find('img').each(function() {
+			var thisID = $(this).attr('id');
+			var original = $(this).attr('data-original');
+			var radio = '#' + thisID + '-' + original + '-radio';
+			if (!$(radio).attr('checked')) {
+				$(radio).attr('checked', 'true').change();
+			}
+		});
+	});
+});

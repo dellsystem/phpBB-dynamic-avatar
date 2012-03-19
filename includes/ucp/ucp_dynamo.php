@@ -346,6 +346,8 @@ class ucp_dynamo
 
 
 		$template->assign_vars(array(
+			'IMAGE_HEIGHT'	=> $config['dynamo_height'],
+			'IMAGE_WIDTH'	=> $config['dynamo_width'],
 			'U_ACTION'	=> $this->u_action,
 			'L_TITLE' 	=> $this->page_title)
 		);
