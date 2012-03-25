@@ -18,10 +18,10 @@
 		<dl>
 			<dt><label for="dynamo_layer_position">{L_LAYER_POSITION}:</label><br /><span>{L_LAYER_POSITION_EXPLAIN}</span></dt>
 			<dd><select name="dynamo_layer_position">
+				<option value="{TOP_POSITION}">{L_LAYER_AT_TOP}</option>
 				<!-- BEGIN layers_dropdown -->
-				<option value="{layers_dropdown.POSITION}"<!-- IF layers_dropdown.POSITION == CURRENT_POSITION --> selected="selected" <!-- ENDIF -->>{layers_dropdown.POSITION_TEXT} <!-- IF layers_dropdown.POSITION == CURRENT_POSITION --> (keep it where it is)<!-- ENDIF --></option>
+				<option value="{layers_dropdown.POSITION}"<!-- IF layers_dropdown.POSITION == CURRENT_POSITION --> selected="selected" <!-- ENDIF -->>{layers_dropdown.POSITION_TEXT}<!-- IF layers_dropdown.POSITION == CURRENT_POSITION --> {L_LAYER_CURRENT_POSITION}<!-- ENDIF --></option>
 				<!-- END layers_dropdown -->
-				<option value="{LAST_POSITION}">{L_LAST_LAYER}</option>
 			</select></dd>
 		</dl>
 		<dl>

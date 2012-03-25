@@ -178,8 +178,7 @@ class acp_dynamo
 						$layer_id = $db->sql_nextid();
 						
 						// Move all the other layers, and set this to the right position
-						// If it's 0, it means "below the current 1", so the pos should be 1
-						$this->move_layer($layer_id, $desired_position + 1);
+						$this->move_layer($layer_id, $desired_position);
 
 						trigger_error($user->lang['ACP_DYNAMO_ADDED_LAYER'] . adm_back_link($this->u_action));
 					}
@@ -193,27 +192,23 @@ class acp_dynamo
 							ORDER BY dynamo_layer_position DESC";
 					$result = $db->sql_query($sql);
 
-					$previous_layer = '';
+					$top_position = 0;
 
 					while ($row = $db->sql_fetchrow($result))
 					{
 						$template->assign_block_vars('layers_dropdown', array(
 							'POSITION'		=> $row['dynamo_layer_position'],
-							'PREVIOUS'		=> $previous_layer,
-							'POSITION_TEXT'	=> ($previous_layer == '') ? $user->lang['LAYER_AT_TOP'] : sprintf($user->lang['IMMEDIATELY_BELOW'], $previous_layer),
+							'POSITION_TEXT'	=> sprintf($user->lang['IMMEDIATELY_BELOW'], $row['dynamo_layer_name']),
 						));
 
-						$previous_layer = $row['dynamo_layer_name'];
-						$last_position = $row['dynamo_layer_position'] - 1;
+						// Used for the "at the very top" position
+						// Add 1 at the end because this is a new layer
+						$top_position = max($row['dynamo_layer_position'], $top_position);
 					}
-
-					// Add this to the end, always, so there is at least one option
-					$l_last_layer = $user->lang['LAYER_AT_BOTTOM'];
-					$l_last_layer .= ($previous_layer == '') ? '' : ' - ' . sprintf($user->lang['IMMEDIATELY_BELOW'], $previous_layer);
 
 					$template_vars = array(
 						'L_LAST_LAYER'		=> $l_last_layer,
-						'LAST_POSITION'		=> $last_position, // used for the dropdown
+						'TOP_POSITION'		=> $top_position + 1,
 						'L_TITLE'			=> $user->lang['ADD_LAYER'],
 						'L_TITLE_EXPLAIN'	=> $user->lang['ADD_LAYER_EXPLAIN'],
 						'LAYER_NAME'		=> request_var('dynamo_layer_name', ''), // from the quick "add layer" form thing
@@ -245,7 +240,7 @@ class acp_dynamo
 						$db->sql_query($sql);
 
 						// Now move it
-						$this->move_layer($edit_get, $desired_position + 1);
+						$this->move_layer($edit_get, $desired_position);
 
 						trigger_error($user->lang['ACP_DYNAMO_EDITED_LAYER'] . adm_back_link($this->u_action));
 					}
@@ -271,21 +266,17 @@ class acp_dynamo
 							ORDER BY dynamo_layer_position DESC";
 					$result = $db->sql_query($sql);
 
-					$previous_layer = '';
+					$top_position = 0;
 					while ($row = $db->sql_fetchrow($result))
 					{
 						$template->assign_block_vars('layers_dropdown', array(
 							'POSITION'		=> $row['dynamo_layer_position'],
-							'PREVIOUS'		=> $previous_layer,
-							'POSITION_TEXT'	=> ($previous_layer == '') ? $user->lang['LAYER_AT_TOP'] : sprintf($user->lang['IMMEDIATELY_BELOW'], $previous_layer),
+							'POSITION_TEXT'	=> sprintf($user->lang['IMMEDIATELY_BELOW'], $row['dynamo_layer_name']),
 						));
 
-						$previous_layer = $row['dynamo_layer_name'];
-						$last_position = $row['dynamo_layer_position'] - 1;
+						// Keep track of the position "at the very top" (don't add 1)
+						$top_position = max($row['dynamo_layer_position'], $top_position);
 					}
-
-					$l_last_layer = $user->lang['LAYER_AT_BOTTOM'];
-					$l_last_layer .= ($previous_layer == '') ? '' : ' - ' . sprintf($user->lang['IMMEDIATELY_BELOW'], $previous_layer);
 
 					// Now get the items associated with this layer
 					// Three db queries isn't fun, try to optimise this later
@@ -318,7 +309,7 @@ class acp_dynamo
 						'LAYER_MANDATORY'	=> $layer['dynamo_layer_mandatory'],
 						'LAYER_HAS_ITEMS'	=> $num_items > 0,
 						'CURRENT_POSITION'	=> $layer['dynamo_layer_position'],
-						'LAST_POSITION'		=> $last_position,
+						'TOP_POSITION'		=> $top_position,
 					);
 				}
 				else if ($delete_get > 0)
