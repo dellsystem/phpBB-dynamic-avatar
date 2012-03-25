@@ -109,18 +109,26 @@ class acp_dynamo
 				$this_template = 'acp_dynamo_settings';
 				$this_title = 'ACP_DYNAMO_SETTINGS';
 
+				$config_settings = array(
+					// config_var_name		=> default value (for request_var)
+					'dynamo_enabled' 		=> 0,
+					'dynamo_use_points'		=> 0,
+					'dynamo_change_base' 	=> 0,
+					'dynamo_mandatory'		=> 0,
+					'dynamo_width'			=> 0,
+					'dynamo_height'			=> 0,
+					'dynamo_image_fp'		=> '',
+					'dynamo_avatar_fp'		=> '',
+				);
+
 				if ($submit)
 				{
-					// Update the config values ... better way of doing this?
+					foreach ($config_settings as $var => $default)
+					{
+						set_config($var, request_var($var, $default));
+					}
+
 					add_log('admin', 'LOG_DYNAMO_SETTINGS');
-					set_config('dynamo_enabled', request_var('dynamo_enabled', 0));
-					set_config('dynamo_use_points', request_var('dynamo_use_points', 0));
-					set_config('dynamo_change_base', request_var('dynamo_change_base', 0));
-					set_config('dynamo_mandatory', request_var('dynamo_mandatory', 0));
-					set_config('dynamo_width', request_var('dynamo_width', 0));
-					set_config('dynamo_height', request_var('dynamo_height', 0));
-					set_config('dynamo_image_fp', request_var('dynamo_image_fp', ''));
-					set_config('dynamo_avatar_fp', request_var('dynamo_avatar_fp', ''));
 
 					trigger_error($user->lang['CONFIG_UPDATED'] . adm_back_link($this->u_action));
 				}
@@ -129,15 +137,13 @@ class acp_dynamo
 					'L_TITLE'				=> $user->lang['SETTINGS'],
 					'L_TITLE_EXPLAIN'		=> $user->lang['DYNAMO_SETTINGS_EXPLAIN'],
 					'U_ACTION' 				=> $this->u_action,
-					'DYNAMO_ENABLED'		=> $config['dynamo_enabled'],
-					'DYNAMO_USE_POINTS'		=> $config['dynamo_use_points'],
-					'DYNAMO_CHANGE_BASE'	=> $config['dynamo_change_base'],
-					'DYNAMO_MANDATORY'		=> $config['dynamo_mandatory'],
-					'DYNAMO_WIDTH'			=> $config['dynamo_width'],
-					'DYNAMO_HEIGHT'			=> $config['dynamo_height'],
-					'DYNAMO_IMAGE_FP'		=> $config['dynamo_image_fp'],
-					'DYNAMO_AVATAR_FP'		=> $config['dynamo_avatar_fp'],
 				);
+
+				// Add the values of the config settings to $template_vars
+				foreach ($config_settings as $var => $default)
+				{
+					$template_vars[strtoupper($var)] = $config[$var];
+				}
 
 			break;
 			case 'layers':
