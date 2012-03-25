@@ -438,7 +438,8 @@ class acp_dynamo
 							$file->realname = get_item_image_path('filename', $desired_layer, $item_id);
 
 							// Move file and overwrite any existing image
-							$file->move_file(get_item_image_path('dirs'), true);
+							// $phpbb_root_path is prepended within the move_file function
+							$file->move_file($config['dynamo_image_fp'], true);
 						}
 
 						$insert_array = array(
