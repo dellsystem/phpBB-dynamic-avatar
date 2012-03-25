@@ -19,7 +19,8 @@ class acp_dynamo
 	{
 		global $db;
 		// First get this layer's current position
-		$sql = "SELECT dynamo_layer_position
+		// Also the name, in case we need to add it to the logs
+		$sql = "SELECT dynamo_layer_position, dynamo_layer_name
 				FROM " . DYNAMO_LAYERS_TABLE . "
 				WHERE dynamo_layer_id = $layer_id";
 		$result = $db->sql_query($sql);
@@ -31,6 +32,9 @@ class acp_dynamo
 		if ($desired_position == 0)
 		{
 			$desired_position = $old_position + $step;
+			// If this is the case, it should be added to the logs
+			$up_or_down = ($step > 0) ? 'up' : 'down';
+			add_log('admin', 'LOG_DYNAMO_MOVE_LAYER', $row['dynamo_layer_name'], $up_or_down);
 		}
 
 		// Move all the ones between
@@ -180,6 +184,8 @@ class acp_dynamo
 						// Move all the other layers, and set this to the right position
 						$this->move_layer($layer_id, $desired_position);
 
+						add_log('admin', 'LOG_DYNAMO_ADD_LAYER', $desired_name);
+
 						trigger_error($user->lang['ACP_DYNAMO_ADDED_LAYER'] . adm_back_link($this->u_action));
 					}
 
@@ -241,6 +247,8 @@ class acp_dynamo
 
 						// Now move it
 						$this->move_layer($edit_get, $desired_position);
+
+						add_log('admin', 'LOG_DYNAMO_EDIT_LAYER', $desired_name);
 
 						trigger_error($user->lang['ACP_DYNAMO_EDITED_LAYER'] . adm_back_link($this->u_action));
 					}
@@ -318,6 +326,13 @@ class acp_dynamo
 					if (confirm_box(true))
 					{
 						// If we need to delete a layer, the delete get var will be > 0 (will be the ID)
+						// First figure out the name of the layer (for logging purposes)
+						$sql = "SELECT dynamo_layer_name
+								FROM " . DYNAMO_LAYERS_TABLE . "
+								WHERE dynamo_layer_id = $delete_get";
+						$result = $db->sql_query($sql);
+						$row = $db->sql_fetchrow($result);
+
 						$sql = "DELETE FROM " . DYNAMO_LAYERS_TABLE . "
 								WHERE dynamo_layer_id = $delete_get";
 						$db->sql_query($sql);
@@ -327,7 +342,9 @@ class acp_dynamo
 								SET dynamo_item_layer = 0
 								WHERE dynamo_item_layer = $delete_get";
 						$db->sql_query($sql);
-						 
+
+						add_log('admin', 'LOG_DYNAMO_DELETE_LAYER', $row['dynamo_layer_name']);
+
 						trigger_error($user->lang['ACP_DYNAMO_DELETED_LAYER'] . adm_back_link($this->u_action));
 					}
 					else
@@ -453,6 +470,23 @@ class acp_dynamo
 						$sql = "INSERT INTO " . DYNAMO_ITEMS_TABLE . " " . $db->sql_build_array('INSERT', $insert_array);
 						$db->sql_query($sql);
 
+						// Figure out the layer name so it can be added to the logs
+						if ($desired_layer > 0)
+						{
+							$sql = "SELECT dynamo_layer_name
+									FROM " . DYNAMO_LAYERS_TABLE . "
+									WHERE dynamo_layer_id = $desired_layer";
+							$result = $db->sql_query($sql);
+							$row = $db->sql_fetchrow($result);
+							$layer_name = $row['dynamo_layer_name'];
+						}
+						else
+						{
+							$layer_name = $user->lang['UNCATEGORISED'];
+						}
+
+						add_log('admin', 'LOG_DYNAMO_ADD_ITEM', $desired_name, $layer_name);
+
 						trigger_error($user->lang['ACP_DYNAMO_ADDED_ITEM'] . adm_back_link($this->u_action));
 					}
 					$this_template = 'acp_dynamo_items_edit';
@@ -515,6 +549,8 @@ class acp_dynamo
 								WHERE dynamo_item_id = $edit_item_id";
 						$db->sql_query($sql);
 
+						add_log('admin', 'LOG_DYNAMO_EDIT_ITEM', $desired_name);
+
 						trigger_error($user->lang['ACP_DYNAMO_EDITED_ITEM'] . adm_back_link($this->u_action));
 					}
 					// Editing the item
@@ -559,6 +595,13 @@ class acp_dynamo
 				// Do the confirm box thing whatever before deleting
 					if (confirm_box(true))
 					{
+						// Figure out the item name before deleting it (for logs)
+						$sql = "SELECT dynamo_item_name
+								FROM " . DYNAMO_ITEMS_TABLE . "
+								WHERE dynamo_item_id = $delete_item_id";
+						$result = $db->sql_query($sql);
+						$row = $db->sql_fetchrow($result);
+
 						// Delete the item
 						$sql = "DELETE FROM " . DYNAMO_ITEMS_TABLE . "
 								WHERE dynamo_item_id = $delete_item_id";
@@ -570,6 +613,8 @@ class acp_dynamo
 								WHERE dynamo_layer_default = $delete_item_id";
 						// This way, we don't need to do a select query first
 						$db->sql_query($sql);
+
+						add_log('admin', 'LOG_DYNAMO_DELETE_ITEM', $row['dynamo_item_name']);
 
 						trigger_error($user->lang['ACP_DYNAMO_DELETED_ITEM'] . adm_back_link($this->u_action));	
 					}
