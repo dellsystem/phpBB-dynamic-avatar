@@ -45,6 +45,10 @@ $lang = array_merge($lang, array(
 	'DYNAMO_WIDTH_DESC'			=> 'Set this to the width, in pixels, of the images you upload. If you upload an image of a different width, you will be able to crop or enlarge it as necessary. <strong>Note: Not yet implemented.</strong>',
 	'DYNAMO_HEIGHT'				=> 'Dynamic avatar height',
 	'DYNAMO_HEIGHT_DESC'		=> 'See above, for height.',
+	'DYNAMO_IMAGE_FP'			=> 'Uploaded image filepath',
+	'DYNAMO_IMAGE_FP_DESC'		=> 'Path under your phpBB root directory to which item images will be uploaded. By default, this is <samp>images/dynamo</samp>. Please ensure that this directory is writeable by the user your webserver runs as.',
+	'DYNAMO_AVATAR_FP'			=> 'Dynamic avatar filepath',
+	'DYNAMO_AVATAR_FP_DESC'		=> 'Path under your phpBB root directory to which your users\' dynamic avatars will be saved. By default, this is <samp>images/avatars/dynamo</samp>. Please ensure that this directory is writeable by the user your webserver runs as.',
 
 	// acp_dynamo_items.html
 	'DYNAMO_ITEMS'				=> 'Items',

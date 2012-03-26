@@ -19,6 +19,7 @@ class acp_dynamo
 	{
 		global $phpbb_root_path, $db, $phpEx, $auth, $user, $template, $config;
 
+		include($phpbb_root_path . 'includes/functions_dynamo.' . $phpEx);
 		$user->add_lang('mods/dynamo/acp');
 		$action	= request_var('action', '');
 		$submit = (isset($_POST['submit'])) ? true : false;
@@ -58,22 +59,34 @@ class acp_dynamo
 					'L_TITLE_EXPLAIN'		=> $user->lang['DYNAMO_OVERVIEW_EXPLAIN'],
 					'DYNAMO_WIDTH'			=> $config['dynamo_width'],
 					'DYNAMO_HEIGHT'			=> $config['dynamo_height'],
+					'DYNAMO_IMAGE_FP'		=> $config['dynamo_image_fp'],
+					'DYNAMO_AVATAR_FP'		=> $config['dynamo_avatar_fp'],
 				);
 			break;
 			case 'settings':
 				$this_template = 'acp_dynamo_settings';
 				$this_title = 'ACP_DYNAMO_SETTINGS';
 
+				$config_settings = array(
+					// config_var_name		=> default value (for request_var)
+					'dynamo_enabled' 		=> 0,
+					'dynamo_use_points'		=> 0,
+					'dynamo_change_base' 	=> 0,
+					'dynamo_mandatory'		=> 0,
+					'dynamo_width'			=> 0,
+					'dynamo_height'			=> 0,
+					'dynamo_image_fp'		=> '',
+					'dynamo_avatar_fp'		=> '',
+				);
+
 				if ($submit)
 				{
-					// Update the config values ... better way of doing this?
+					foreach ($config_settings as $var => $default)
+					{
+						set_config($var, request_var($var, $default));
+					}
+
 					add_log('admin', 'LOG_DYNAMO_SETTINGS');
-					set_config('dynamo_enabled', request_var('dynamo_enabled', 0));
-					set_config('dynamo_use_points', request_var('dynamo_use_points', 0));
-					set_config('dynamo_change_base', request_var('dynamo_change_base', 0));
-					set_config('dynamo_mandatory', request_var('dynamo_mandatory', 0));
-					set_config('dynamo_width', request_var('dynamo_width', 0));
-					set_config('dynamo_height', request_var('dynamo_height', 0));
 
 					trigger_error($user->lang['CONFIG_UPDATED'] . adm_back_link($this->u_action));
 				}
@@ -82,13 +95,13 @@ class acp_dynamo
 					'L_TITLE'				=> $user->lang['SETTINGS'],
 					'L_TITLE_EXPLAIN'		=> $user->lang['DYNAMO_SETTINGS_EXPLAIN'],
 					'U_ACTION' 				=> $this->u_action,
-					'DYNAMO_ENABLED'		=> $config['dynamo_enabled'],
-					'DYNAMO_USE_POINTS'		=> $config['dynamo_use_points'],
-					'DYNAMO_CHANGE_BASE'	=> $config['dynamo_change_base'],
-					'DYNAMO_MANDATORY'		=> $config['dynamo_mandatory'],
-					'DYNAMO_WIDTH'			=> $config['dynamo_width'],
-					'DYNAMO_HEIGHT'			=> $config['dynamo_height'],
 				);
+
+				// Add the values of the config settings to $template_vars
+				foreach ($config_settings as $var => $default)
+				{
+					$template_vars[strtoupper($var)] = $config[$var];
+				}
 
 			break;
 			case 'layers':
@@ -411,13 +424,11 @@ class acp_dynamo
 						if (!empty($_FILES['uploadfile']['name']))
 						{
 							$file = $upload->form_upload('uploadfile');
-							$prefix = $desired_layer . '-';
-							$file->realname = $prefix . $item_id . '.png';
+							$file->realname = get_item_image_path('filename', $desired_layer, $item_id);
 
-							// Make a config option to set this later
-							$destination = 'images/dynamo';
 							// Move file and overwrite any existing image
-							$file->move_file($destination, true);
+							// $phpbb_root_path is prepended within the move_file function
+							$file->move_file($config['dynamo_image_fp'], true);
 						}
 
 						$insert_array = array(
@@ -476,12 +487,11 @@ class acp_dynamo
 
 						if ($old_layer != $desired_layer)
 						{
-							// Stop assuming PNG (temp solution)
-							$old_file_name = $phpbb_root_path . 'images/dynamo/' . $old_layer . '-' . $edit_item_id . '.png';
-							$new_file_name = $phpbb_root_path . 'images/dynamo/' . $desired_layer . '-' . $edit_item_id . '.png';
+							$old_file_name = get_item_image_path('entire', $old_layer, $edit_item_id);
+							$new_file_name = get_item_image_path('entire', $desired_layer, $edit_item_id);
 							if (!rename($old_file_name, $new_file_name))
 							{
-								trigger_error("shit something went wrong lol" . adm_back_link($this->u_action));
+								trigger_error("Can't move the image file attached to the item. Please file a bug report." . adm_back_link($this->u_action));
 							}
 						}
 
@@ -532,7 +542,7 @@ class acp_dynamo
 						'CURRENT_LAYER'		=> $item['dynamo_item_layer'],
 						'L_TITLE'			=> sprintf($user->lang['EDITING_ITEM'], $item_name),
 						'L_TITLE_EXPLAIN'	=> $user->lang['EDITING_ITEM_EXPLAIN'],
-						'ITEM_IMAGE'		=> $phpbb_root_path . 'images/dynamo/' . $item['dynamo_item_layer'] . '-' . $item['dynamo_item_id'] . '.png',
+						'ITEM_IMAGE'		=> get_item_image_path('entire', $item['dynamo_item_layer'], $item['dynamo_item_id']),
 						'ITEM_NAME'			=> $item_name,
 						'ITEM_DESC'			=> $item['dynamo_item_desc'],
 					);
@@ -596,7 +606,7 @@ class acp_dynamo
 						$item_id = $row['dynamo_item_id'];
 
 						// Figure out the item's image URL
-						$item_image_url = '../images/dynamo/' . $item_layer . '-' . $item_id . '.png';
+						$item_image_url = get_item_image_path('entire', $item_layer, $item_id);
 
 						$template->assign_block_vars('item', array(
 							'NEW_LAYER'		=> $new_layer,
