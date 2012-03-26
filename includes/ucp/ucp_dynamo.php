@@ -211,7 +211,7 @@ class ucp_dynamo
 						'POSITION'		=> $layer_data['position'],
 						'ITEM_EXISTS'	=> $item_exists,
 						'URL'			=> $layer_data['items'][$true_item]['url'],
-						'ITEM_ID'		=> $true_item,
+						'ORIGINAL'		=> $true_item,
 						'DEFAULT'		=> $default,
 					));
 
