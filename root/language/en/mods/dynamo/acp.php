@@ -100,6 +100,7 @@ $lang = array_merge($lang, array(
 	'IMMEDIATELY_BELOW'			=> 'Immediately below %s',
 	'NO_DEFAULT_ITEM'			=> 'No default item',
 	'LAYER_AT_TOP'				=> 'At the very top',
+	'LAYER_CURRENT_POSITION'	=> '(keep it where it is)',
 ));
 
 ?>
