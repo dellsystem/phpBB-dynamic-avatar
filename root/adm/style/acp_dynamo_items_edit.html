@@ -1,35 +1,45 @@
 <!-- INCLUDE overall_header.html -->
 
-<h1>{L_ACP_DYNAMO_ITEMS} :: {ITEM_ADD_EDIT}</h1>
+<h1>{L_TITLE}</h1>
 
-<p>{MODE_DESCRIPTION}</p>
+<p>{L_TITLE_EXPLAIN}</p>
 
 <form id="acp_dynamo" method="post" action="{U_ACTION}" enctype="multipart/form-data">
-
 	<fieldset>
-		<legend>Item settings</legend>
+		<legend>{L_ITEM_SETTINGS}</legend>
+		<!-- IF ITEM_IMAGE -->
 		<dl>
-			<dt><label for="dynamo_item_name">Item name:</label></dt>
+			<dt><label>{L_ITEM_PREVIEW}:</label></dt>
+			<dd><img src="{ITEM_IMAGE}" title="{ITEM_NAME}" alt="{L_ITEM_PREVIEW}" /></dd>
+		</dl>
+		<!-- ENDIF -->
+		<dl>
+			<dt><label for="dynamo_item_name">{L_ITEM_NAME}:</label></dt>
 			<dd><input type="text" name="dynamo_item_name" value="{ITEM_NAME}" /></dd>
 		</dl>
 		<dl>
-			<dt><label for="dynamo_item_desc">Item description:</label></span></dt>
+			<dt><label for="dynamo_item_desc">{L_ITEM_DESCRIPTION}:</label></dt>
 			<dd><input type="text" name="dynamo_item_desc" value="{ITEM_DESC}" /></dd>
 		</dl>
 		<dl>
-			<dt><label for="dynamo_item_layer">Layer:</label><br /><span>Choose the layer this item will belong to. You can choose to set it to no layer if you want to make it unavailable for now.</span></dt>
-			<dd>{LAYER_DROPDOWN}</dd>
+			<dt><label for="dynamo_item_layer">{L_LAYER}:</label><br /><span>{L_ITEM_LAYER_DESC}</span></dt>
+			<dd><select name="dynamo_item_layer">
+				<option value="0">{L_UNCATEGORISED}</option>
+				<!-- BEGIN layer_dropdown -->
+				<option value="{layer_dropdown.LAYER_ID}"<!-- IF layer_dropdown.LAYER_ID == CURRENT_LAYER --> selected="selected"<!-- ENDIF -->>{layer_dropdown.LAYER_NAME}</option>
+				<!-- END layer_dropdown -->
+			</select></dd>
 		</dl>
 		<dl>
-			<dt><label for="uploadfile">Image file:</label><br /><span>Upload the image file for this item from your computer.</span></dt>
+			<dt><label for="uploadfile">{L_IMAGE_FILE}:</label><br /><span>{L_IMAGE_FILE_DESC}</span></dt>
 			<dd><input type="file" name="uploadfile" /></dd>
 	</fieldset>
-	
+
 	<fieldset>
-		<legend>{L_ACP_SUBMIT_CHANGES}</legend> 
-		<p class="submit-buttons"> 
+		<legend>{L_ACP_SUBMIT_CHANGES}</legend>
+		<p class="submit-buttons">
 			<input class="button1" type="submit" name="submit" value="{L_SUBMIT}" />&nbsp;
-			<input class="button2" type="reset" id="reset" name="reset" value="{L_RESET}" /> 
+			<input class="button2" type="reset" id="reset" name="reset" value="{L_RESET}" />
 		</p>
 	</fieldset>
 </form>

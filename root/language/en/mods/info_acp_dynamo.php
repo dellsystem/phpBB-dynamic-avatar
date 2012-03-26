@@ -26,11 +26,12 @@ if (empty($lang) || !is_array($lang))
 $lang = array_merge($lang, array(
 	'ACP_DYNAMO'					=> 'Dynamic avatar',
 	'ACP_DYNAMO_OVERVIEW'			=> 'Overview',
-	'ACP_DYNAMO_SETTINGS'			=> 'Settings',
+	'ACP_DYNAMO_SETTINGS'			=> 'Settings', // is this necessary? already defined elsewhere
 	'ACP_DYNAMO_LAYERS'				=> 'Layers',
 	'ACP_DYNAMO_ITEMS'				=> 'Items',
 	'ACP_DYNAMO_USERS'				=> 'Users',
-	// ACP messages when doing shit
+
+	// ACP messages when performing actions
 	'ACP_DYNAMO_EDITED_LAYER'		=> 'Successfully edited layer.',
 	'ACP_DYNAMO_ADDED_LAYER'		=> 'Successfully added layer.',
 	'ACP_DYNAMO_DELETED_LAYER'		=> 'Successfully deleted layer.',
@@ -39,9 +40,16 @@ $lang = array_merge($lang, array(
 	'ACP_DYNAMO_EDITED_ITEM'		=> 'Successfully edited item.',
 	'ACP_DYNAMO_DELETED_ITEM'		=> 'Successfully deleted item.',
 	'ACP_DYNAMO_DELETE_ITEM'		=> 'Are you sure you want to delete this item?',
-	
-	// Log shit
+
+	// Logging
 	'LOG_DYNAMO_SETTINGS'			=> '<strong>Altered dynamic avatar settings</strong>',
+	'LOG_DYNAMO_EDIT_LAYER'			=> '<strong>Edited dynamic avatar layer</strong><br />» %s',
+	'LOG_DYNAMO_ADD_LAYER'			=> '<strong>Created new dynamic avatar layer</strong><br />» %s',
+	'LOG_DYNAMO_DELETE_LAYER'		=> '<strong>Deleted dynamic avatar layer</strong><br />» %s',
+	'LOG_DYNAMO_MOVE_LAYER'			=> '<strong>Moved dynamic avatar layer</strong> %1$s <strong>%2$s</strong>', // layer name then "up" or "down"
+	'LOG_DYNAMO_ADD_ITEM'			=> '<strong>Created new dynamic avatar item</strong><br />» <strong>%1$s</strong> in layer <strong>%2$s</strong>', // item name then layer name
+	'LOG_DYNAMO_EDIT_ITEM'			=> '<strong>Edited dynamic avatar item</strong><br />» %s',
+	'LOG_DYNAMO_DELETE_ITEM'		=> '<strong>Deleted dynamic avatar item</strong><br />» %s',
 ));
 
 ?>

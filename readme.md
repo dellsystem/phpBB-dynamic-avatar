@@ -9,13 +9,6 @@ This MOD provides the ability to edit your avatar, using bodily features and clo
 
 Because I couldn't think of a better name and I needed a short name for database tables and config field names.
 
-**Notes to self**
-
-*	Delete file if the item is deleted? Or if the image file is changed
-*	Make the dynamo filepath (for uploaded images) ACP-configurable (dir must be chmodded to 777)
-*   Remote avatar must be enabled ...
-*   Which dirs to chmod?
-
 *   [Features, screenshots, download links and more](http://www.dellsystem.me/phpbb-dynamic-avatar)
 *   [Demo board](http://phpbb.dellsystem.me/dynamo) (Read the posts in the only forum for how to use the demo board)
 *   [MOD development topic at phpBB.com](http://www.phpbb.com/community/viewtopic.php?f=70&t=1823845) - Please post support queries here.

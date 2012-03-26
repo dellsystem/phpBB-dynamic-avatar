@@ -18,15 +18,30 @@
 		</author>
 	</author-group>
 
-	<mod-version>0.0.2</mod-version>
+	<mod-version>0.1.0</mod-version>
 
 	<installation>
 		<level>easy</level>
 		<time>120</time>
-		<target-version>3.0.9</target-version>
+		<target-version>3.0.10</target-version>
 	</installation>
 
 	<history>
+		<entry>
+			<date>2012-03-26</date>
+			<rev-version>0.1.0</rev-version>
+			<changelog lang="en">
+				<change>Rewrote and redesigned UCP module (issues #35 and #42)</change>
+				<change>Added logging to more ACP actions (issue #41)</change>
+				<change>Made image directory paths ACP-configurable (issue #37)</change>
+				<change>Turned basically all text into a language constant (issues #10, #16)</change>
+				<change>Improved reordering of layers by adding a move up/down option and fixing bugs (issues #32, #33, #34)</change>
+				<change>Dropped the `position` unique index in the layers table (see previous)</change>
+				<change>Added functionality to the "reset" button, and added a new one (issue #36)</change>
+				<change>Moved reusable functions into functions_dynamo.php (new file)</change>
+				<change>Added ACP-configurable image dimensions (issue #5 - still a WIP and may not behave as expected)</change>
+			</changelog>
+		</entry>
 		<entry>
 			<date>2011-08-31</date>
 			<rev-version>0.0.2</rev-version>
@@ -48,7 +63,7 @@
 
 <action-group>
 	<copy>
-		<file from="root/*.*" to="*.*" />
+		<file from="root/*" to="*" />
 	</copy>
 	<open src="includes/constants.php">
 		<edit>
@@ -61,7 +76,7 @@ define('DYNAMO_USERS_TABLE',		$table_prefix . 'dynamo_users');]]></action>
 	</open>
 	<diy-instructions lang="en">Navigate to dynamo_mod_install.php in the root of your forum and follow the install instructions.
 
-Make sure to enable remote avatars (ACP, Avatar settings) and change the maximum avatar dimensions (the supplied demo images have a width of 100px and a height of 120px - this isn't a necessary step but it may become one eventually?). Make sure also to chmod the /images/avatars/dynamo/ directory so that it is writable by whatever user your server's PHP process runs under (777 is always a safe bet).
+Make sure to enable remote avatars (ACP, Avatar settings) and change the maximum avatar dimensions (the supplied demo images have a width of 100px and a height of 120px - this isn't a necessary step but it may become one eventually?). Make sure also to chmod/chown the /images/avatars/dynamo/ and /images/dynamo/ directories so that they are writable by whatever user your server's PHP process runs under (777 is always a safe bet).
 
 You can configure this MOD in the ACP, under the .MODs tab.</diy-instructions>
 </action-group>
