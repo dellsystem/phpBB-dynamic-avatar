@@ -201,9 +201,9 @@ class ucp_dynamo
 					// If the item exists in the layer, use that
 					// Otherwise, choose the default item
 					$current_item = $layer_data['current'];
-					$item_exists = isset($layer_data['items'][$current_item]);
-					$true_item = ($item_exists) ? $current_item : $default;
+					$item_exists = isset($layer_data['items'][$current_item]) && $current_item > 0;
 					$default = $layer_data['default'];
+					$true_item = ($item_exists) ? $current_item : $default;
 
 					// For making it sort of work even without js
 					$template->assign_block_vars('image', array(
