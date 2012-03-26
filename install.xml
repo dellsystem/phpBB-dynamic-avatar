@@ -48,7 +48,7 @@
 
 <action-group>
 	<copy>
-		<file from="root/*.*" to="*.*" />
+		<file from="root/*" to="*" />
 	</copy>
 	<open src="includes/constants.php">
 		<edit>
