@@ -31,7 +31,7 @@
 #inventory-pane {
 	position: absolute;
 	left: 200px;
-	right: 150px;
+	right: 175px;
 	height: 100%;
 	overflow: auto;
 }
@@ -43,12 +43,12 @@
 }
 
 #layers-pane {
-	width: 150px;
+	width: 175px;
 	height: 100%;
 	position: absolute;
 	top: 0px;
 	right: 0px;
-	overflow: auto;
+	overflow-y: auto;
 }
 
 .cplist li {
@@ -56,8 +56,19 @@
 	font-size: 1.1em;
 	font-weight: bold;
 	line-height: 40px;
-	cursor: pointer;
+}
+
+.cplist li a {
+	text-decoration: none;
+	display: block;
+	width: 165;
+	height: 100%;
 	padding-left: 10px;
+}
+
+.dynamo-item {
+	width: {IMAGE_WIDTH}px;
+	height: {IMAGE_HEIGHT}px;
 }
 </style>
 
@@ -71,20 +82,28 @@
 	<form method="post" name="dynamo" action="{U_ACTION}">
 	<div id="dynamo-wrap">
 		<div id="preview-pane" class="bg1">
-			<!-- BEGIN images -->
-			<img id="layer-{images.LAYER_ID}" style="z-index: {images.POSITION}; width: {IMAGE_WIDTH}px; height: {IMAGE_HEIGHT}px;" src="<!-- IF images.ITEM_EXISTS -->{images.ITEM_IMAGE}<!-- ELSE -->images/spacer.gif<!-- ENDIF -->" data-original="{images.ITEM_ID}" data-default="{images.DEFAULT_ITEM}" />
-			<!-- END images -->
+			<!-- BEGIN image -->
+			<img id="layer-{image.LAYER_ID}" style="z-index: {image.POSITION};" class="dynamo-item" src="<!-- IF image.ITEM_EXISTS -->{image.URL}<!-- ELSE -->images/spacer.gif<!-- ENDIF -->" data-original="{images.ITEM_ID}" data-default="{images.DEFAULT_ITEM}" />
+			<!-- END image -->
 		</div>
 		<div id="inventory-pane" class="panel">
-			<!-- BEGIN item -->
-			<label><img src="{item.ITEM_IMAGE}" title="{item.ITEM_DESC}" alt="{item.ITEM_NAME}" /><br />{item.ITEM_NAME}<br /><input type="radio" id="layer-{item.LAYER_ID}-{item.ITEM_ID}-radio" name="layer-{item.LAYER_ID}" value="{item.ITEM_ID}" class="item-button" data-layer="{item.LAYER_ID}" data-item="{item.ITEM_ID}" {item.SELECTED} /></label>
-			<!-- END item -->
+			<!-- BEGIN layer -->
+				<div id="layer-{layer.ID}-anchor">
+					<h3>{layer.NAME}</h3>
+					<p>{layer.DESC}</p>
+					<p>{L_MANDATORY}: <!-- IF layer.MANDATORY --><strong>{L_YES}</strong><!-- ELSE -->{L_NO}<!-- ENDIF --></p>
+					<hr />
+					<!-- BEGIN item -->
+						<label><img src="{layer.item.URL}" class="dynamo-item" title="{layer.item.DESC}" alt="{layer.item.NAME}" /><br />{layer.item.NAME}<br /><input type="radio" id="layer-{layer.ID}-{layer.item.ID}-radio" name="layer-{layer.ID}" value="{layer.item.ID}" class="item-button" data-layer="{layer.ID}" data-item="{layer.item.ID}"<!-- IF layer.item.ID == layer.TRUE_ITEM --> checked="checked"<!-- ENDIF --> /></label>
+					<!-- END item -->
+				</div>
+			<!-- END layer -->
 		</div>
 		<div id="layers-pane">
 			<ul class="topiclist cplist">
-				<!-- BEGIN layers -->
-				<li class="row bg1" data-layer="{layers.LAYER_ID}">{layers.LAYER_NAME}</li>
-				<!-- END layers -->
+				<!-- BEGIN layer -->
+				<li class="row bg1"><a data-layer="{layer.ID}" href="#layer-{layer.ID}-anchor" title="{layer.DESC}">{layer.NAME}</a></li>
+				<!-- END layer -->
 			</ul>
 		</div>
 	</div>

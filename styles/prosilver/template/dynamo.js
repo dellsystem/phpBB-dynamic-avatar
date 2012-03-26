@@ -34,22 +34,17 @@ $(document).ready(function() {
 	var showOnlyLayer = function(layerID) {
 		// First remove the bg2 class from everything
 		$('#layers-pane').find('.bg2').removeClass('bg2');
-		$('#layers-pane li[data-layer="' + layerID + '"]').addClass('bg2');
-		$('#inventory-pane label').each(function() {
-			var input = $(this).find('input');
-			if ($(input).attr('data-layer') != layerID) {
-				$(this).hide();
-			} else {
-				$(this).show();
-			}
-		});
+		$('#layers-pane a[data-layer="' + layerID + '"]').parent().addClass('bg2');
+		$('#inventory-pane div').hide();
+		$('#layer-' + layerID + '-anchor').show();
 	};
 
 	// Hide all the items except those in the current layer
-	var currentLayer = $('#layers-pane li:first-child').attr('data-layer');
+	var currentLayer = $('#layers-pane a:first-child').attr('data-layer');
 	showOnlyLayer(currentLayer);
 
-	$('#layers-pane li').click(function() {
+	$('#layers-pane a').click(function() {
 		showOnlyLayer($(this).attr('data-layer'));
+		return false;
 	});
 });
