@@ -24,7 +24,14 @@ if (empty($lang) || !is_array($lang))
 
 // Merge the following language entries into the lang array
 $lang = array_merge($lang, array(
-	'DYNAMO_EXPLAIN'		=> "Here you'll be able to edit your avatar. All the items in your inventory (if the shop is enabled etc) will appear, and you can click them to try them on, and then press submit to save the changes. If the Salvation Army setup is enabled, then all the possible items that can be worn will appear, and you can choose among them. At the moment, only the Salvation Army setup is possible, so just click on an item to try it on.",
+	'DYNAMO_EXPLAIN'		=> "Here you'll be able to edit your avatar. All the possible items that can be worn will appear, and you can choose among them. If Javascript is enabled, you can click on an item to try it on - a preview of your avatar will appear on the left panel. Make sure to hit <strong>submit</strong> in order to save your changes.",
+	'RESTORE_ORIGINAL'		=> 'Restore original items',
+	'RESTORE_DEFAULT'		=> 'Restore default items',
+
+	'INVALID_ITEM'			=> 'You must select a valid item for layer <strong>%s</strong>.',
+	'MANDATORY_LAYER'		=> 'Layer <strong>%s</strong> is mandatory, so you must select an item for it.',
+	'NO_ITEM'				=> 'None',
+	'MANDATORY'				=> 'Mandatory',
 ));
 
 ?>
