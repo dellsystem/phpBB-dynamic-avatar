@@ -133,6 +133,8 @@ class acp_dynamo
 						$sql = "INSERT INTO " . DYNAMO_LAYERS_TABLE . " " . $db->sql_build_array('INSERT', $insert_array);
 						$db->sql_query($sql);
 
+						add_log('admin', 'LOG_DYNAMO_ADD_LAYER', $desired_name);
+
 						trigger_error($user->lang['ACP_DYNAMO_ADDED_LAYER'] . adm_back_link($this->u_action));
 					}
 
@@ -227,6 +229,8 @@ class acp_dynamo
 								WHERE dynamo_layer_id = $edit_get";
 						$db->sql_query($sql);
 
+						add_log('admin', 'LOG_DYNAMO_EDIT_LAYER', $desired_name);
+
 						trigger_error($user->lang['ACP_DYNAMO_EDITED_LAYER'] . adm_back_link($this->u_action));
 					}
 
@@ -315,7 +319,9 @@ class acp_dynamo
 								SET dynamo_item_layer = 0
 								WHERE dynamo_item_layer = $delete_get";
 						$db->sql_query($sql);
-						 
+
+						add_log('admin', 'LOG_DYNAMO_DELETE_LAYER', $row['dynamo_layer_name']);
+
 						trigger_error($user->lang['ACP_DYNAMO_DELETED_LAYER'] . adm_back_link($this->u_action));
 					}
 					else
@@ -425,6 +431,8 @@ class acp_dynamo
 						$sql = "INSERT INTO " . DYNAMO_ITEMS_TABLE . " " . $db->sql_build_array('INSERT', $insert_array);
 						$db->sql_query($sql);
 
+						add_log('admin', 'LOG_DYNAMO_ADD_ITEM', $desired_name, $layer_name);
+
 						trigger_error($user->lang['ACP_DYNAMO_ADDED_ITEM'] . adm_back_link($this->u_action));
 					}
 					$this_template = 'acp_dynamo_items_edit';
@@ -488,6 +496,8 @@ class acp_dynamo
 								WHERE dynamo_item_id = $edit_item_id";
 						$db->sql_query($sql);
 
+						add_log('admin', 'LOG_DYNAMO_EDIT_ITEM', $desired_name);
+
 						trigger_error($user->lang['ACP_DYNAMO_EDITED_ITEM'] . adm_back_link($this->u_action));
 					}
 					// Editing the item
@@ -543,6 +553,8 @@ class acp_dynamo
 								WHERE dynamo_layer_default = $delete_item_id";
 						// This way, we don't need to do a select query first
 						$db->sql_query($sql);
+
+						add_log('admin', 'LOG_DYNAMO_DELETE_ITEM', $row['dynamo_item_name']);
 
 						trigger_error($user->lang['ACP_DYNAMO_DELETED_ITEM'] . adm_back_link($this->u_action));	
 					}

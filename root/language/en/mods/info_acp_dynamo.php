@@ -43,6 +43,13 @@ $lang = array_merge($lang, array(
 
 	// Logging
 	'LOG_DYNAMO_SETTINGS'			=> '<strong>Altered dynamic avatar settings</strong>',
+	'LOG_DYNAMO_EDIT_LAYER'			=> '<strong>Edited dynamic avatar layer</strong><br />» %s',
+	'LOG_DYNAMO_ADD_LAYER'			=> '<strong>Created new dynamic avatar layer</strong><br />» %s',
+	'LOG_DYNAMO_DELETE_LAYER'		=> '<strong>Deleted dynamic avatar layer</strong><br />» %s',
+	'LOG_DYNAMO_MOVE_LAYER'			=> '<strong>Moved dynamic avatar layer</strong> %1$s <strong>%2$s</strong>', // layer name then "up" or "down"
+	'LOG_DYNAMO_ADD_ITEM'			=> '<strong>Created new dynamic avatar item</strong><br />» <strong>%1$s</strong> in layer <strong>%2$s</strong>', // item name then layer name
+	'LOG_DYNAMO_EDIT_ITEM'			=> '<strong>Edited dynamic avatar item</strong><br />» %s',
+	'LOG_DYNAMO_DELETE_ITEM'		=> '<strong>Deleted dynamic avatar item</strong><br />» %s',
 ));
 
 ?>
