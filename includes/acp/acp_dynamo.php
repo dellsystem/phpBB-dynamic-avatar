@@ -167,7 +167,7 @@ class acp_dynamo
 						$result = $db->sql_query($sql);
 						$row = $db->sql_fetchrow($result);
 						$max_position = $row['max_position'];
-								
+
 						$desired_name = request_var('dynamo_layer_name', '');
 						$desired_desc = request_var('dynamo_layer_desc', '');
 						$desired_position = request_var('dynamo_layer_position', 0);
@@ -186,7 +186,7 @@ class acp_dynamo
 						$sql = "INSERT INTO " . DYNAMO_LAYERS_TABLE . " " . $db->sql_build_array('INSERT', $insert_array);
 						$db->sql_query($sql);
 						$layer_id = $db->sql_nextid();
-						
+
 						// Move all the other layers, and set this to the right position
 						$this->move_layer($layer_id, $desired_position);
 
