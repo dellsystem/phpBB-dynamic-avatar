@@ -497,6 +497,15 @@ function add_warning($user_row, $warning, $send_pm = true, $post_id = 0)
 		WHERE user_id = ' . $user_row['user_id'];
 	$db->sql_query($sql);
 
+	// Start Ultimate Points
+	global $points_values;
+
+	if ( $config['points_enable'] )
+	{
+		substract_points($user_row['user_id'], $points_values['points_per_warn']);
+	}
+	// End Ultimate Points
+
 	// We add this to the mod log too for moderators to see that a specific user got warned.
 	$sql = 'SELECT forum_id, topic_id
 		FROM ' . POSTS_TABLE . '

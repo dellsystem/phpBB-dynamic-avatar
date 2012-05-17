@@ -621,6 +621,20 @@ if ($draft_id && ($mode == 'reply' || $mode == 'quote' || $mode == 'post') && $u
 	}
 }
 
+// Start Ultimate Points
+$sql_array = array(
+	'SELECT'    => 'user_points',
+	'FROM'      => array(
+		USERS_TABLE => 'v',
+	),
+	'WHERE'		=> 'user_id = ' . (int) $user->data['user_id'],
+);
+$sql = $db->sql_build_query('SELECT', $sql_array);
+$result = $db->sql_query($sql);
+$user_points_old = $db->sql_fetchfield('user_points');
+$db->sql_freeresult($result);
+// End Ultimate Points
+
 // Load draft overview
 if ($load && ($mode == 'reply' || $mode == 'quote' || $mode == 'post') && $post_data['drafts'])
 {
@@ -687,6 +701,30 @@ if ($submit || $preview || $refresh)
 			$sql = 'DELETE FROM ' . POLL_VOTES_TABLE . "
 				WHERE topic_id = $topic_id";
 			$db->sql_query($sql);
+
+			// Start Ultimate Points
+			$p_poll_received = '';
+
+			// Check the rest of the points
+			$sql = 'SELECT points_poll_received, poster_id
+				FROM ' . POSTS_TABLE . '
+				WHERE topic_id = ' . $topic_id;
+			$result = $db->sql_query_limit($sql, 1);
+			$row = $db->sql_fetchrow($result);
+			$db->sql_freeresult($result);
+
+			// Now let's define the variables with the points for the post
+			$p_poll_received 	= $row['points_poll_received'];
+
+			if ($p_poll_received > 0)
+			{
+				// First substract points from user account
+				substract_points($row['poster_id'], $p_poll_received);
+
+				// Reset the field $p_poll_received
+				reset_poll_received_topic($topic_id);
+			}
+			// End Ultimate Points
 
 			$topic_sql = array(
 				'poll_title'		=> '',
@@ -1087,6 +1125,56 @@ if ($submit || $preview || $refresh)
 				$post_data['post_edit_locked'] = ITEM_LOCKED;
 			}
 
+			// Start Ultimate Points
+			$user->add_lang('mods/points');
+
+			$sql_array = array(
+				'SELECT'    => 'config_name, config_value',
+				'FROM'      => array(
+					POINTS_CONFIG_TABLE => 'c',
+				),
+			);
+			$sql = $db->sql_build_query('SELECT', $sql_array);
+			$result = $db->sql_query($sql);
+
+			while ($row = $db->sql_fetchrow($result))
+			{
+				$points_config[$row['config_name']] = $row['config_value'];
+			}
+			$db->sql_freeresult($result);
+
+			if ($config['points_enable']) {
+				switch ($mode) {
+					case 'post':
+						$points = ($points_config['pertopic_enable']) ? $post_data['forum_pertopic'] : 0;
+					break;
+					case 'reply':
+						$points = ($points_config['perpost_enable']) ? $post_data['forum_perpost'] : 0;
+					break;
+					case 'edit':
+						if ( $post_data['poster_id'] == $user->data['user_id'] )
+						{
+							$points = ($points_config['peredit_enable']) ? $post_data['forum_peredit'] : 0;
+						}
+						else
+						{
+							$points = 0;
+						}
+					break;
+					case 'quote':
+						$points= ($points_config['perpost_enable']) ? $post_data['forum_perpost'] : 0;
+					break;
+					default:
+						$points = 0;
+					break;
+				}
+			}
+			else
+			{
+				$points = 0;
+			}
+			// End Ultimate Points
+
 			$data = array(
 				'topic_title'			=> (empty($post_data['topic_title'])) ? $post_data['post_subject'] : $post_data['topic_title'],
 				'topic_first_post_id'	=> (isset($post_data['topic_first_post_id'])) ? (int) $post_data['topic_first_post_id'] : 0,
@@ -1122,6 +1210,9 @@ if ($submit || $preview || $refresh)
 
 				'topic_approved'		=> (isset($post_data['topic_approved'])) ? $post_data['topic_approved'] : false,
 				'post_approved'			=> (isset($post_data['post_approved'])) ? $post_data['post_approved'] : false,
+				// Start Ultimate Points
+				'user_points'			=> $points,
+				// End Ultimate Points
 			);
 
 			if ($mode == 'edit')
@@ -1147,10 +1238,49 @@ if ($submit || $preview || $refresh)
 			}
 			else
 			{
-				meta_refresh(3, $redirect_url);
+				// Start Ultimate Points
+				if ( $auth->acl_get('u_use_points') && $config['points_enable'] )
+				{
+					meta_refresh(3, $redirect_url); // Increased the refresh time to give user the chance to read their points
 
-				$message = ($mode == 'edit') ? 'POST_EDITED' : 'POST_STORED';
-				$message = $user->lang[$message] . '<br /><br />' . sprintf($user->lang['VIEW_MESSAGE'], '<a href="' . $redirect_url . '">', '</a>');
+					$sql_array = array(
+					    'SELECT'    => 'user_points',
+					    'FROM'      => array(
+					        USERS_TABLE => 'v',
+					    ),
+						'WHERE'		=> 'user_id = ' . (int) $user->data['user_id'],
+					);
+					$sql = $db->sql_build_query('SELECT', $sql_array);
+					$result = $db->sql_query($sql);
+					$user_points_new = $db->sql_fetchfield('user_points');
+
+					$user_points_received = ($user_points_new - $user_points_old);
+
+					if ( $mode == 'quote' OR $mode == 'reply' )
+					{
+						$points_received = sprintf($user->lang['POINTS_RECEIVED_REPLY_MESSAGE'], (number_format_points($user_points_received)), $config['points_name']);
+					}
+					else if ( $mode == 'edit' )
+					{
+						$points_received = sprintf($user->lang['POINTS_RECEIVED_EDIT_MESSAGE'], (number_format_points($user_points_received)), $config['points_name']);
+					}
+					else
+					{
+						$points_received = sprintf($user->lang['POINTS_RECEIVED_POST_MESSAGE'], (number_format_points($user_points_received)), $config['points_name']);
+					}
+
+					$message = ($mode == 'edit') ? 'POST_EDITED' : 'POST_STORED';
+					$message = $user->lang[$message] . '<br /><br />' . $points_received . '<br /><br />' . sprintf($user->lang['VIEW_MESSAGE'], '<a href="' . $redirect_url . '">', '</a>');
+				}
+				else
+				{
+					meta_refresh(3, $redirect_url); // Show normal refresh time
+
+					$message = ($mode == 'edit') ? 'POST_EDITED' : 'POST_STORED';
+					$message = $user->lang[$message] . '<br /><br />' . sprintf($user->lang['VIEW_MESSAGE'], '<a href="' . $redirect_url . '">', '</a>');
+				}
+				// End Ultimate Points
+
 			}
 
 			$message .= '<br /><br />' . sprintf($user->lang['RETURN_FORUM'], '<a href="' . append_sid("{$phpbb_root_path}viewforum.$phpEx", 'f=' . $data['forum_id']) . '">', '</a>');
@@ -1577,8 +1707,20 @@ function handle_post_delete($forum_id, $topic_id, $post_id, &$post_data)
 				'post_reported'			=> $post_data['post_reported'],
 				'post_time'				=> $post_data['post_time'],
 				'poster_id'				=> $post_data['poster_id'],
+				// Start Ultimate Points
+				'points_attachment_received'	=> $post_data['points_attachment_received'],
+				'points_poll_received'			=> $post_data['points_poll_received'],
+				'points_post_received'			=> $post_data['points_post_received'],
+				'points_topic_received'			=> $post_data['points_topic_received'],
+				'points_received'				=> $post_data['points_received'],
+				//End Ultimate Points
 				'post_postcount'		=> $post_data['post_postcount']
 			);
+
+			// Start Ultimate Points
+			$sql = "UPDATE " . USERS_TABLE . " SET user_points = user_points - (" . $post_data['points_received'] . ' + ' . $post_data['points_attachment_received'] . ' + ' . $post_data['points_poll_received'] . ' + ' . $post_data['points_post_received'] . ' + ' . $post_data['points_topic_received'] . ") WHERE user_id = '" . $post_data['poster_id'] . "'";
+			$db->sql_query($sql);
+			// End Ultimate Points
 
 			$next_post_id = delete_post($forum_id, $topic_id, $post_id, $data);
 			$post_username = ($post_data['poster_id'] == ANONYMOUS && !empty($post_data['post_username'])) ? $post_data['post_username'] : $post_data['username'];

@@ -149,6 +149,11 @@ class acp_forums
 						'forum_password'		=> request_var('forum_password', '', true),
 						'forum_password_confirm'=> request_var('forum_password_confirm', '', true),
 						'forum_password_unset'	=> request_var('forum_password_unset', false),
+						// Start Ultimate Points
+						'forum_pertopic'		=> request_var('forum_pertopic', 0.00),
+						'forum_perpost'			=> request_var('forum_perpost', 0.00),
+						'forum_peredit'			=> request_var('forum_peredit', 0.00),
+						// End Ultimate Points
 					);
 
 					// On add, add empty forum_options... else do not consider it (not updating it)
@@ -444,6 +449,11 @@ class acp_forums
 							'forum_options'			=> 0,
 							'forum_password'		=> '',
 							'forum_password_confirm'=> '',
+							// Start Ultimate Points
+							'forum_pertopic'		=> 0.00,
+							'forum_perpost'			=> 0.00,
+							'forum_peredit'			=> 0.00,
+							// End Ultimate Points
 						);
 					}
 				}
@@ -606,6 +616,11 @@ class acp_forums
 					'FORUM_RULES'				=> $forum_data['forum_rules'],
 					'FORUM_RULES_PREVIEW'		=> $forum_rules_preview,
 					'FORUM_RULES_PLAIN'			=> $forum_rules_data['text'],
+					// Start Ultimate Points
+					'FORUM_PERTOPIC'			=> $forum_data['forum_pertopic'],
+					'FORUM_PERPOST'				=> $forum_data['forum_perpost'],
+					'FORUM_PEREDIT'				=> $forum_data['forum_peredit'],
+					// End Ultimate Points
 					'S_BBCODE_CHECKED'			=> ($forum_rules_data['allow_bbcode']) ? true : false,
 					'S_SMILIES_CHECKED'			=> ($forum_rules_data['allow_smilies']) ? true : false,
 					'S_URLS_CHECKED'			=> ($forum_rules_data['allow_urls']) ? true : false,

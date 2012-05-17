@@ -4540,6 +4540,22 @@ function page_header($page_title = '', $display_online_list = true, $item_id = 0
 		}
 	}
 
+	// Start Ultimate Points
+	$user->add_lang('mods/points');
+
+	// Check if Installer is already run
+	if ( isset($config['points_name']) )
+	{
+		$template->assign_vars(array(
+			'U_POINTS'				=> append_sid("{$phpbb_root_path}points.$phpEx"),
+			'POINTS_LINK'			=> $config['points_name'],
+			'USER_POINTS'			=> sprintf(number_format_points($user->data['user_points'])),
+			'S_POINTS_ENABLE'		=> $config['points_enable'],
+			'S_USE_POINTS'			=> $auth->acl_get('u_use_points'),
+		));
+	}
+	// End Ultimate Points
+
 	// The following assigns all _common_ variables that may be used at any point in a template.
 	$template->assign_vars(array(
 		'SITENAME'						=> $config['sitename'],

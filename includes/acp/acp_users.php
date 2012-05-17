@@ -760,6 +760,9 @@ class acp_users
 						'email_confirm'		=> strtolower(request_var('email_confirm', '')),
 						'new_password'		=> request_var('new_password', '', true),
 						'password_confirm'	=> request_var('password_confirm', '', true),
+						// Start Ultimate Points
+						'user_points'		=> request_var('user_points', 0.00),
+						// End Ultimate Points
 					);
 
 					// Validation data - we do not check the password complexity setting here
@@ -818,6 +821,12 @@ class acp_users
 					if (!sizeof($error))
 					{
 						$sql_ary = array();
+
+						// Start Ultimate Points
+						if ($user_row['user_points'] != $data['user_points']) {
+							$sql_ary['user_points'] = $data['user_points'];
+						}
+						// End Ultimate Points
 
 						if ($user_row['user_type'] != USER_FOUNDER || $user->data['user_type'] == USER_FOUNDER)
 						{
@@ -1037,6 +1046,9 @@ class acp_users
 					'USER_WARNINGS'		=> $user_row['user_warnings'],
 					'USER_POSTS'		=> $user_row['user_posts'],
 					'USER_INACTIVE_REASON'	=> $inactive_reason,
+					// Start Ultimate Points
+					'USER_POINTS'		=> $user_row['user_points'],
+					// End Ultimate Points
 				));
 
 			break;

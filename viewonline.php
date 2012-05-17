@@ -315,6 +315,14 @@ while ($row = $db->sql_fetchrow($result))
 			$location_url = append_sid("{$phpbb_root_path}index.$phpEx");
 		break;
 
+		// Start Ultimate Points
+		case 'points':
+			$user->add_lang('mods/points');
+			$location = $user->lang['POINTS_VIEWING'];
+			$location_url = append_sid("{$phpbb_root_path}points.$phpEx");
+		break;
+		// End Ultimate Points
+
 		default:
 			$location = $user->lang['INDEX'];
 			$location_url = append_sid("{$phpbb_root_path}index.$phpEx");

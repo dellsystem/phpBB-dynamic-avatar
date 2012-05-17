@@ -22,6 +22,10 @@ $user->session_begin();
 $auth->acl($user->data);
 $user->setup(array('memberlist', 'groups'));
 
+// Start Ultimate Points
+$user->add_lang('mods/points');
+// End Ultimate Points
+
 // Grab data
 $mode		= request_var('mode', '');
 $action		= request_var('action', '');
@@ -601,6 +605,86 @@ switch ($mode)
 		{
 			$member['posts_in_queue'] = 0;
 		}
+
+		// Start Ultimate Points
+		global $db, $ultimate_points, $points_config, $points_values;
+
+		$locked = $blocked = false;
+
+		if ( $config['points_enable'] )
+		{
+			$check_auth = new auth();
+			$check_auth->acl($member);
+			$locked = $check_auth->acl_get('u_use_points');
+		}
+
+		if ( $points_config['bank_enable'] && $config['points_enable'] )
+		{
+			$check_auth = new auth();
+			$check_auth->acl($member);
+			$blocked = $check_auth->acl_get('u_use_bank');
+		}
+
+		if ( empty($holding['user_id']) )
+		{
+			$sql_array = array(
+				'SELECT'    => 'holding',
+				'FROM'      => array(
+					POINTS_BANK_TABLE => 'b',
+				),
+				'WHERE'		=> 'user_id = ' . (int) $user_id,
+			);
+			$sql = $db->sql_build_query('SELECT', $sql_array);
+			$result = $db->sql_query($sql);
+			$bank_row = $db->sql_fetchrow($result);
+			$bank_row['holding'] = ( empty($bank_row['holding']) ) ? '0' : $bank_row['holding'];
+		}
+
+		// Check if user has a bank account
+		$sql_array = array(
+			'SELECT'    => '*',
+			'FROM'      => array(
+				POINTS_BANK_TABLE => 'b',
+			),
+			'WHERE'		=> 'user_id = ' . (int) $user_id,
+		);
+		$sql = $db->sql_build_query('SELECT', $sql_array);
+		$result = $db->sql_query($sql);
+		$row = $db->sql_fetchrow($result);
+
+		if ( !isset($row['holding']) && $user->data['user_id'] > 0 )
+		{
+			$template->assign_block_vars('no_account', array(
+				'BANK_NO_ACCOUNT'	=> sprintf($user->lang['BANK_NO_ACCOUNT'], $points_values['bank_name']),
+			));
+		}
+		else if ( $user->data['user_id'] > 0 )
+		{
+			$template->assign_block_vars('has_account', array());
+		}
+
+		$db->sql_freeresult($result);
+
+		if ( isset($config['points_name']) )
+		{
+			$template->assign_vars(array(
+				'L_MOD_USER_POINTS'	=> ($auth->acl_get('a_') || $auth->acl_get('m_chg_points')) ? sprintf($user->lang['POINTS_MODIFY']) : '',
+				'U_POINTS_MODIFY'	=> ($auth->acl_get('a_') || $auth->acl_get('m_chg_points')) ? append_sid("{$phpbb_root_path}points.$phpEx", "mode=points_edit&amp;user_id=".$user_id."&amp;adm_points=1")  : '',
+				'L_MOD_USER_BANK'	=> ($auth->acl_get('a_') || $auth->acl_get('m_chg_bank')) ? sprintf($user->lang['POINTS_MODIFY']) : '',
+				'U_BANK_MODIFY'		=> ($auth->acl_get('a_') || $auth->acl_get('m_chg_bank')) ? append_sid("{$phpbb_root_path}points.$phpEx", "mode=bank_edit&amp;user_id=".$user_id."&amp;adm_points=1")  : '',
+				'U_POINTS_DONATE'	=> ($auth->acl_get('u_use_points')) ? append_sid("{$phpbb_root_path}points.$phpEx", "mode=transfer&amp;i=".$user_id) : '',
+				'L_DONATE'			=> ($auth->acl_get('u_use_points')) ? sprintf($user->lang['POINTS_DONATE']) : '',
+				'BANK_GOLD'			=> sprintf(number_format_points($bank_row['holding'])),
+				'USE_IMAGES_POINTS'	=> $points_config['images_memberlist_enable'],
+				'USE_BANK'			=> $points_config['bank_enable'],
+				'P_NAME'			=> $config['points_name'],
+				'U_LOCKED'			=> !$locked,
+				'U_BLOCKED'			=> !$blocked,
+				'USE_POINTS'		=> $config['points_enable'],
+				'USE_IMAGES_POINTS'	=> $points_config['images_memberlist_enable'],
+			));
+		}
+		// End Ultimate Points
 
 		$template->assign_vars(array(
 			'L_POSTS_IN_QUEUE'	=> $user->lang('NUM_POSTS_IN_QUEUE', $member['posts_in_queue']),
@@ -1746,6 +1830,9 @@ function show_profile($data, $user_notes_enabled = false, $warn_user_enabled = f
 		'USER_JABBER_IMG'	=> ($data['user_jabber']) ? $user->img('icon_contact_jabber', $data['user_jabber']) : '',
 
 		'L_VIEWING_PROFILE'	=> sprintf($user->lang['VIEWING_PROFILE'], $username),
+		// Start Ultimate Points
+		'U_POINTS1'			=> sprintf(number_format_points($data['user_points'])),
+		// End Ultimate Points
 	);
 }
 

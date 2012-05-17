@@ -113,6 +113,132 @@ if ($config['load_birthdays'] && $config['allow_birthdays'] && $auth->acl_gets('
 	$db->sql_freeresult($result);
 }
 
+/**
+* Ultimate Points
+*/
+if ( isset($config['points_name']) )
+{
+	// Add points lang
+	$user->add_lang('mods/points');
+
+	// Generate the bank statistics
+	$sql_array = array(
+		'SELECT'    => 'SUM(holding) AS total_holding, count(user_id) AS total_users',
+		'FROM'      => array(
+			POINTS_BANK_TABLE => 'b',
+		),
+		'WHERE'		=> 'id > 0',
+	);
+	$sql = $db->sql_build_query('SELECT', $sql_array);
+	$result = $db->sql_query($sql);
+	$b_row = $db->sql_fetchrow($result);
+	$bankholdings = ( $b_row['total_holding'] ) ? $b_row['total_holding'] : 0;
+	$bankusers = $b_row['total_users'];
+
+	// Create most rich users - cash and bank
+	$limit = $points_values['number_show_top_points'];
+	$sql_array = array(
+		'SELECT'    => 'u.user_id, u.username, u.user_colour, u.user_points, b.holding',
+
+		'FROM'      => array(
+			USERS_TABLE  => 'u',
+		),
+		'LEFT_JOIN' => array(
+			array(
+				'FROM'  => array(POINTS_BANK_TABLE => 'b'),
+				'ON'    => 'u.user_id = b.user_id'
+			)
+		),
+	);
+	$sql = $db->sql_build_query('SELECT', $sql_array);
+	$result = $db->sql_query($sql);
+
+	// Create a new array for the users
+	$rich_users = array();
+
+	// Create sorting array
+	$rich_users_sort = array();
+
+	// Loop all users array to escape the 0 points users
+	while( $row = $db->sql_fetchrow($result))
+	{
+		if ( $row['user_points'] > 0 || $row['holding'] > 0 ) //let away beggars
+		{
+			$total_points = $row['user_points'] + $row['holding'];
+			$index = $row['user_id'];
+			$rich_users[$index] = array('total_points' => $total_points, 'username' => $row['username'], 'user_colour' => $row['user_colour'], 'user_id' => $index);
+			$rich_users_sort[$index] = $total_points;
+		}
+	}
+
+	$db->sql_freeresult($result);
+
+	// Sort by points desc
+	arsort( $rich_users_sort);
+
+	// Extract the user ids
+	$rich_users_sort  = array_keys($rich_users_sort);
+
+	// Create new sorted rich users array
+	$rich_users_sorted = array();
+
+	// Check, if number of users in array is below the set limit
+	$new_limit = sizeof($rich_users) < $limit ? sizeof($rich_users) : $limit;
+
+	for($i = 0; $i < $new_limit; $i++)
+	{
+		$rich_users_sorted[] = $rich_users[$rich_users_sort[$i]];
+	}
+
+	// Send to template
+	foreach($rich_users_sorted as $var)
+	{
+		$template->assign_block_vars('rich_user', array(
+			'USERNAME'         => get_username_string('full', $var['user_id'], $var['username'], $var['user_colour']),
+			'SUM_POINTS'      => number_format_points($var['total_points']),
+			'SUM_POINTS_NAME'   => $config['points_name'],
+		));
+	}
+
+	//Generate the points statistics
+	$sql_array = array(
+		'SELECT'    => 'SUM(user_points) AS total_points',
+		'FROM'      => array(
+			USERS_TABLE => 'u',
+		),
+		'WHERE'		=> 'user_points > 0',
+	);
+	$sql = $db->sql_build_query('SELECT', $sql_array);
+	$result = $db->sql_query($sql);
+	$b_row = $db->sql_fetchrow($result);
+	$totalpoints = ( $b_row['total_points'] ) ? $b_row['total_points'] : 0;
+	$lottery_time = $user->format_date(($points_values['lottery_last_draw_time'] + $points_values['lottery_draw_period']), false, true);
+
+	// Run Lottery
+	if ( $points_values['lottery_draw_period'] != 0 && $points_values['lottery_last_draw_time'] + $points_values['lottery_draw_period'] - time() < 0 )
+	{
+		if (!function_exists('run_lottery'))
+		{
+			include($phpbb_root_path . 'includes/points/functions_points.' . $phpEx);
+		}
+		if (!function_exists('send_pm'))
+		{
+			include($phpbb_root_path . 'includes/functions_privmsgs.' . $phpEx);
+		}
+		run_lottery();
+	}
+
+	$template->assign_vars(array(
+		'TOTAL_BANK_USER'			=> sprintf($user->lang['POINTS_BUPOINTS_TOTAL'], $bankusers, $points_values['bank_name']),
+		'TOTAL_BANK_POINTS'			=> sprintf($user->lang['POINTS_BPOINTS_TOTAL'], number_format_points($bankholdings), $config['points_name'], $points_values['bank_name']),
+		'TOTAL_POINTS_USER'			=> sprintf($user->lang['POINTS_TOTAL'], number_format_points($totalpoints), $config['points_name']),
+		'LOTTERY_TIME'				=> sprintf($user->lang['POINTS_LOTTERY_TIME'], $lottery_time),
+		'S_DISPLAY_LOTTERY'			=> ($points_config['display_lottery_stats']) ? true : false,
+		'S_DISPLAY_POINTS_STATS'	=> ($points_config['stats_enable']) ? true : false,
+		'S_DISPLAY_INDEX'			=> ($points_values['number_show_top_points'] > 0) ? true : false,
+	));
+}
+
 // Assign index specific vars
 $template->assign_vars(array(
 	'TOTAL_POSTS'	=> sprintf($user->lang[$l_total_post_s], $total_posts),

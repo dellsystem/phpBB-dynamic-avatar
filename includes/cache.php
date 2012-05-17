@@ -23,6 +23,66 @@ if (!defined('IN_PHPBB'))
 class cache extends acm
 {
 	/**
+	* Get Ultimate Points config values
+	*/
+	function obtain_points_config()
+	{
+		global $db;
+
+		if (($points_config = $this->get('pointsconfig')) !== false)
+		{
+			$sql = 'SELECT config_name, config_value
+				FROM ' . POINTS_CONFIG_TABLE;
+			$result = $db->sql_query($sql);
+
+			while ($row = $db->sql_fetchrow($result))
+			{
+				$points_config[$row['config_name']] = $row['config_value'];
+			}
+			$db->sql_freeresult($result);
+		}
+		else
+		{
+			$points_config = $cached_points_config = array();
+
+			$sql = 'SELECT config_name, config_value
+				FROM ' . POINTS_CONFIG_TABLE;
+			$result = $db->sql_query($sql);
+
+			while ($row = $db->sql_fetchrow($result))
+			{
+				$points_config[$row['config_name']] = $row['config_value'];
+			}
+			$db->sql_freeresult($result);
+
+			$this->put('points_config', $cached_points_config);
+		}
+
+		return $points_config;
+	}
+
+	/**
+	* Get Ultimate Points config values
+	*/
+	function obtain_points_values()
+	{
+		global $db;
+
+		$sql_array = array(
+			'SELECT'    => '*',
+			'FROM'      => array(
+				POINTS_VALUES_TABLE => 'v',
+			),
+		);
+		$sql = $db->sql_build_query('SELECT', $sql_array);
+		$result = $db->sql_query($sql);
+		$points_values = $db->sql_fetchrow($result);
+		$db->sql_freeresult($result);
+
+		return $points_values;
+	}
+
+	/**
 	* Get config values
 	*/
 	function obtain_config()

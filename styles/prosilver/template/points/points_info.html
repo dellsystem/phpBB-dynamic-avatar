@@ -1,0 +1,97 @@
+<!-- INCLUDE overall_header.html -->
+<!-- $Id: points_info.html 587 2009-10-14 18:36:12Z Wuerzi $ -->
+
+<div id="tabs">
+	<ul>
+		<li><a href="{U_POINTS}"><span>{L_POINTS_OVERVIEW}</span></a></li>
+		<li class="activetab"><a href="{U_INFO}"><span>{L_POINTS_INFO}</span></a></li>
+		<!-- IF TRANSFER_ENABLE and U_USE_TRANSFER --><li ><a href="{U_TRANSFER_USER}"><span>{L_POINTS_TRANSFER}</span></a></li><!-- ENDIF -->
+		<!-- IF LOGS_ENABLE and U_USE_LOGS --><li ><a href="{U_LOGS}"><span>{L_POINTS_LOGS}</span></a></li><!-- ENDIF -->
+		<!-- IF LOTTERY_ENABLE and U_USE_LOTTERY --><li ><a href="{U_LOTTERY}"><span>{LOTTERY_NAME}</span></a></li><!-- ENDIF -->
+		<!-- IF BANK_ENABLE and U_USE_BANK --><li ><a href="{U_BANK}"><span>{BANK_NAME}</span></a></li><!-- ENDIF -->
+		<!-- IF ROBBERY_ENABLE and U_USE_ROBBERY --><li ><a href="{U_ROBBERY}"><span>{L_POINTS_ROBBERY}</span></a></li><!-- ENDIF -->
+	</ul>
+</div>
+
+<div class="panel bg3">
+	<div class="inner">
+		<span class="corners-top"><span></span></span>
+
+			<div id="cp-menu">
+				<div class="cp-mini">
+					<div class="inner"><span class="corners-top"><span></span></span>
+						<dl class="mini">
+							<dd><h3>{L_POINTS_DESCRIPTION}</h3></dd>
+							<dd>{POINTS_INFO_DESCRIPTION}</dd>
+						</dl>
+					<span class="corners-bottom"><span></span></span></div>
+				</div>
+			</div>
+
+			<div id="cp-main" class="ucp-main">
+				<h2>{L_INFO_GENERAL_INFORMATIONS}</h2>
+				<div class="panel">
+					<div class="inner">
+						<span class="corners-top"><span></span></span>
+							<!-- IF S_USER_LOGGED_IN -->
+							<p>{L_POINTS_CASH_ON_HAND}:&nbsp;{USER_POINTS} {POINTS_NAME}</p>
+							<!-- ENDIF -->
+							<fieldset>
+							<h3>{L_POINTS_INFO}</h3>
+							<dl>
+								<dt>{L_INFO_ATTACH}:</dt>
+								<dd>{INFO_ATTACH}</dd>
+							</dl>
+							<dl>
+								<dt>{L_INFO_ADD_ATTACH}:</dt>
+								<dd>{INFO_ADD_ATTACH}</dd>
+							</dl>
+							<dl>
+								<dt>{L_INFO_POLL}:</dt>
+								<dd>{INFO_POLL}</dd>
+							</dl>
+							<dl>
+								<dt>{L_INFO_POLL_OPTION}:</dt>
+								<dd>{INFO_POLL_OPTION}</dd>
+							</dl>
+							<dl>
+								<dt>{L_INFO_TOPIC_WORD}:</dt>
+								<dd>{INFO_TOPIC_WORD}</dd>
+							</dl>
+							<dl>
+								<dt>{L_INFO_TOPIC_CHARACTER}:</dt>
+								<dd>{INFO_TOPIC_CHARACTER}</dd>
+							</dl>
+							<dl>
+								<dt>{L_INFO_POST_WORD}:</dt>
+								<dd>{INFO_POST_WORD}</dd>
+							</dl>
+							<dl>
+								<dt>{L_INFO_POST_CHARACTER}:</dt>
+								<dd>{INFO_POST_CHARACTER}</dd>
+							</dl>
+							<dl>
+								<dt>{L_INFO_COST_DL_ATTACH}:</dt>
+								<dd>{INFO_COST_DL_ATTACH}</dd>
+							</dl>
+							<dl>
+								<dt>{L_INFO_COST_WARNING}:</dt>
+								<dd>{INFO_COST_WARNING}</dd>
+							</dl>
+							<dl>
+								<dt>{L_INFO_REG_BONUS}:</dt>
+								<dd>{INFO_REG_BONUS}</dd>
+							</dl>
+							</fieldset>
+						<span class="corners-bottom"><span></span></span>
+					</div>
+				</div>
+			</div>
+			
+		<span class="corners-bottom"><span></span></span>
+	</div>
+</div>
+
+<br /><div style="text-align: center;" class="copyright">{L_POINTS_COPYRIGHT}{POINT_VERS}</div>
+
+<!-- INCLUDE overall_footer.html -->

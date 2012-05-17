@@ -1,0 +1,79 @@
+<!-- INCLUDE overall_header.html -->
+<!-- $Id: points_main.html 587 2009-10-14 18:36:12Z Wuerzi $ -->
+<div id="tabs">
+	<ul>
+		<li class="activetab"><a href="{U_POINTS}"><span>{L_POINTS_OVERVIEW}</span></a></li>
+		<li><a href="{U_INFO}"><span>{L_POINTS_INFO}</span></a></li>
+		<!-- IF TRANSFER_ENABLE and U_USE_TRANSFER --><li><a href="{U_TRANSFER_USER}"><span>{L_POINTS_TRANSFER}</span></a></li><!-- ENDIF -->
+		<!-- IF LOGS_ENABLE and U_USE_LOGS --><li><a href="{U_LOGS}"><span>{L_POINTS_LOGS}</span></a></li><!-- ENDIF -->
+		<!-- IF LOTTERY_ENABLE and U_USE_LOTTERY --><li><a href="{U_LOTTERY}"><span>{LOTTERY_NAME}</span></a></li><!-- ENDIF -->
+		<!-- IF BANK_ENABLE and U_USE_BANK --><li><a href="{U_BANK}"><span>{BANK_NAME}</span></a></li><!-- ENDIF -->
+		<!-- IF ROBBERY_ENABLE and U_USE_ROBBERY --><li><a href="{U_ROBBERY}"><span>{L_POINTS_ROBBERY}</span></a></li><!-- ENDIF -->
+	</ul>
+</div>
+
+<div class="panel bg3">
+	<div class="inner">
+		<span class="corners-top"><span></span></span>
+
+			<div id="cp-menu">
+
+					<div class="cp-mini">
+						<div class="inner"><span class="corners-top"><span></span></span>
+							<dl>
+								<dd>
+									<h3>{L_POINTS_MOST_RICH_CASH_USERS}</h3>
+								</dd>
+								<!-- IF S_DISPLAY_INDEX -->
+								<dt>
+									<!-- BEGIN points -->
+									<span style="float:left; padding-left:5px; padding-top:2px;">{points.USERNAME}</span>
+									<span style="float:right;padding-right:10px; padding-top:2px;">{points.POINT}</span>
+									<br style="clear:both" />
+									<!-- END points -->
+								</dt>
+								<!-- ELSE -->
+								<dt>{L_POINTS_MOST_RICH_USERS_DISABLED}</dt>
+								<!-- ENDIF -->
+							</dl>
+						<span class="corners-bottom"><span></span></span></div>
+					</div>
+
+			</div>
+  
+			<div id="cp-main" class="ucp-main">
+				<h2>{L_POINTS_OVERVIEW}</h2>  
+				<div class="panel">
+					<div class="inner">
+						<span class="corners-top"><span></span></span>
+							<fieldset>
+								<dl>
+									<dt><br />{L_MAIN_HELLO_USERNAME}<br /><!-- IF not U_USE_POINTS --><br /><span style="color: red;"><b>{L_MAIN_USERNAME_LOCKED}</b></span><!-- ENDIF --></dt>
+								</dl>
+								<!-- IF S_USER_LOGGED_IN -->
+								<dl>
+									<dt>{L_MAIN_ON_HAND}</dt>
+								</dl>
+									<!-- BEGIN has_bank_account -->
+									<dl>
+										<dt>{has_bank_account.L_MAIN_BANK_HAVE}</dt>
+									</dl>
+									<!-- END has_bank_account -->
+								<dl>
+									<dt>{L_MAIN_LOTTERY_TICKETS}</dt>
+								</dl>
+								<!-- ENDIF -->
+								<br /><br />
+							</fieldset>
+						<span class="corners-bottom"><span></span></span>
+					</div>
+				</div>
+			</div>
+
+		<span class="corners-bottom"><span></span></span>
+	</div>
+</div>
+
+<br /><div style="text-align: center;" class="copyright">{L_POINTS_COPYRIGHT}{POINT_VERS}</div>
+
+<!-- INCLUDE overall_footer.html -->

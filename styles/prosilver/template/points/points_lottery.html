@@ -1,0 +1,153 @@
+<!-- INCLUDE overall_header.html -->
+<!-- $Id: points_lottery.html 587 2009-10-14 18:36:12Z Wuerzi $ -->
+
+<div id="tabs">
+	<ul>
+		<li><a href="{U_POINTS}"><span>{L_POINTS_OVERVIEW}</span></a></li>
+		<li><a href="{U_INFO}"><span>{L_POINTS_INFO}</span></a></li>
+		<!-- IF TRANSFER_ENABLE and U_USE_TRANSFER --><li><a href="{U_TRANSFER_USER}"><span>{L_POINTS_TRANSFER}</span></a></li><!-- ENDIF -->
+		<!-- IF LOGS_ENABLE and U_USE_LOGS --><li><a href="{U_LOGS}"><span>{L_POINTS_LOGS}</span></a></li><!-- ENDIF -->
+		<!-- IF LOTTERY_ENABLE and U_USE_LOTTERY --><li class="activetab"><a href="{U_LOTTERY}"><span>{LOTTERY_NAME}</span></a></li><!-- ENDIF -->
+		<!-- IF BANK_ENABLE and U_USE_BANK --><li><a href="{U_BANK}"><span>{BANK_NAME}</span></a></li><!-- ENDIF -->
+		<!-- IF ROBBERY_ENABLE and U_USE_ROBBERY --><li><a href="{U_ROBBERY}"><span>{L_POINTS_ROBBERY}</span></a></li><!-- ENDIF -->
+	</ul>
+</div>
+
+<div class="panel bg3">
+	<div class="inner">
+		<span class="corners-top"><span></span></span>
+
+			<div id="cp-menu">
+				<div id="navigation">
+
+					<ul>
+						<li><a href="{U_VIEW_HISTORY}"><span>{L_LOTTERY_VIEW_HISTORY}</span></a></li>
+						<li><a href="{U_VIEW_SELF_HISTORY}"><span>{L_LOTTERY_VIEW_SELF_HISTORY}</span></a></li>
+					</ul>
+
+					<div class="cp-mini">
+						<div class="inner"><span class="corners-top"><span></span></span>
+							<dl class="mini">
+								<dd><h3>{L_LOTTERY_TITLE_DESCRIPTION}</h3></dd>
+								<dd>{L_LOTTERY_BASE_AMOUNT}</dd>
+							</dl>
+						<span class="corners-bottom"><span></span></span></div>
+					</div>
+
+				</div>
+			</div>
+
+			<form id="lottery_ticket" method="post" action="{U_ACTION}">
+			<div id="cp-main" class="ucp-main">
+				<h2>{LOTTERY_NAME}</h2>
+				<div class="panel">
+					<div class="inner">
+						<span class="corners-top"><span></span></span>
+						<!-- IF S_VIEW_HISTORY -->
+						<h3>{LOTTERY_NAME} {L_LOTTERY_HISTORY}</h3>
+						<table cellpadding="4" cellspacing="1" border="0" class="table1">
+							<thead>
+							<tr>
+								<th>#</th>
+								<th>{L_USERNAME}</th>
+								<th>{L_LOTTERY_WINNINGS}</th>
+								<th>{L_LOTTERY_DATE}</th>
+							</tr>
+							</thead>
+							<tbody>
+							<!-- BEGIN history_row -->
+							<!-- IF history_row.S_ROW_COUNT is even --><tr class="bg1"><!-- ELSE --><tr class="bg2"><!-- ENDIF -->
+								<td class="row{history_row.ROW_COLOR}" align="center">{history_row.NUMBER}</td>
+								<td class="row{history_row.ROW_COLOR}" align="center">{history_row.WINNER_PROFILE}</td>
+								<td class="row{history_row.ROW_COLOR}" align="center"><!-- IF history_row.WINNINGS == 0 --><!-- ELSE -->{history_row.WINNINGS} {POINTS_NAME}<!-- ENDIF --></td>
+								<td class="row{history_row.ROW_COLOR}" align="center">{history_row.DATE}</td>
+							</tr>
+							<!-- BEGINELSE -->
+								<tr>
+									<td class="bg1" colspan="<!-- IF S_CLEAR_ALLOWED -->6<!-- ELSE -->5<!-- ENDIF -->" align="center"><span class="gen">{L_LOTTERY_NO_WINNERS}</span></td>
+								</tr>
+							<!-- END history_row -->
+							</tbody>
+						</table>
+						<a href="{U_BACK_TO_LOTTERY}">{L_LOTTERY_BACK}</a>
+						<div class="pagination">
+							{L_POINTS_LOG_TOTAL}: {L_TOTAL_ENTRIES}
+							<!-- IF PAGE_NUMBER --><!-- IF PAGINATION --> &bull; <a href="#" onclick="jumpto(); return false;" title="{L_JUMP_TO_PAGE}">{PAGE_NUMBER}</a> &bull; <span>{PAGINATION}</span><!-- ELSE --> &bull; {PAGE_NUMBER}<!-- ENDIF --><!-- ENDIF -->
+						</div>
+						<!-- ELSE -->
+							<!-- IF S_USER_LOGGED_IN -->
+							<p>{L_POINTS_CASH_ON_HAND}:&nbsp;{USER_POINTS} {POINTS_NAME}</p>
+							<!-- ELSE -->
+							<p>{L_POINTS_BOT_GUEST}</p>
+							<!-- ENDIF -->
+							<fieldset>
+							<!-- IF S_DRAWING_ENABLED and S_USER_LOGGED_IN -->
+							<h3>{L_LOTTERY_ACTIONS}</h3>
+							<dl>
+								<dt><label>{L_LOTTERY_VIEWER_TICKETS}</label></dt>
+								<dd>{VIEWER_TICKETS_TOTAL}&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+								<!-- IF S_PURCHASE_SINGLE -->
+									<input type="hidden" name="total_tickets" value="1" />
+									<input type="submit" tabindex="2" name="purchase_ticket" value="{L_LOTTERY_PURCHASE_TICKET}" class="button2" />
+									{S_FORM_TOKEN}
+								<!-- ENDIF -->
+								<!-- IF S_PURCHASE_MULTI -->
+									<input type="text" tabindex="1" class="inputbox autowidth" maxlength="3" name="total_tickets" value="1" size="3" />
+									<input type="submit" tabindex="2" name="purchase_ticket" value="{L_LOTTERY_PURCHASE_TICKETS}" class="button2" />
+									{S_FORM_TOKEN}
+								<!-- ENDIF -->
+								</dd>
+							</dl>
+							<!-- ENDIF -->
+							<h3>{L_LOTTERY_INFO}</h3>	
+							<!-- IF S_LOTTERY_ENABLE -->
+							<dl>
+								<dt>{L_LOTTERY_TICKETS}</dt>
+								<dd>{LOTTERY_TICKETS}</dd>
+							</dl>
+							<dl>
+								<dt>{L_LOTTERY_PLAYERS}</dt>
+								<dd>{LOTTERY_PLAYERS}</dd>
+							</dl>
+							<p></p>
+							<dl>
+								<dt>{L_LOTTERY_TICKET_COST}</dt>
+								<dd>{TICKET_COST} {POINTS_NAME}</dd>
+							</dl>
+								<!-- IF S_MULTI_TICKETS -->
+								<dl>
+									<dt>{L_LOTTERY_MAX_TICKETS}</dt>
+									<dd>{MAX_TICKETS}</dd>
+								</dl>
+								<!-- ENDIF -->
+							<dl>
+								<dt>{L_LOTTERY_JACKPOT}</dt>
+								<dd>{JACKPOT} {POINTS_NAME}</dd>
+							</dl>
+							<p></p>
+							<!-- ENDIF -->
+							<!-- IF S_DRAWING_ENABLED -->
+							<dl>
+								<dt>{L_LOTTERY_NEXT_DRAWING}</dt>
+								<dd>{NEXT_DRAWING}</dd>
+							</dl>
+							<!-- ENDIF -->
+							<dl>
+								<dt>{L_LOTTERY_LAST_WINNER}</dt>
+								<dd>{PREVIOUS_WINNER}</dd>
+							</dl><br />
+							</fieldset>
+						<!-- ENDIF -->
+						<span class="corners-bottom"><span></span></span>
+					</div>
+				</div>
+			</div>
+			</form>
+			
+		<span class="corners-bottom"><span></span></span>
+	</div>
+</div>
+
+<br /><div style="text-align: center;" class="copyright">{L_POINTS_COPYRIGHT}{POINT_VERS}</div>
+
+<!-- INCLUDE overall_footer.html -->

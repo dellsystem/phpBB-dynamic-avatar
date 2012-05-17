@@ -283,4 +283,13 @@ define('DYNAMO_LAYERS_TABLE',		$table_prefix . 'dynamo_layers');
 define('DYNAMO_ITEMS_TABLE',		$table_prefix . 'dynamo_items');
 define('DYNAMO_USERS_TABLE',		$table_prefix . 'dynamo_users');
 
+// Ultimate Points
+define('IN_ULTIMATE_POINTS', true);
+define('POINTS_BANK_TABLE',				$table_prefix . 'points_bank');
+define('POINTS_CONFIG_TABLE',			$table_prefix . 'points_config');
+define('POINTS_LOG_TABLE',				$table_prefix . 'points_log');
+define('POINTS_LOTTERY_HISTORY_TABLE',	$table_prefix . 'points_lottery_history');
+define('POINTS_LOTTERY_TICKETS_TABLE',	$table_prefix . 'points_lottery_tickets');
+define('POINTS_VALUES_TABLE',			$table_prefix . 'points_values');
+
 ?>

@@ -22,6 +22,10 @@ include($phpbb_root_path . 'includes/bbcode.' . $phpEx);
 $user->session_begin();
 $auth->acl($user->data);
 
+// Start Ultimate Points
+$user->setup('mods/points');
+// End Ultimate Points
+
 // Initial var setup
 $forum_id	= request_var('f', 0);
 $topic_id	= request_var('t', 0);
@@ -620,6 +624,13 @@ $template->assign_vars(array(
 	'TOPIC_TITLE' 	=> $topic_data['topic_title'],
 	'TOPIC_POSTER'	=> $topic_data['topic_poster'],
 
+	// Start Ultimate Points
+	'P_NAME'			=> $config['points_name'],
+	'USE_POINTS'		=> $config['points_enable'],
+	'USE_IMAGES_POINTS'	=> $points_config['images_topic_enable'],
+	'USE_BANK'			=> $points_config['bank_enable'],
+	// End Ultimate Points
+
 	'TOPIC_AUTHOR_FULL'		=> get_username_string('full', $topic_data['topic_poster'], $topic_data['topic_first_poster_name'], $topic_data['topic_first_poster_colour']),
 	'TOPIC_AUTHOR_COLOUR'	=> get_username_string('colour', $topic_data['topic_poster'], $topic_data['topic_first_poster_name'], $topic_data['topic_first_poster_colour']),
 	'TOPIC_AUTHOR'			=> get_username_string('username', $topic_data['topic_poster'], $topic_data['topic_first_poster_name'], $topic_data['topic_first_poster_colour']),
@@ -992,7 +1003,7 @@ if (!sizeof($post_list))
 $max_post_time = 0;
 
 $sql = $db->sql_build_query('SELECT', array(
-	'SELECT'	=> 'u.*, z.friend, z.foe, p.*',
+	'SELECT'	=> 'u.*, z.friend, z.foe, p.*, pb.id AS pb_id, pb.holding AS pb_holding',
 
 	'FROM'		=> array(
 		USERS_TABLE		=> 'u',
@@ -1003,6 +1014,10 @@ $sql = $db->sql_build_query('SELECT', array(
 		array(
 			'FROM'	=> array(ZEBRA_TABLE => 'z'),
 			'ON'	=> 'z.user_id = ' . $user->data['user_id'] . ' AND z.zebra_id = p.poster_id'
+		),
+		array(
+			'FROM'	=> array(POINTS_BANK_TABLE => 'pb'),
+			'ON'	=> 'pb.user_id = p.poster_id'
 		)
 	),
 
@@ -1037,6 +1052,38 @@ while ($row = $db->sql_fetchrow($result))
 		}
 	}
 
+	// Start Ultimate Points
+	$has_account = true;
+	$holding = ( empty($holding) ) ? array() : $holding;
+	$pointslock = $banklock = '';
+
+	if ( $config['points_enable'] )
+	{
+		// Get the points status
+		$check_auth = new auth();
+		$check_auth->acl($row);
+		$pointslock = !$check_auth->acl_get('u_use_points');
+
+		// Get the bank status
+		if ($points_config['bank_enable'])
+		{
+			$check_auth = new auth();
+			$check_auth->acl($row);
+			$banklock = !$check_auth->acl_get('u_use_bank');
+		}
+
+		if ( !isset($row['pb_holding']) && $poster_id > 0 )
+		{
+			$has_account = false;
+		}
+		$holding[$poster_id] = ( $row['pb_holding'] ) ? $row['pb_holding'] : '0';
+	}
+	else
+	{
+		$holding[$poster_id] = '0';
+	}
+	// End Ultimate Points
+
 	$rowset[$row['post_id']] = array(
 		'hide_post'			=> ($row['foe'] && ($view != 'show' || $post_id != $row['post_id'])) ? true : false,
 
@@ -1053,6 +1100,13 @@ while ($row = $db->sql_fetchrow($result))
 		'post_edit_reason'	=> $row['post_edit_reason'],
 		'post_edit_user'	=> $row['post_edit_user'],
 		'post_edit_locked'	=> $row['post_edit_locked'],
+
+		// Start Ultimate Points
+		'points'			=> $row['user_points'],
+		'points_lock'		=> $pointslock,
+		'bank_lock'			=> $banklock,
+		'bank_account'		=> $has_account,
+		// End Ultimate Points
 
 		// Make sure the icon actually exists
 		'icon_id'			=> (isset($icons[$row['icon_id']]['img'], $icons[$row['icon_id']]['height'], $icons[$row['icon_id']]['width'])) ? $row['icon_id'] : 0,
@@ -1112,6 +1166,13 @@ while ($row = $db->sql_fetchrow($result))
 				'search'			=> '',
 				'age'				=> '',
 
+				// Start Ultimate Points
+				'points'			=> 0.00,
+				'points_lock'		=> true,
+				'bank_lock'			=> true,
+				'bank_account'		=> true,
+				// End Ultimate Points
+
 				'username'			=> $row['username'],
 				'user_colour'		=> $row['user_colour'],
 
@@ -1138,6 +1199,13 @@ while ($row = $db->sql_fetchrow($result))
 				'posts'			=> $row['user_posts'],
 				'warnings'		=> (isset($row['user_warnings'])) ? $row['user_warnings'] : 0,
 				'from'			=> (!empty($row['user_from'])) ? $row['user_from'] : '',
+
+				// Start Ultimate Points
+				'points'		=> $row['user_points'],
+				'points_lock'	=> $pointslock,
+				'bank_lock'		=> $banklock,
+				'bank_account'	=> $has_account,
+				// End Ultimate Points
 
 				'sig'					=> $user_sig,
 				'sig_bbcode_uid'		=> (!empty($row['user_sig_bbcode_uid'])) ? $row['user_sig_bbcode_uid'] : '',
@@ -1499,6 +1567,20 @@ for ($i = 0, $end = sizeof($post_list); $i < $end; ++$i)
 		$s_first_unread = $first_unread = true;
 	}
 
+	// Start Ultimate Points
+	$holding = ( empty($holding) ) ? array() : $holding;
+	if ( empty($holding[$poster_id]) )
+	{
+		$sql = "SELECT holding
+			FROM " . POINTS_BANK_TABLE . "
+			WHERE user_id = '$poster_id'";
+		$result = $db->sql_query($sql);
+		$bank_row = $db->sql_fetchrow($result);
+		$holding[$poster_id] = ( $bank_row['holding'] ) ? $bank_row['holding'] : '0';
+		$bank_row = '';
+	}
+	// End Ultimate Points
+
 	$edit_allowed = ($user->data['is_registered'] && ($auth->acl_get('m_edit', $forum_id) || (
 		$user->data['user_id'] == $poster_id &&
 		$auth->acl_get('f_edit', $forum_id) &&
@@ -1531,6 +1613,15 @@ for ($i = 0, $end = sizeof($post_list); $i < $end; ++$i)
 		'POSTER_AVATAR'		=> $user_cache[$poster_id]['avatar'],
 		'POSTER_WARNINGS'	=> $user_cache[$poster_id]['warnings'],
 		'POSTER_AGE'		=> $user_cache[$poster_id]['age'],
+
+		// Start Ultimate Points
+		'POSTER_POINTS'		=> number_format_points($user_cache[$poster_id]['points']),
+		'POSTER_LOCK'		=> $user_cache[$poster_id]['points_lock'],
+		'POSTER_BANK_LOCK'	=> $user_cache[$poster_id]['bank_lock'],
+		'USER_ID'			=> $poster_id,
+		'BANK_GOLD'			=> number_format_points($holding[$poster_id]),
+		'BANK_ACCOUNT'		=> $user_cache[$poster_id]['bank_account'],
+		// End Ultimate Points
 
 		'POST_DATE'			=> $user->format_date($row['post_time'], false, ($view == 'print') ? true : false),
 		'POST_SUBJECT'		=> $row['post_subject'],
@@ -1589,6 +1680,16 @@ for ($i = 0, $end = sizeof($post_list); $i < $end; ++$i)
 
 		'S_IGNORE_POST'		=> ($row['hide_post']) ? true : false,
 		'L_IGNORE_POST'		=> ($row['hide_post']) ? sprintf($user->lang['POST_BY_FOE'], get_username_string('full', $poster_id, $row['username'], $row['user_colour'], $row['post_username']), '<a href="' . $viewtopic_url . "&amp;p={$row['post_id']}&amp;view=show#p{$row['post_id']}" . '">', '</a>') : '',
+
+		// Start Ultimate Points
+		'L_MOD_USER_POINTS'		=> ($auth->acl_get('a_') || $auth->acl_get('m_chg_points')) ? sprintf($user->lang['POINTS_MODIFY']) : '',
+		'U_POINTS_MODIFY'		=> ($auth->acl_get('a_') || $auth->acl_get('m_chg_points')) ? append_sid("{$phpbb_root_path}points.$phpEx", "mode=points_edit&amp;user_id=".$poster_id."&amp;adm_points=1&amp;post_id=".$row['post_id'])  : '',
+		'L_BANK_USER_POINTS'	=> ($auth->acl_get('a_') || $auth->acl_get('m_chg_bank')) ? sprintf($user->lang['POINTS_MODIFY']) : '',
+		'U_BANK_MODIFY'			=> ($auth->acl_get('a_') || $auth->acl_get('m_chg_bank')) ? append_sid("{$phpbb_root_path}points.$phpEx", "mode=bank_edit&amp;user_id=".$poster_id."&amp;adm_points=1&amp;post_id=".$row['post_id'])  : '',
+		'L_DONATE'				=> ($auth->acl_get('u_use_points')) ? sprintf($user->lang['POINTS_DONATE']) : '',
+		'U_POINTS_DONATE'		=> ($auth->acl_get('u_use_points')) ? append_sid("{$phpbb_root_path}points.$phpEx", "mode=transfer&amp;i=".$poster_id."&amp;adm_points=1&amp;post_id=".$row['post_id'])  : '',
+		'S_IS_OWN_POST'			=> ($poster_id == $user->data['user_id']) ? true : false,
+		// End Ultimate Points
 	);
 
 	if (isset($cp_row['row']) && sizeof($cp_row['row']))
