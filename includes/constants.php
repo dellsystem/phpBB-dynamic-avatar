@@ -282,6 +282,7 @@ define('ZEBRA_TABLE',				$table_prefix . 'zebra');
 define('DYNAMO_LAYERS_TABLE',		$table_prefix . 'dynamo_layers');
 define('DYNAMO_ITEMS_TABLE',		$table_prefix . 'dynamo_items');
 define('DYNAMO_USERS_TABLE',		$table_prefix . 'dynamo_users');
+define('DYNAMO_INVENTORY_TABLE',	$table_prefix . 'dynamo_inventory');
 
 // Ultimate Points
 define('IN_ULTIMATE_POINTS', true);
