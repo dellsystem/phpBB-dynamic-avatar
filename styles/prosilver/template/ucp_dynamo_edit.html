@@ -4,13 +4,13 @@
 <script src="{ROOT_PATH}jquery-1.7.2.min.js"></script>
 <script src="{T_TEMPLATE_PATH}/dynamo.js"></script>
 <style type="text/css">
-#dynamo-wrap {
+.dynamo-wrap {
 	height: 300px;
 	width: 100%;
 	position: relative;
 }
 
-#preview-pane {
+.preview-pane {
 	width: 200px;
 	height: 100%;
 	position: absolute;
@@ -19,7 +19,7 @@
 	margin: 0 auto;
 }
 
-#preview-pane img {
+.preview-pane img {
 	position: absolute;
 	left: 0;
 	right: 0;
@@ -28,7 +28,7 @@
 	margin: auto;
 }
 
-#inventory-pane {
+.items-pane {
 	position: absolute;
 	left: 200px;
 	right: 175px;
@@ -36,13 +36,13 @@
 	overflow: auto;
 }
 
-#inventory-pane label {
+.items-pane label {
 	display: inline-block;
 	text-align: center;
 	margin-bottom: 15px;
 }
 
-#layers-pane {
+.layers-pane {
 	width: 175px;
 	height: 100%;
 	position: absolute;
@@ -76,45 +76,91 @@
 
 <div class="panel">
 	<div class="inner"><span class="corners-top"><span></span></span>
-	
+
 	<p>{L_DYNAMO_EXPLAIN}</p>
-	
-	<form method="post" name="dynamo" action="{U_ACTION}">
-	<div id="dynamo-wrap">
-		<div id="preview-pane" class="bg1">
-			<!-- BEGIN image -->
-			<img id="layer-{image.LAYER_ID}" style="z-index: {image.POSITION};" class="dynamo-item" src="{image.URL}" data-original="{image.ORIGINAL}" data-default="{image.DEFAULT}" />
-			<!-- END image -->
-		</div>
-		<div id="inventory-pane" class="panel">
-			<!-- BEGIN layer -->
-				<div id="layer-{layer.ID}-anchor">
-					<h3>{layer.NAME}</h3>
-					<p>{layer.DESC}</p>
-					<p>{L_MANDATORY}: <!-- IF layer.MANDATORY --><strong>{L_YES}</strong><!-- ELSE -->{L_NO}<!-- ENDIF --></p>
-					<hr />
-					<!-- BEGIN item -->
-						<label><img src="{layer.item.URL}" class="dynamo-item" title="{layer.item.DESC}" alt="{layer.item.NAME}" /><br />{layer.item.NAME}<br /><input type="radio" id="layer-{layer.ID}-{layer.item.ID}-radio" name="layer-{layer.ID}" value="{layer.item.ID}" class="item-button" data-layer="{layer.ID}" data-item="{layer.item.ID}"<!-- IF layer.item.ID == layer.TRUE_ITEM --> checked="checked"<!-- ENDIF --> /></label>
-					<!-- END item -->
+	<h3>Your inventory</h3>
+	<!-- IF NO_ITEMS -->
+	<p>It appears that you don't have any items in your inventory. Why not buy some from the shop?</p>
+	<!-- ELSE -->
+		<form method="post" name="inventory" action="{U_ACTION}">
+			<div class="dynamo-wrap">
+				<div id="inventory-preview-pane" class="preview-pane bg1">
+					<!-- BEGIN image -->
+					<img id="inventory-layer-{image.LAYER_ID}" style="z-index: {image.POSITION};" class="dynamo-item" src="{image.URL}" data-original="{image.ORIGINAL}" data-default="{image.DEFAULT}" />
+					<!-- END image -->
 				</div>
-			<!-- END layer -->
-		</div>
-		<div id="layers-pane">
-			<ul class="topiclist cplist">
+				<div id="inventory-items-pane" class="items-pane panel">
+					<!-- BEGIN layer -->
+						<div id="inventory-layer-{layer.ID}-anchor">
+							<h4>{layer.NAME}</h4>
+							<p>{layer.DESC}</p>
+							<p>{L_MANDATORY}: <!-- IF layer.MANDATORY --><strong>{L_YES}</strong><!-- ELSE -->{L_NO}<!-- ENDIF --></p>
+							<hr />
+							<!-- BEGIN item -->
+								<label><img src="{layer.item.URL}" class="dynamo-item" title="{layer.item.DESC}" alt="{layer.item.NAME}" /><br />{layer.item.NAME}<br /><input type="radio" id="inventory-layer-{layer.ID}-{layer.item.ID}-radio" name="inventory-layer-{layer.ID}" value="{layer.item.ID}" class="item-button" data-type="inventory" data-layer="{layer.ID}" data-item="{layer.item.ID}" checked="<!-- IF layer.item.ID == layer.TRUE_ITEM -->checked<!-- ENDIF -->" /></label>
+							<!-- END item -->
+						</div>
+					<!-- END layer -->
+				</div>
+				<div id="inventory-layers-pane" class="layers-pane">
+					<ul class="topiclist cplist">
+						<!-- BEGIN layer -->
+						<li class="row bg1"><a data-layer="{layer.ID}" href="#inventory-layer-{layer.ID}-anchor" title="{layer.DESC}">{layer.NAME}</a></li>
+						<!-- END layer -->
+					</ul>
+				</div>
+			</div>
+
+			<fieldset class="submit-buttons">
+				<input type="reset" value="{L_RESTORE_ORIGINAL}" name="reset" class="button2" data-type="inventory" data-suffix="original" />&nbsp;
+				<input type="reset" value="{L_RESTORE_DEFAULT}" name="reset" class="button2" data-type="inventory" data-suffix="default" />&nbsp;
+				<input type="submit" name="inventory_submit" value="{L_SUBMIT}" class="button1" />
+			</fieldset>
+		</form>
+	<!-- ENDIF -->
+
+	<!-- IF SHOP_ENABLED -->
+	<h3>Shop</h3>
+	<p>Don't have all the items you're looking for? Buy them from the shop. Click on an item's image (or the checkbox below) to try it on. Click on the purchase button below to buy it. You currently have: {USER_POINTS} {L_CURRENCY}.</p>
+	<form method="post" name="shop" action="{U_ACTION}">
+		<div class="dynamo-wrap">
+			<div id="shop-preview-pane" class="preview-pane bg1">
+				<!-- BEGIN image -->
+				<img id="shop-layer-{image.LAYER_ID}" style="z-index: {image.POSITION};" class="dynamo-item" src="{image.URL}" data-original="{image.ORIGINAL}" data-default="{image.DEFAULT}" />
+				<!-- END image -->
+			</div>
+			<div id="shop-items-pane" class="items-pane panel">
 				<!-- BEGIN layer -->
-				<li class="row bg1"><a data-layer="{layer.ID}" href="#layer-{layer.ID}-anchor" title="{layer.DESC}">{layer.NAME}</a></li>
+					<div id="shop-layer-{layer.ID}-anchor">
+						<h4>{layer.NAME}</h4>
+						<p>{layer.DESC}</p>
+						<p>{L_MANDATORY}: <!-- IF layer.MANDATORY --><strong>{L_YES}</strong><!-- ELSE -->{L_NO}<!-- ENDIF --></p>
+						<hr />
+						<!-- BEGIN shopitem -->
+							<label><img src="{layer.shopitem.URL}" class="dynamo-item" title="{layer.shopitem.DESC}" alt="{layer.shopitem.NAME}" /><br />{layer.shopitem.NAME}<br /><input type="radio" id="shop-layer-{layer.ID}-{layer.shopitem.ID}-radio" name="shop-layer-{layer.ID}" value="{layer.shopitem.ID}" class="item-button" data-type="shop" data-layer="{layer.ID}" data-item="{layer.item.ID}"<!-- IF layer.shopitem.ID == layer.TRUE_ITEM --> checked="checked"<!-- ENDIF --> /><br />
+								<!-- IF layer.item.ID > 0 -->
+								<button name="shop_submit" value="{layer.shopitem.ID}"<!-- IF layer.shopitem.PRICE > USER_POINTS -->disabled="disabled"<!-- ENDIF -->>{L_PURCHASE} - {layer.shopitem.PRICE} {L_CURRENCY}</button>
+								<!-- ENDIF -->
+							</label>
+						<!-- BEGINELSE -->
+						<p>There are no items in this section! Why not try looking somewhere else?</p>
+						<!-- END item -->
+					</div>
 				<!-- END layer -->
-			</ul>
+			</div>
+			<div id="shop-layers-pane" class="layers-pane">
+				<ul class="topiclist cplist">
+					<!-- BEGIN layer -->
+					<li class="row bg1"><a data-layer="{layer.ID}" href="#shop-layer-{layer.ID}-anchor" title="{layer.DESC}">{layer.NAME}</a></li>
+					<!-- END layer -->
+				</ul>
+			</div>
 		</div>
-	</div>
-
-<fieldset class="submit-buttons">
-	<input type="reset" value="{L_RESTORE_ORIGINAL}" name="reset" class="button2" data-suffix="original" />&nbsp;
-	<input type="reset" value="{L_RESTORE_DEFAULT}" name="reset" class="button2" data-suffix="default" />&nbsp;
-	<input type="submit" name="submit" value="{L_SUBMIT}" class="button1" />
-</fieldset>
-
-</form>
+		<fieldset class="submit-buttons">
+			<input type="reset" value="{L_STOP_TRYING_ON}" name="reset" class="button2" data-type="shop" data-suffix="original" />&nbsp;
+		</fieldset>
+	</form>
+	<!-- ENDIF -->
 
 	<span class="corners-bottom"><span></span></span></div>
 </div>
