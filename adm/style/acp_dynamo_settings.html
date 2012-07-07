@@ -14,6 +14,7 @@
 				<label><input type="radio" class="radio" name="dynamo_enabled" value="0"<!-- IF not DYNAMO_ENABLED --> id="dynamo_enabled" checked="checked"<!-- ENDIF --> /> {L_NO}</label>
 			</dd>
 		</dl>
+		<!-- IF POINTS_MOD_ENABLED -->
 		<dl>
 			<dt><label for="dynamo_use_points">{L_POINTS_MOD}:</label><br /><span>{L_POINTS_MOD_DESC}</span></dt>
 			<dd>
@@ -21,6 +22,7 @@
 				<label><input type="radio" class="radio" name="dynamo_use_points" value="0"<!-- IF not DYNAMO_USE_POINTS --> id="dynamo_use_points" checked="checked"<!-- ENDIF --> /> {L_NO}</label>
 			</dd>
 		</dl>
+		<!-- ENDIF -->
 		<dl>
 			<dt><label for="dynamo_change_base">{L_CHANGE_BASE}:</label><br /><span>{L_CHANGE_BASE_DESC}</span></dt>
 			<dd>
