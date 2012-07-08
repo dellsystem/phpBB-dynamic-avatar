@@ -71,7 +71,8 @@
 			<action type="after-add"><![CDATA[// Dynamo (dynamic avatar) MOD
 define('DYNAMO_LAYERS_TABLE',		$table_prefix . 'dynamo_layers');
 define('DYNAMO_ITEMS_TABLE',		$table_prefix . 'dynamo_items');
-define('DYNAMO_USERS_TABLE',		$table_prefix . 'dynamo_users');]]></action>
+define('DYNAMO_USERS_TABLE',		$table_prefix . 'dynamo_users');
+define('DYNAMO_INVENTORY_TABLE',  $table_prefix . 'dynamo_inventory');]]></action>
 		</edit>
 	</open>
 	<diy-instructions lang="en">Navigate to dynamo_mod_install.php in the root of your forum and follow the install instructions.
