@@ -294,18 +294,11 @@ class ucp_dynamo
 							'NAME'		=> $item_data['name'],
 							'DESC'		=> $item_data['desc'],
 							'ID'		=> $item_id,
-							'INVENTORY'	=> $in_inventory,
+							'CAN_BUY'	=> !$in_inventory,
 							'PRICE'		=> $price,
 						);
 
-						if ($in_inventory)
-						{
-							$template->assign_block_vars('layer.item', $item_array);
-						}
-						else
-						{
-							$template->assign_block_vars('layer.shopitem', $item_array);
-						}
+						$template->assign_block_vars('layer.item', $item_array);
 					}
 				}
 			break;
