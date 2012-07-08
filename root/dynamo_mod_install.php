@@ -80,6 +80,26 @@ function fix_table_index($action, $version)
 }
 
 $versions = array(
+	'0.9.0' => array(
+		// Add price-related columns for the items and layers tables
+		'table_column_add' => array(
+			array('phpbb_dynamo_layers', 'default_price', array('UINT', NULL)),
+			array('phpbb_dynamo_items', 'item_price', array('UINT', NULL)),
+		),
+		// Add a table to keep track of each user's inventory
+		'table_add' => array(
+			array('phpbb_dynamo_inventory', array(
+					'COLUMNS'        => array(
+						'item_id'                => array('UINT', NULL),
+						'user_id'                => array('UINT', NULL),
+					),
+					'KEYS'		=> array(
+						'user_item_index' => array('UNIQUE', array('user_id', 'item_id')),
+					),
+				),
+			),
+		),
+	),
 	'0.1.0' => array(
 		'permission_add' => array(
 			'u_dynamo',
