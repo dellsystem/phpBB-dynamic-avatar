@@ -96,8 +96,10 @@
 						<!-- BEGIN item -->
 						<div class="item-box">
 							<label>
-								<img src="{layer.item.URL}" class="dynamo-item" title="{layer.item.DESC}" alt="{layer.item.NAME}" /><br />{layer.item.NAME}<br />
+								<img src="{layer.item.URL}" class="item-button dynamo-item" title="{layer.item.DESC}" alt="{layer.item.NAME}" data-layer="{layer.ID}" data-item="{layer.item.ID}" /><br />{layer.item.NAME}<br />
+								<!-- IF layer.item.CAN_BUY == 0 -->
 								<input type="radio" id="layer-{layer.ID}-{layer.item.ID}-radio" name="layer-{layer.ID}" value="{layer.item.ID}" class="item-button" data-layer="{layer.ID}" data-item="{layer.item.ID}" checked="<!-- IF layer.item.ID == layer.TRUE_ITEM -->checked<!-- ENDIF -->" />
+								<!-- ENDIF -->
 							</label>
 							<!-- IF layer.item.CAN_BUY -->
 								<br />

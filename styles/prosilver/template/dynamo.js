@@ -12,7 +12,7 @@ $(document).ready(function() {
 	};
 
 	// Click an image, and it will change it in the demo
-	$('.item-button').change(function(event) {
+	$('.item-button').click(function(event) {
 		var layerID = $(this).attr('data-layer');
 		var itemID = $(this).attr('data-item');
 		var selector = '#layer-' + layerID;
