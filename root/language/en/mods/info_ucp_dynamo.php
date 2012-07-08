@@ -26,6 +26,11 @@ if (empty($lang) || !is_array($lang))
 $lang = array_merge($lang, array(
 	'UCP_DYNAMO_UPDATED'		=> 'Successfully updated dynamic avatar.',
 	'UCP_DYNAMO_MOD'			=> 'Dynamic avatar',
+	'PURCHASE'					=> 'Purchase',
+	'CURRENCY'					=> 'points',
+	'STOP_TRYING_ON'			=> 'Remove items from preview',
+	'NOT_ENOUGH_POINTS'			=> 'You don\'t have enough points to purchase this item.',
+	'SUCCESSFUL_PURCHASE'		=> 'You have successfully purchased <strong>%s</strong>.',
 ));
 
 ?>

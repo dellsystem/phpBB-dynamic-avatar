@@ -30,8 +30,10 @@ class ucp_dynamo
 		global $template, $user, $db, $config, $phpEx, $phpbb_root_path;
 
 		include($phpbb_root_path . 'includes/functions_dynamo.' . $phpEx);
-		$submit = (isset($_POST['submit'])) ? true : false;
+		$inventory_submit = (isset($_POST['inventory_submit'])) ? true : false;
+		$shop_submit = (isset($_POST['shop_submit'])) ? true : false;
 		$user_id = $user->data['user_id'];
+		$use_points = $config['dynamo_use_points'] && $config['points_enable'];
 
 		switch ($mode)
 		{
@@ -61,18 +63,35 @@ class ucp_dynamo
 						'name'		=> $name,
 						'desc'		=> $desc,
 						'position'	=> $position,
-						'desired'	=> request_var('layer-' . $layer_id, 0),
 						'current'	=> 0, // Only used for showing, not submitting
 					);
-					
+
 					// If the layer is not mandatory, add 0 to the items list
 					if (!$mandatory)
 					{
 						$layers[$layer_id]['items'][0] = array(
-							'name'	=> $user->lang['NO_ITEM'],
-							'desc'	=> $user->lang['NO_ITEM'],
-							'url'	=> 'images/spacer.gif',
+							'name'		=> $user->lang['NO_ITEM'],
+							'desc'		=> $user->lang['NO_ITEM'],
+							'url'		=> 'images/spacer.gif',
+							'inventory'	=> true, // I don't think this matters
 						);
+					}
+				}
+
+				// Figure out what items don't need to be purchased first
+				// Used for display as well as for validation
+				$user_items = array();
+				if ($use_points)
+				{
+					// If points integration is enabled, distinguish between shop & inventory
+					$sql = "SELECT item_id
+							FROM " . DYNAMO_INVENTORY_TABLE . "
+							WHERE user_id = $user_id";
+					$result = $db->sql_query($sql);
+
+					while ($row = $db->sql_fetchrow($result))
+					{
+						$user_items[] = $row['item_id'];
 					}
 				}
 
@@ -81,21 +100,30 @@ class ucp_dynamo
 						FROM " . DYNAMO_ITEMS_TABLE;
 				$result = $db->sql_query($sql);
 
+				$layer_item_data = array();
+
 				while ($row = $db->sql_fetchrow($result))
 				{
 					$layer_id = $row['dynamo_item_layer'];
 					$name = $row['dynamo_item_name'];
 					$desc = $row['dynamo_item_desc'];
 					$item_id = $row['dynamo_item_id'];
+					$price = $row['item_price'];
+					$layer_item_data[$item_id] = $layer_id;
+					$layer_default = $layers[$layer_id]['default'];
+
+					$inventory = !$use_points || $price == 0 || $item_id == $layer_default || in_array($item_id, $user_items);
 
 					$layers[$layer_id]['items'][$item_id] = array(
 						'name'		=> $name,
 						'desc'		=> $desc,
 						'url'		=> get_item_image_path('entire', $layer_id, $item_id),
+						'price'		=> $price,
+						'inventory'	=> $inventory,
 					);
 				}
 
-				if ($submit)
+				if ($inventory_submit)
 				{
 					// Save a list of URLs to the desired item images
 					$images = array();
@@ -106,11 +134,13 @@ class ucp_dynamo
 
 					foreach ($layers as $layer_id => $layer_data)
 					{
-						$desired_item = $layer_data['desired'];
+						$desired_item = request_var('inventory-layer-' . $layer_id, 0);
 
 						// Check if the desired item is in the list of possible items (maybe incl 0)
 						// If not, check if it's 0 and the layer is not mandatory
-						$item_is_valid = isset($layer_data['items'][$desired_item]);
+						// Also make sure that it is in the inventory
+						$item_data = $layer_data['items'][$desired_item];
+						$item_is_valid = isset($item_data) && $item_data['inventory'];
 						$no_item_selected = ($desired_item == 0) ? 1 : 0;
 
 						if ($item_is_valid)
@@ -131,6 +161,7 @@ class ucp_dynamo
 						else
 						{
 							// Trigger a custom error message depending on the situation
+							// These error messages should not occur naturally
 							$message = ($no_item_selected) ? $user->lang['MANDATORY_LAYER'] : $user->lang['INVALID_ITEM'];
 							trigger_error(sprintf($message, $layer_data['name']));
 						}
@@ -176,16 +207,50 @@ class ucp_dynamo
 					$message = $user->lang['UCP_DYNAMO_UPDATED'] . '<br /><br />' . sprintf($user->lang['RETURN_UCP'], '<a href="' . $this->u_action . '">', '</a>');
 					trigger_error($message);
 				}
+				else if ($shop_submit)
+				{
+					// Get the details for the item selected
+					$desired_item = $_POST['shop_submit'];
+
+					// Used only as a way of indexing into $layers
+					$item_layer = $layer_item_data[$desired_item];
+					$item_data = $layers[$item_layer]['items'][$desired_item];
+					$item_price = $item_data['price'];
+
+					$user_points = $user->data['user_points'];
+					if ($user_points < $item_price)
+					{
+						$message = $user->lang['NOT_ENOUGH_POINTS'];
+					}
+					else
+					{
+						// First, add the relevant item to the user's inventory
+						$sql_ary = array(
+							'item_id'		=> $desired_item,
+							'user_id'		=> $user_id,
+						);
+
+						$sql = 'INSERT INTO ' . DYNAMO_INVENTORY_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary);
+
+						$db->sql_query($sql);
+
+						substract_points($user_id, $item_price); // [sic]
+						$user->data['user_points'] -= $item_price; // to update the header thing
+						$message = sprintf($user->lang['SUCCESSFUL_PURCHASE'], $item_data['name']);
+					}
+					$message .= '<br /><br />' . sprintf($user->lang['RETURN_UCP'], '<a href="' . $this->u_action . '">', '</a>');
+					trigger_error($message);
+				}
 
 				$this->tpl_name = 'ucp_dynamo_edit';
 				$this->page_title = 'Edit avatar';
-				
-				// Get the user's items
+
+				// Get the items the user is wearing
 				$sql = "SELECT *
 						FROM " . DYNAMO_USERS_TABLE . "
 						WHERE dynamo_user_id = $user_id";
 				$result = $db->sql_query($sql);
-				
+
 				while ($row = $db->sql_fetchrow($result))
 				{
 					// Update the $layers array - current item
@@ -195,6 +260,7 @@ class ucp_dynamo
 					$layers[$layer_id]['current'] = $item_id;
 				}
 
+				$num_in_inventory = 0;
 				// Create the template loops and stuff by looping through $layers
 				foreach ($layers as $layer_id => $layer_data)
 				{
@@ -226,18 +292,31 @@ class ucp_dynamo
 					// Now loop through the items in this layer
 					foreach ($layer_data['items'] as $item_id => $item_data)
 					{
-						$template->assign_block_vars('layer.item', array(
+						$price = $item_data['price'];
+						$in_inventory = $item_data['inventory'];
+						if ($in_inventory)
+						{
+							$num_in_inventory++;
+						}
+
+						$item_array = array(
 							'URL'		=> $item_data['url'],
 							'NAME'		=> $item_data['name'],
 							'DESC'		=> $item_data['desc'],
 							'ID'		=> $item_id,
-						));
+							'CAN_BUY'	=> !$in_inventory,
+							'PRICE'		=> $price,
+						);
+
+						$template->assign_block_vars('layer.item', $item_array);
 					}
 				}
 			break;
 		}
 
 		$template->assign_vars(array(
+			'SHOP_ENABLED' 	=> $use_points,
+			'NO_ITEMS'		=> $use_points && $num_in_inventory == 0,
 			'IMAGE_HEIGHT'	=> $config['dynamo_height'],
 			'IMAGE_WIDTH'	=> $config['dynamo_width'],
 			'U_ACTION'	=> $this->u_action,
