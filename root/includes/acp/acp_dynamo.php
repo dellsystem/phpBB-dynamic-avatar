@@ -93,6 +93,7 @@ class acp_dynamo
 				$num_layers = $row['num_layers'];
 
 				$template_vars = array(
+					'DYNAMO_POINTS_SUPPORT'	=> $config['dynamo_use_points'],
 					'DYNAMO_MOD_ENABLED'	=> $config['dynamo_enabled'], // does this even do anything?
 					'DYNAMO_NUM_USERS'		=> $num_users,
 					'DYNAMO_NUM_ITEMS'		=> $num_items,
@@ -134,6 +135,7 @@ class acp_dynamo
 				}
 
 				$template_vars = array(
+					'POINTS_MOD_ENABLED'	=> $config['points_enable'],
 					'L_TITLE'				=> $user->lang['SETTINGS'],
 					'L_TITLE_EXPLAIN'		=> $user->lang['DYNAMO_SETTINGS_EXPLAIN'],
 					'U_ACTION' 				=> $this->u_action,
@@ -173,6 +175,7 @@ class acp_dynamo
 						$desired_position = request_var('dynamo_layer_position', 0);
 						$desired_mandatory = request_var('dynamo_layer_mandatory', 0);
 						$desired_default = 0; // Because it's a new layer, so it has no items
+						$desired_price = request_var('default_price', 0);
 						$actual_position = $max_position + 1;
 
 						// Now add it to the database - the ID should be auto_incremented
@@ -182,6 +185,7 @@ class acp_dynamo
 							'dynamo_layer_default'		=> $desired_default,
 							'dynamo_layer_mandatory'	=> $desired_mandatory,
 							'dynamo_layer_position'		=> $actual_position,
+							'default_price'				=> $desired_price,
 						);
 						$sql = "INSERT INTO " . DYNAMO_LAYERS_TABLE . " " . $db->sql_build_array('INSERT', $insert_array);
 						$db->sql_query($sql);
@@ -238,6 +242,7 @@ class acp_dynamo
 						$desired_desc = request_var('dynamo_layer_desc', '');
 						$desired_mandatory = request_var('dynamo_layer_mandatory', 0);
 						$desired_default = request_var('dynamo_layer_default', 0);
+						$desired_price = request_var('default_price', 0);
 
 						// First update all non-position things
 						$update_array = array(
@@ -245,6 +250,7 @@ class acp_dynamo
 							'dynamo_layer_desc'			=> $desired_desc,
 							'dynamo_layer_mandatory'	=> $desired_mandatory,
 							'dynamo_layer_default'		=> $desired_default,
+							'default_price'				=> $desired_price,
 						);
 						$sql = "UPDATE " . DYNAMO_LAYERS_TABLE . "
 								SET " . $db->sql_build_array('UPDATE', $update_array) . "
@@ -263,7 +269,7 @@ class acp_dynamo
 					$this_template = 'acp_dynamo_layers_edit';
 
 					// Get the information for this layer from the db
-					$sql = "SELECT l.dynamo_layer_id, l.dynamo_layer_name, l.dynamo_layer_desc, l.dynamo_layer_position, l.dynamo_layer_mandatory, l.dynamo_layer_default, i.dynamo_item_name
+					$sql = "SELECT l.dynamo_layer_id, l.dynamo_layer_name, l.dynamo_layer_desc, l.dynamo_layer_position, l.dynamo_layer_mandatory, l.dynamo_layer_default, l.default_price, i.dynamo_item_name
 							FROM " . DYNAMO_LAYERS_TABLE . " l
 							LEFT JOIN " . DYNAMO_ITEMS_TABLE . " i
 							ON l.dynamo_layer_default = i.dynamo_item_id
@@ -314,6 +320,7 @@ class acp_dynamo
 					}
 
 					$template_vars = array(
+						'DEFAULT_PRICE'		=> $layer['default_price'],
 						'CURRENT_ITEM'		=> $layer_default,
 						'L_LAST_LAYER'		=> $l_last_layer,
 						'L_TITLE'			=> sprintf($user->lang['EDITING_LAYER'], $layer_name),
@@ -377,7 +384,7 @@ class acp_dynamo
 					}
 
 					// Left join so that even if there is no default_item we still get results lol
-					$sql = "SELECT l.dynamo_layer_id, l.dynamo_layer_name, l.dynamo_layer_desc, l.dynamo_layer_position, l.dynamo_layer_mandatory, l.dynamo_layer_default, i.dynamo_item_name
+					$sql = "SELECT l.dynamo_layer_id, l.dynamo_layer_name, l.dynamo_layer_desc, l.dynamo_layer_position, l.dynamo_layer_mandatory, l.dynamo_layer_default, l.default_price, i.dynamo_item_name
 							FROM " . DYNAMO_LAYERS_TABLE . " l
 							LEFT JOIN " . DYNAMO_ITEMS_TABLE . " i
 							ON l.dynamo_layer_default = i.dynamo_item_id
@@ -402,6 +409,7 @@ class acp_dynamo
 							'LAYER_POSITION'	=> $position,
 							'LAYER_MANDATORY'	=> ($row['dynamo_layer_mandatory']) ? 'Yes' : 'No',
 							'DEFAULT_ITEM'		=> ($row['dynamo_layer_default'] == 0) ? 'None' : '<strong>' . $row['dynamo_item_name'] . '</strong>',
+							'DEFAULT_PRICE'		=> $row['default_price'],
 							'U_EDIT'			=> $this->u_action . '&amp;edit=' . $layer_id,
 							'U_DELETE'			=> $this->u_action . '&amp;delete=' . $layer_id,
 							'U_MOVE_DOWN'		=> $this->u_action . '&amp;move_down=' . $layer_id,
@@ -436,6 +444,7 @@ class acp_dynamo
 						$desired_name = request_var('dynamo_item_name', '');
 						$desired_desc = request_var('dynamo_item_desc', '');
 						$desired_layer = request_var('dynamo_item_layer', 0);
+						$desired_price = request_var('item_price', 0);
 
 						// First get the next item ID from the database
 						$sql = "SELECT dynamo_item_id
@@ -469,7 +478,8 @@ class acp_dynamo
 							'dynamo_item_id'	=> $item_id, // need this to avoid discrepancies lol
 							'dynamo_item_name' 	=> $desired_name,
 							'dynamo_item_desc'	=> $desired_desc,
-							'dynamo_item_layer'	=> $desired_layer
+							'dynamo_item_layer'	=> $desired_layer,
+							'item_price'		=> $desired_price,
 						);
 
 						// Might as well not ignore the ID since we have it
@@ -498,7 +508,8 @@ class acp_dynamo
 					$this_template = 'acp_dynamo_items_edit';
 
 					// Make the layer dropdown - get all the layers from the db
-					$sql = "SELECT dynamo_layer_name, dynamo_layer_id
+					// Also show the price
+					$sql = "SELECT dynamo_layer_name, dynamo_layer_id, default_price
 							FROM " . DYNAMO_LAYERS_TABLE . "
 							ORDER BY dynamo_layer_position DESC";
 					$result = $db->sql_query($sql);
@@ -508,10 +519,12 @@ class acp_dynamo
 						$template->assign_block_vars('layer_dropdown', array(
 							'LAYER_ID'		=> $row['dynamo_layer_id'],
 							'LAYER_NAME'	=> $row['dynamo_layer_name'],
+							'DEFAULT_PRICE'	=> $row['default_price'],
 						));
 					}
 
 					$template_vars = array(
+						'IN_ADD'			=> true,
 						'L_TITLE'			=> $user->lang['ADDING_ITEM'],
 						'L_TITLE_EXPLAIN'	=> $user->lang['ADDING_ITEM_EXPLAIN'],
 						'U_ACTION'			=> $this->u_action . '&amp;add=1',
@@ -525,6 +538,7 @@ class acp_dynamo
 						$desired_name = request_var('dynamo_item_name', '');
 						$desired_desc = request_var('dynamo_item_desc', '');
 						$desired_layer = request_var('dynamo_item_layer', 0);
+						$desired_price = request_var('item_price', 0);
 
 						// Change the filename to reflect the new layer if necessary
 						$sql = "SELECT dynamo_item_layer
@@ -545,6 +559,7 @@ class acp_dynamo
 						}
 
 						$update_array = array(
+							'item_price'		=> $desired_price,
 							'dynamo_item_name' 	=> $desired_name,
 							'dynamo_item_desc' 	=> $desired_desc,
 							'dynamo_item_layer' => $desired_layer
@@ -588,6 +603,7 @@ class acp_dynamo
 					}
 
 					$template_vars = array(
+						'ITEM_PRICE'				=> $item['item_price'],
 						'CURRENT_LAYER'		=> $item['dynamo_item_layer'],
 						'L_TITLE'			=> sprintf($user->lang['EDITING_ITEM'], $item_name),
 						'L_TITLE_EXPLAIN'	=> $user->lang['EDITING_ITEM_EXPLAIN'],
@@ -665,6 +681,7 @@ class acp_dynamo
 						$item_image_url = get_item_image_path('entire', $item_layer, $item_id);
 
 						$template->assign_block_vars('item', array(
+							'ITEM_DESC'		=> $row['dynamo_item_desc'],
 							'NEW_LAYER'		=> $new_layer,
 							'NUM_IN_LAYER'	=> $num_in_layer,
 							'ITEM_NAME'		=> $row['dynamo_item_name'],
@@ -714,6 +731,7 @@ class acp_dynamo
 		}
 		$this->tpl_name = $this_template;
 		$this->page_title = $this_title;
+		$template_vars['POINTS_ENABLED'] = $config['dynamo_use_points'] && $config['points_enable'];
 		$template->assign_vars($template_vars);
 	}
 }
