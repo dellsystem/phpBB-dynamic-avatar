@@ -28,6 +28,7 @@ $(document).ready(function() {
 	// Restore all the original/default items
 	$('input[type="reset"]').click(function() {
 		restoreLayers($(this).attr('data-suffix'));
+		return false;
 	});
 
 	// Helper function for only showing things in the current layer
