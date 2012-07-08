@@ -70,10 +70,28 @@ class ucp_dynamo
 					if (!$mandatory)
 					{
 						$layers[$layer_id]['items'][0] = array(
-							'name'	=> $user->lang['NO_ITEM'],
-							'desc'	=> $user->lang['NO_ITEM'],
-							'url'	=> 'images/spacer.gif',
+							'name'		=> $user->lang['NO_ITEM'],
+							'desc'		=> $user->lang['NO_ITEM'],
+							'url'		=> 'images/spacer.gif',
+							'inventory'	=> true, // I don't think this matters
 						);
+					}
+				}
+
+				// Figure out what items don't need to be purchased first
+				// Used for display as well as for validation
+				$user_items = array();
+				if ($use_points)
+				{
+					// If points integration is enabled, distinguish between shop & inventory
+					$sql = "SELECT item_id
+							FROM " . DYNAMO_INVENTORY_TABLE . "
+							WHERE user_id = $user_id";
+					$result = $db->sql_query($sql);
+
+					while ($row = $db->sql_fetchrow($result))
+					{
+						$user_items[] = $row['item_id'];
 					}
 				}
 
@@ -92,12 +110,16 @@ class ucp_dynamo
 					$item_id = $row['dynamo_item_id'];
 					$price = $row['item_price'];
 					$layer_item_data[$item_id] = $layer_id;
+					$layer_default = $layers[$layer_id]['default'];
+
+					$inventory = !$use_points || $price == 0 || $item_id == $layer_default || in_array($item_id, $user_items);
 
 					$layers[$layer_id]['items'][$item_id] = array(
 						'name'		=> $name,
 						'desc'		=> $desc,
 						'url'		=> get_item_image_path('entire', $layer_id, $item_id),
 						'price'		=> $price,
+						'inventory'	=> $inventory,
 					);
 				}
 
@@ -116,7 +138,9 @@ class ucp_dynamo
 
 						// Check if the desired item is in the list of possible items (maybe incl 0)
 						// If not, check if it's 0 and the layer is not mandatory
-						$item_is_valid = isset($layer_data['items'][$desired_item]);
+						// Also make sure that it is in the inventory
+						$item_data = $layer_data['items'][$desired_item];
+						$item_is_valid = isset($item_data) && $item_data['inventory'];
 						$no_item_selected = ($desired_item == 0) ? 1 : 0;
 
 						if ($item_is_valid)
@@ -137,6 +161,7 @@ class ucp_dynamo
 						else
 						{
 							// Trigger a custom error message depending on the situation
+							// These error messages should not occur naturally
 							$message = ($no_item_selected) ? $user->lang['MANDATORY_LAYER'] : $user->lang['INVALID_ITEM'];
 							trigger_error(sprintf($message, $layer_data['name']));
 						}
@@ -220,21 +245,6 @@ class ucp_dynamo
 				$this->tpl_name = 'ucp_dynamo_edit';
 				$this->page_title = 'Edit avatar';
 
-				$user_items = array();
-				if ($use_points)
-				{
-					// If points integration is enabled, distinguish between shop & inventory
-					$sql = "SELECT item_id
-							FROM " . DYNAMO_INVENTORY_TABLE . "
-							WHERE user_id = $user_id";
-					$result = $db->sql_query($sql);
-
-					while ($row = $db->sql_fetchrow($result))
-					{
-						$user_items[] = $row['item_id'];
-					}
-				}
-
 				// Get the items the user is wearing
 				$sql = "SELECT *
 						FROM " . DYNAMO_USERS_TABLE . "
@@ -283,7 +293,7 @@ class ucp_dynamo
 					foreach ($layer_data['items'] as $item_id => $item_data)
 					{
 						$price = $item_data['price'];
-						$in_inventory = !$use_points || $price == 0 || $item_id == $default || in_array($item_id, $user_items);
+						$in_inventory = $item_data['inventory'];
 						if ($in_inventory)
 						{
 							$num_in_inventory++;
