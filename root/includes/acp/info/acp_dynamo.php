@@ -20,7 +20,7 @@ class acp_dynamo_info
 		return array(
 			'filename'	=> 'acp_dynamo',
 			'title'		=> 'ACP_DYNAMO',
-			'version'	=> '0.0.1',
+			'version'	=> '0.9.0',
 			'modes'		=> array(
 				// Uses acl_a_forum for now because the proper auth field isn't working atm lol
 				'overview'		=> array('title' => 'ACP_DYNAMO_OVERVIEW', 'auth' => 'acl_a_dynamo_overview', 'cat' => array('ACP_DYNAMO')),

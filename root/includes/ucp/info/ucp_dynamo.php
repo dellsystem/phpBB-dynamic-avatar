@@ -18,7 +18,7 @@ class ucp_dynamo_info
 		return array(
 			'filename'	=> 'ucp_dynamo',
 			'title'		=> 'UCP_DYNAMO',
-			'version'	=> '0.0.1',
+			'version'	=> '0.9.0',
 			'modes'		=> array(
 				//Gotta fix the below
 				'edit'	=> array('title' => 'Edit avatar', 'auth' => 'acl_u_dynamo', 'cat' => array('UCP_PROFILE')))
