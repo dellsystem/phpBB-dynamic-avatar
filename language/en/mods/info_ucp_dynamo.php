@@ -29,6 +29,8 @@ $lang = array_merge($lang, array(
 	'PURCHASE'					=> 'Purchase',
 	'CURRENCY'					=> 'points',
 	'STOP_TRYING_ON'			=> 'Remove items from preview',
+	'NOT_ENOUGH_POINTS'			=> 'You don\'t have enough points to purchase this item.',
+	'SUCCESSFUL_PURCHASE'		=> 'You have successfully purchased <strong>%s</strong>.',
 ));
 
 ?>

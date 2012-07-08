@@ -195,7 +195,7 @@ class ucp_dynamo
 					$user_points = $user->data['user_points'];
 					if ($user_points < $item_price)
 					{
-						$message = 'lol';
+						$message = $user->lang['NOT_ENOUGH_POINTS'];
 					}
 					else
 					{
@@ -211,7 +211,7 @@ class ucp_dynamo
 
 						substract_points($user_id, $item_price); // [sic]
 						$user->data['user_points'] -= $item_price; // to update the header thing
-						$message = 'You have successfully purchased ' . $item_data['name'];
+						$message = sprintf($user->lang['SUCCESSFUL_PURCHASE'], $item_data['name']);
 					}
 					$message .= '<br /><br />' . sprintf($user->lang['RETURN_UCP'], '<a href="' . $this->u_action . '">', '</a>');
 					trigger_error($message);
