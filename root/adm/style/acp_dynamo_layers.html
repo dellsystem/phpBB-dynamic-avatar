@@ -5,7 +5,7 @@
 <p>{L_TITLE_EXPLAIN}</p>
 
 <table cellspacing="1">
-	<col class="col1" /><col class="col2" /><col class="col1" /><col class="col2" /><col class="col1" /><col class="col2" /><col class="col1" />
+	<col class="col1" /><col class="col2" /><col class="col1" /><col class="col2" /><col class="col1" /><col class="col2" /><col class="col1" /><!-- IF POINTS_ENABLED --><col class="col2" /><!-- ENDIF -->
 	<thead>
 		<tr>
 			<th>{L_LAYER_ID}</th>
@@ -13,6 +13,7 @@
 			<th>{L_LAYER_DESCRIPTION}</th>
 			<th>{L_LAYER_MANDATORY}</th>
 			<th>{L_DEFAULT_ITEM}</th>
+			<!-- IF POINTS_ENABLED --><th>{L_DEFAULT_PRICE}</th><!-- ENDIF -->
 			<th>{L_LAYER_POSITION}</th>
 			<th>{L_OPTIONS}</th>
 		</tr>
@@ -25,6 +26,7 @@
 			<td>{layers.LAYER_DESC}</td>
 			<td>{layers.LAYER_MANDATORY}</td>
 			<td>{layers.DEFAULT_ITEM}</td>
+			<!-- IF POINTS_ENABLED --><td>{layers.DEFAULT_PRICE}</td><!-- ENDIF -->
 			<td>{layers.LAYER_POSITION}</td>
 			<td>
 				<!-- IF layers.LAYER_POSITION == MAX_POSITION -->

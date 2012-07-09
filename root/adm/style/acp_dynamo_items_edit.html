@@ -1,5 +1,11 @@
 <!-- INCLUDE overall_header.html -->
 
+<!-- IF IN_ADD -->
+{T_THEME_PATH}
+<script type="text/javascript" src="{ROOT_PATH}../jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="{ROOT_PATH}style/dynamo.js"></script>
+<!-- ENDIF -->
+
 <h1>{L_TITLE}</h1>
 
 <p>{L_TITLE_EXPLAIN}</p>
@@ -23,16 +29,23 @@
 		</dl>
 		<dl>
 			<dt><label for="dynamo_item_layer">{L_LAYER}:</label><br /><span>{L_ITEM_LAYER_DESC}</span></dt>
-			<dd><select name="dynamo_item_layer">
+			<dd><select name="dynamo_item_layer" id="dynamo_item_layer">
 				<option value="0">{L_UNCATEGORISED}</option>
 				<!-- BEGIN layer_dropdown -->
-				<option value="{layer_dropdown.LAYER_ID}"<!-- IF layer_dropdown.LAYER_ID == CURRENT_LAYER --> selected="selected"<!-- ENDIF -->>{layer_dropdown.LAYER_NAME}</option>
+				<option <!-- IF POINTS_ENABLED -->data-price="{layer_dropdown.DEFAULT_PRICE}" <!-- ENDIF -->value="{layer_dropdown.LAYER_ID}"<!-- IF layer_dropdown.LAYER_ID == CURRENT_LAYER --> selected="selected"<!-- ENDIF -->>{layer_dropdown.LAYER_NAME}</option>
 				<!-- END layer_dropdown -->
 			</select></dd>
 		</dl>
+		<!-- IF POINTS_ENABLED -->
+		<dl>
+			<dt><label for="item_price">{L_ITEM_PRICE}:</label><br /><span>{L_ITEM_PRICE_EXPLAIN}</span></dt>
+			<dd><input type="text" name="item_price" id="item_price" value="{ITEM_PRICE}" /></dd>
+		</dl>
+		<!-- ENDIF -->
 		<dl>
 			<dt><label for="uploadfile">{L_IMAGE_FILE}:</label><br /><span>{L_IMAGE_FILE_DESC}</span></dt>
 			<dd><input type="file" name="uploadfile" /></dd>
+		</dl>
 	</fieldset>
 
 	<fieldset>

@@ -1,7 +1,7 @@
 <!-- INCLUDE ucp_header.html -->
 
 <!-- the JS file for the dynamic part -->
-<script src="{T_TEMPLATE_PATH}/jquery-1.7.1.min.js"></script>
+<script src="{ROOT_PATH}jquery-1.7.2.min.js"></script>
 <script src="{T_TEMPLATE_PATH}/dynamo.js"></script>
 <style type="text/css">
 #dynamo-wrap {
@@ -28,7 +28,7 @@
 	margin: auto;
 }
 
-#inventory-pane {
+#items-pane {
 	position: absolute;
 	left: 200px;
 	right: 175px;
@@ -36,10 +36,11 @@
 	overflow: auto;
 }
 
-#inventory-pane label {
+#items-pane .item-box {
 	display: inline-block;
 	text-align: center;
 	margin-bottom: 15px;
+	vertical-align: top;
 }
 
 #layers-pane {
@@ -76,45 +77,54 @@
 
 <div class="panel">
 	<div class="inner"><span class="corners-top"><span></span></span>
-	
+
 	<p>{L_DYNAMO_EXPLAIN}</p>
-	
-	<form method="post" name="dynamo" action="{U_ACTION}">
-	<div id="dynamo-wrap">
-		<div id="preview-pane" class="bg1">
-			<!-- BEGIN image -->
-			<img id="layer-{image.LAYER_ID}" style="z-index: {image.POSITION};" class="dynamo-item" src="{image.URL}" data-original="{image.ORIGINAL}" data-default="{image.DEFAULT}" />
-			<!-- END image -->
-		</div>
-		<div id="inventory-pane" class="panel">
-			<!-- BEGIN layer -->
-				<div id="layer-{layer.ID}-anchor">
-					<h3>{layer.NAME}</h3>
-					<p>{layer.DESC}</p>
-					<p>{L_MANDATORY}: <!-- IF layer.MANDATORY --><strong>{L_YES}</strong><!-- ELSE -->{L_NO}<!-- ENDIF --></p>
-					<hr />
-					<!-- BEGIN item -->
-						<label><img src="{layer.item.URL}" class="dynamo-item" title="{layer.item.DESC}" alt="{layer.item.NAME}" /><br />{layer.item.NAME}<br /><input type="radio" id="layer-{layer.ID}-{layer.item.ID}-radio" name="layer-{layer.ID}" value="{layer.item.ID}" class="item-button" data-layer="{layer.ID}" data-item="{layer.item.ID}"<!-- IF layer.item.ID == layer.TRUE_ITEM --> checked="checked"<!-- ENDIF --> /></label>
-					<!-- END item -->
-				</div>
-			<!-- END layer -->
-		</div>
-		<div id="layers-pane">
-			<ul class="topiclist cplist">
+	<form method="post" action="{U_ACTION}">
+		<div id="dynamo-wrap">
+			<div id="preview-pane" class="bg1">
+				<!-- BEGIN image -->
+				<img id="layer-{image.LAYER_ID}" style="z-index: {image.POSITION};" class="dynamo-item" src="{image.URL}" data-original="{image.ORIGINAL}" data-default="{image.DEFAULT}" />
+				<!-- END image -->
+			</div>
+			<div id="items-pane" class="panel">
 				<!-- BEGIN layer -->
-				<li class="row bg1"><a data-layer="{layer.ID}" href="#layer-{layer.ID}-anchor" title="{layer.DESC}">{layer.NAME}</a></li>
+					<div id="layer-{layer.ID}-anchor" class="layer-box">
+						<h3>{layer.NAME}</h3>
+						<p>{layer.DESC}</p>
+						<p>{L_MANDATORY}: <!-- IF layer.MANDATORY --><strong>{L_YES}</strong><!-- ELSE -->{L_NO}<!-- ENDIF --></p>
+						<hr />
+						<!-- BEGIN item -->
+						<div class="item-box">
+							<label>
+								<img src="{layer.item.URL}" class="item-button dynamo-item" title="{layer.item.DESC}" alt="{layer.item.NAME}" data-layer="{layer.ID}" data-item="{layer.item.ID}" /><br />{layer.item.NAME}<br />
+								<!-- IF layer.item.CAN_BUY == 0 -->
+								<input type="radio" id="layer-{layer.ID}-{layer.item.ID}-radio" name="inventory-layer-{layer.ID}" value="{layer.item.ID}" class="item-button" data-layer="{layer.ID}" data-item="{layer.item.ID}" <!-- IF layer.item.ID == layer.TRUE_ITEM -->checked="checked"<!-- ENDIF --> />
+								<!-- ENDIF -->
+							</label>
+							<!-- IF layer.item.CAN_BUY -->
+								<br />
+								<button name="shop_submit" value="{layer.item.ID}"<!-- IF layer.item.PRICE > USER_POINTS -->disabled="disabled"<!-- ENDIF -->>{layer.item.PURCHASE_MESSAGE}</button>
+							<!-- ENDIF -->
+						</div>
+						<!-- END item -->
+					</div>
 				<!-- END layer -->
-			</ul>
+			</div>
+			<div id="layers-pane">
+				<ul class="topiclist cplist">
+					<!-- BEGIN layer -->
+					<li class="row bg1"><a data-layer="{layer.ID}" href="#layer-{layer.ID}-anchor" title="{layer.DESC}">{layer.NAME}</a></li>
+					<!-- END layer -->
+				</ul>
+			</div>
 		</div>
-	</div>
 
-<fieldset class="submit-buttons">
-	<input type="reset" value="{L_RESTORE_ORIGINAL}" name="reset" class="button2" data-suffix="original" />&nbsp;
-	<input type="reset" value="{L_RESTORE_DEFAULT}" name="reset" class="button2" data-suffix="default" />&nbsp;
-	<input type="submit" name="submit" value="{L_SUBMIT}" class="button1" />
-</fieldset>
-
-</form>
+		<fieldset class="submit-buttons">
+			<input type="reset" value="{L_RESTORE_ORIGINAL}" name="reset" class="button2" data-suffix="original" />&nbsp;
+			<input type="reset" value="{L_RESTORE_DEFAULT}" name="reset" class="button2" data-suffix="default" />&nbsp;
+			<input type="submit" name="inventory_submit" value="{L_SUBMIT}" class="button1" />
+		</fieldset>
+	</form>
 
 	<span class="corners-bottom"><span></span></span></div>
 </div>

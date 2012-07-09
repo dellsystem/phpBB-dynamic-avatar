@@ -28,15 +28,16 @@ $lang = array_merge($lang, array(
 	'DYNAMO_OVERVIEW'			=> 'Overview',
 	'DYNAMO_OVERVIEW_EXPLAIN'	=> 'Just has some information about the dynamic avatar MOD on your board. I\'m not really sure what should go on this page, to be honest. Hit me up if you have suggestions.',
 	'MOD_STATUS'				=> 'Dynamic avatar MOD status',
+	'POINTS_SUPPORT'			=> 'Integration with points MOD',
 	'NUM_LAYERS'				=> 'Number of layers available',
 	'NUM_USERS'					=> 'Number of users with a dynamic avatar',
 	'NUM_ITEMS'					=> 'Number of items available',
 
 	// acp_dynamo_settings.html
 	'DYNAMO_SETTINGS_EXPLAIN'	=> 'Here you can modify the settings of your dynamic avatar MOD.',
-	'POINTS_MOD'				=> 'Use a points MOD',
+	'POINTS_MOD'				=> 'Use points MOD',
 	'MOD_ENABLE'				=> 'Enable dynamic avatar',
-	'POINTS_MOD_DESC'			=> 'If there is a points MOD installed and enabled on your board, then you can use the points-related features of this MOD. <strong>Note: not yet functional.</strong>',
+	'POINTS_MOD_DESC'			=> 'If this is set to yes, you can use the points-related features of this MOD - namely, users will be able to purchase inventory items. This option is only available if the ultimate points system MOD (or another compatible MOD) is installed on your board.',
 	'CHANGE_BASE'				=> 'Allow users to change base',
 	'CHANGE_BASE_DESC'			=> 'If this is enabled, users will be able to change items in the layers marked as "base".',
 	'MANDATORY'					=> 'Set dynamic avatar to mandatory',
@@ -69,6 +70,8 @@ $lang = array_merge($lang, array(
 	'IMAGE_FILE'				=> 'Image file',
 	'IMAGE_FILE_DESC'			=> 'Upload the image file for this item from your computer.',
 	'UNCATEGORISED'				=> 'Uncategorised',
+	'ITEM_PRICE'				=> 'Item price',
+	'ITEM_PRICE_EXPLAIN'		=> 'Cost of the item (using the points MOD)',
 
 	// acp_dynamo_users.html
 	'DYNAMO_USERS'				=> 'Users',
@@ -83,6 +86,7 @@ $lang = array_merge($lang, array(
 	'LAYER_POSITION'			=> 'Layer position',
 	'LAYER_MANDATORY'			=> 'Mandatory layer?',
 	'DEFAULT_ITEM'				=> 'Default item',
+	'DEFAULT_PRICE'				=> 'Default price',
 	'CREATE_NEW_LAYER'			=> 'Create new layer',
 
 	// acp_layers_edit.html
@@ -91,7 +95,8 @@ $lang = array_merge($lang, array(
 	'LAYER_SETTINGS'			=> 'Layer settings',
 	'LAYER_POSITION_EXPLAIN'	=> 'Choose the position of the layer.',
 	'LAYER_MANDATORY_EXPLAIN'	=> 'If this is enabled, then users must select an item for this layer',
-	'DEFAULT_ITEM_EXPLAIN'		=> 'If desired, select the default item. If there is only one item associated with this layer, you have no choice.',
+	'DEFAULT_ITEM_EXPLAIN'		=> 'If desired, select the default item. If there is only one item associated with this layer and the layer is mandatory, you have no choice; otherwise, you can choose among the items or select "No default item".',
+	'DEFAULT_ITEM_PRICE'		=> 'Note that you cannot set a price for the default item of a mandatory layer.',
 	'NO_LAYER_ITEMS'			=> 'No items for this layer',
 	'ADD_LAYER'					=> 'Add a layer',
 	'ADD_LAYER_EXPLAIN'			=> 'Create a new layer.',
@@ -101,6 +106,7 @@ $lang = array_merge($lang, array(
 	'NO_DEFAULT_ITEM'			=> 'No default item',
 	'LAYER_AT_TOP'				=> 'At the very top',
 	'LAYER_CURRENT_POSITION'	=> '(keep it where it is)',
+	'DEFAULT_PRICE_EXPLAIN'		=> 'The default price for each item in this layer, used when creating that layer. This value is overriden by the price set for each individual item. Set to 0 to make it free.',
 ));
 
 ?>
