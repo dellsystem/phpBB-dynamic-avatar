@@ -124,6 +124,18 @@ class ucp_dynamo
 					);
 				}
 
+				// Get rid of all the layers with no items
+				foreach ($layers as $layer_id => $layer_data)
+				{
+					$num_items = sizeof($layer_data['items']);
+
+					// Non-mandatory layers have the extra 'None' item
+					if ($num_items == 0 || ($num_items == 1 && !$layer_data['mandatory']))
+					{
+						unset($layers[$layer_id]);
+					}
+				}
+
 				if ($inventory_submit)
 				{
 					// Save a list of URLs to the desired item images
@@ -258,7 +270,12 @@ class ucp_dynamo
 					// If there is no data in the dynamo users table, set to 0
 					$layer_id = $row['dynamo_user_layer'];
 					$item_id = $row['dynamo_user_item'];
-					$layers[$layer_id]['current'] = $item_id;
+
+					if (isset($layers[$layer_id]))
+					{
+						// Ignore layers with no items
+						$layers[$layer_id]['current'] = $item_id;
+					}
 				}
 
 				$num_in_inventory = 0;
