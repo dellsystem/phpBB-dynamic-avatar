@@ -356,6 +356,17 @@ class acp_dynamo
 								WHERE dynamo_item_layer = $delete_get";
 						$db->sql_query($sql);
 
+						// Also rename the items to take the new layer into account
+						// This is worse than usual ... try to clean it up eventually
+						$prefix = $phpbb_root_path . $config['dynamo_image_fp'] . '/' . $delete_get;
+						$glob_files = $prefix . '-*.png';
+						$num_chars_to_strip = strlen($prefix);
+
+						foreach (glob($glob_files) as $old_name) {
+							$new_name = $phpbb_root_path . $config['dynamo_image_fp'] . '/' . '0' . substr($old_name, $num_chars_to_strip);
+							rename($old_name, $new_name);
+						}
+
 						add_log('admin', 'LOG_DYNAMO_DELETE_LAYER', $row['dynamo_layer_name']);
 
 						trigger_error($user->lang['ACP_DYNAMO_DELETED_LAYER'] . adm_back_link($this->u_action));
