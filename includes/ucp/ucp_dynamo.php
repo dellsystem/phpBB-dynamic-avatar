@@ -97,7 +97,8 @@ class ucp_dynamo
 
 				// Then get the list of possible items
 				$sql = "SELECT *
-						FROM " . DYNAMO_ITEMS_TABLE;
+						FROM " . DYNAMO_ITEMS_TABLE . "
+						WHERE dynamo_item_layer > 0";
 				$result = $db->sql_query($sql);
 
 				$layer_item_data = array();
