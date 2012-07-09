@@ -356,6 +356,23 @@ class acp_dynamo
 								WHERE dynamo_item_layer = $delete_get";
 						$db->sql_query($sql);
 
+						// Also rename the items to take the new layer into account
+						// This is worse than usual ... try to clean it up eventually
+						$prefix = $phpbb_root_path . $config['dynamo_image_fp'] . '/' . $delete_get;
+						$glob_files = $prefix . '-*.png';
+						$num_chars_to_strip = strlen($prefix);
+
+						foreach (glob($glob_files) as $old_name) {
+							$new_name = $phpbb_root_path . $config['dynamo_image_fp'] . '/' . '0' . substr($old_name, $num_chars_to_strip);
+							rename($old_name, $new_name);
+						}
+
+						// Delete it from the users table
+						$sql = "DELETE FROM " . DYNAMO_USERS_TABLE . "
+								WHERE dynamo_user_layer = $delete_get";
+						$db->sql_query($sql);
+						// I miss MVC
+
 						add_log('admin', 'LOG_DYNAMO_DELETE_LAYER', $row['dynamo_layer_name']);
 
 						trigger_error($user->lang['ACP_DYNAMO_DELETED_LAYER'] . adm_back_link($this->u_action));
@@ -550,12 +567,20 @@ class acp_dynamo
 
 						if ($old_layer != $desired_layer)
 						{
+							// First, rename the image file
 							$old_file_name = get_item_image_path('entire', $old_layer, $edit_item_id);
 							$new_file_name = get_item_image_path('entire', $desired_layer, $edit_item_id);
+
 							if (!rename($old_file_name, $new_file_name))
 							{
-								trigger_error("Can't move the image file attached to the item. Please file a bug report." . adm_back_link($this->u_action));
+								trigger_error($user->lang['ACP_DYNAMO_CANNOT_MOVE'] . adm_back_link($this->u_action));
 							}
+
+							// Then, delete all traces of this item from the users table
+							// Done to avoid confusion and overwriting other preferences etc
+							$sql = "DELETE FROM " . DYNAMO_USERS_TABLE . "
+									WHERE dynamo_user_item = $edit_item_id";
+							$db->sql_query($sql);
 						}
 
 						$update_array = array(
@@ -618,7 +643,7 @@ class acp_dynamo
 					if (confirm_box(true))
 					{
 						// Figure out the item name before deleting it (for logs)
-						$sql = "SELECT dynamo_item_name
+						$sql = "SELECT dynamo_item_name, dynamo_item_layer
 								FROM " . DYNAMO_ITEMS_TABLE . "
 								WHERE dynamo_item_id = $delete_item_id";
 						$result = $db->sql_query($sql);
@@ -635,6 +660,15 @@ class acp_dynamo
 								WHERE dynamo_layer_default = $delete_item_id";
 						// This way, we don't need to do a select query first
 						$db->sql_query($sql);
+
+						// Delete any traces of it from the users table as well
+						$sql = "DELETE FROM " . DYNAMO_USERS_TABLE . "
+								WHERE dynamo_user_item = $delete_item_id";
+						$db->sql_query($sql);
+
+						// Delete the image file
+						$image_filepath = get_item_image_path('entire', $row['dynamo_item_layer'], $delete_item_id);
+						unlink($image_filepath);
 
 						add_log('admin', 'LOG_DYNAMO_DELETE_ITEM', $row['dynamo_item_name']);
 
