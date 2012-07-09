@@ -103,7 +103,7 @@
 							</label>
 							<!-- IF layer.item.CAN_BUY -->
 								<br />
-								<button name="shop_submit" value="{layer.item.ID}"<!-- IF layer.item.PRICE > USER_POINTS -->disabled="disabled"<!-- ENDIF -->>{L_PURCHASE} - {layer.item.PRICE} {L_CURRENCY}</button>
+								<button name="shop_submit" value="{layer.item.ID}"<!-- IF layer.item.PRICE > USER_POINTS -->disabled="disabled"<!-- ENDIF -->>{layer.item.PURCHASE_MESSAGE}</button>
 							<!-- ENDIF -->
 						</div>
 						<!-- END item -->

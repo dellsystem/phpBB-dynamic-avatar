@@ -97,7 +97,8 @@ class ucp_dynamo
 
 				// Then get the list of possible items
 				$sql = "SELECT *
-						FROM " . DYNAMO_ITEMS_TABLE;
+						FROM " . DYNAMO_ITEMS_TABLE . "
+						WHERE dynamo_item_layer > 0";
 				$result = $db->sql_query($sql);
 
 				$layer_item_data = array();
@@ -121,6 +122,18 @@ class ucp_dynamo
 						'price'		=> $price,
 						'inventory'	=> $inventory,
 					);
+				}
+
+				// Get rid of all the layers with no items
+				foreach ($layers as $layer_id => $layer_data)
+				{
+					$num_items = sizeof($layer_data['items']);
+
+					// Non-mandatory layers have the extra 'None' item
+					if ($num_items == 0 || ($num_items == 1 && !$layer_data['mandatory']))
+					{
+						unset($layers[$layer_id]);
+					}
 				}
 
 				if ($inventory_submit)
@@ -220,7 +233,12 @@ class ucp_dynamo
 					$user_points = $user->data['user_points'];
 					if ($user_points < $item_price)
 					{
-						$message = $user->lang['NOT_ENOUGH_POINTS'];
+						$message = sprintf($user->lang['NOT_ENOUGH_POINTS'], $user->lang['CURRENCY']);
+					}
+					else if ($item_data['inventory'])
+					{
+						// Is this item already in the user's inventory? If so, error:
+						$message = sprintf($user->lang['ALREADY_PURCHASED'], $item_data['name']);
 					}
 					else
 					{
@@ -238,6 +256,7 @@ class ucp_dynamo
 						$user->data['user_points'] -= $item_price; // to update the header thing
 						$message = sprintf($user->lang['SUCCESSFUL_PURCHASE'], $item_data['name']);
 					}
+
 					$message .= '<br /><br />' . sprintf($user->lang['RETURN_UCP'], '<a href="' . $this->u_action . '">', '</a>');
 					trigger_error($message);
 				}
@@ -257,7 +276,12 @@ class ucp_dynamo
 					// If there is no data in the dynamo users table, set to 0
 					$layer_id = $row['dynamo_user_layer'];
 					$item_id = $row['dynamo_user_item'];
-					$layers[$layer_id]['current'] = $item_id;
+
+					if (isset($layers[$layer_id]))
+					{
+						// Ignore layers with no items
+						$layers[$layer_id]['current'] = $item_id;
+					}
 				}
 
 				$num_in_inventory = 0;
@@ -300,12 +324,13 @@ class ucp_dynamo
 						}
 
 						$item_array = array(
-							'URL'		=> $item_data['url'],
-							'NAME'		=> $item_data['name'],
-							'DESC'		=> $item_data['desc'],
-							'ID'		=> $item_id,
-							'CAN_BUY'	=> !$in_inventory,
-							'PRICE'		=> $price,
+							'URL'				=> $item_data['url'],
+							'NAME'				=> $item_data['name'],
+							'DESC'				=> $item_data['desc'],
+							'ID'				=> $item_id,
+							'CAN_BUY'			=> !$in_inventory,
+							'PURCHASE_MESSAGE'	=> sprintf($user->lang['PURCHASE'], $price, $user->lang['CURRENCY']),
+							'PRICE'				=> $price,
 						);
 
 						$template->assign_block_vars('layer.item', $item_array);
