@@ -40,6 +40,7 @@ $lang = array_merge($lang, array(
 	'ACP_DYNAMO_EDITED_ITEM'		=> 'Successfully edited item.',
 	'ACP_DYNAMO_DELETED_ITEM'		=> 'Successfully deleted item.',
 	'ACP_DYNAMO_DELETE_ITEM'		=> 'Are you sure you want to delete this item?',
+	'ACP_DYNAMO_CANNOT_MOVE'		=> "Can't move the image file attached to the item. Please post in the MOD's topic or contact the author directly.",
 
 	// Logging
 	'LOG_DYNAMO_SETTINGS'			=> '<strong>Altered dynamic avatar settings</strong>',

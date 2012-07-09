@@ -573,7 +573,7 @@ class acp_dynamo
 
 							if (!rename($old_file_name, $new_file_name))
 							{
-								trigger_error("Can't move the image file attached to the item. Please file a bug report." . adm_back_link($this->u_action));
+								trigger_error($user->lang['ACP_DYNAMO_CANNOT_MOVE'] . adm_back_link($this->u_action));
 							}
 
 							// Then, delete all traces of this item from the users table
