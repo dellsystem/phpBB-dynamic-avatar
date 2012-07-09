@@ -235,6 +235,11 @@ class ucp_dynamo
 					{
 						$message = $user->lang['NOT_ENOUGH_POINTS'];
 					}
+					else if ($item_data['inventory'])
+					{
+						// Is this item already in the user's inventory? If so, error:
+						$message = sprintf($user->lang['ALREADY_PURCHASED'], $item_data['name']);
+					}
 					else
 					{
 						// First, add the relevant item to the user's inventory
