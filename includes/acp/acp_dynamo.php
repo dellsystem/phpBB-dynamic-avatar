@@ -407,7 +407,7 @@ class acp_dynamo
 							ON l.dynamo_layer_default = i.dynamo_item_id
 							ORDER BY l.dynamo_layer_position DESC";
 					$result = $db->sql_query($sql);
-					
+
 					// For disabling move up/move down icons
 					$min_position = 0;
 					$max_position = 0;
@@ -672,7 +672,7 @@ class acp_dynamo
 
 						add_log('admin', 'LOG_DYNAMO_DELETE_ITEM', $row['dynamo_item_name']);
 
-						trigger_error($user->lang['ACP_DYNAMO_DELETED_ITEM'] . adm_back_link($this->u_action));	
+						trigger_error($user->lang['ACP_DYNAMO_DELETED_ITEM'] . adm_back_link($this->u_action));
 					}
 					else
 					{
