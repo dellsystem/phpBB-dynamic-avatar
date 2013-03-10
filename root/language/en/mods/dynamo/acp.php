@@ -59,7 +59,7 @@ $lang = array_merge($lang, array(
 	// acp_dynamo_items_edit.html
 	'ADDING_ITEM'				=> 'Add a new item',
 	'ADDING_ITEM_EXPLAIN'		=> 'Here you can add a new item using an image file on your computer and assign it to the desired layer.',
-	'EDITING_ITEM'				=> 'Editing item %s',
+	'EDITING_ITEM'				=> 'Editing item: %s',
 	'EDITING_ITEM_EXPLAIN'		=> 'Here you can edit the details for an item. Note that uploading a new image here to overwrite the old work won\'t work as that feature has not yet been implemented.',
 	'ITEM_LAYER_DESC'			=> 'Choose the layer this item will belong to. You can choose to set it to no layer if you want to make it unavailable for now.',
 	'ITEM_PREVIEW'				=> 'Item preview',
