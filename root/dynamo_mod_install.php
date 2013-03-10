@@ -80,6 +80,8 @@ function fix_table_index($action, $version)
 }
 
 $versions = array(
+	'0.9.1' => array(
+	),
 	'0.9.0' => array(
 		// Add price-related columns for the items and layers tables
 		'table_column_add' => array(
