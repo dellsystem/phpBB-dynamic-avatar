@@ -523,6 +523,7 @@ class acp_dynamo
 						trigger_error($user->lang['ACP_DYNAMO_ADDED_ITEM'] . adm_back_link($this->u_action));
 					}
 
+					$this_title = 'ADDING_ITEM';
 					$this_template = 'acp_dynamo_items_edit';
 
 					// Make the layer dropdown - get all the layers from the db
@@ -600,11 +601,8 @@ class acp_dynamo
 
 						trigger_error($user->lang['ACP_DYNAMO_EDITED_ITEM'] . adm_back_link($this->u_action));
 					}
-					// Editing the item
-					$this_title = 'ACP_DYNAMO_ITEMS_EDIT';
-					$this_template = 'acp_dynamo_items_edit';
 
-					// Get the info related to this item
+					// Editing the item. Get the info related to this item
 					$sql = "SELECT *
 							FROM " . DYNAMO_ITEMS_TABLE . "
 							WHERE dynamo_item_id = $edit_item_id";
@@ -612,6 +610,8 @@ class acp_dynamo
 					$item = $db->sql_fetchrow($result);
 
 					$item_name = $item['dynamo_item_name'];
+					$this_title = sprintf($user->lang['EDITING_ITEM'], $item_name);
+					$this_template = 'acp_dynamo_items_edit';
 
 					// Make the layer dropdown - get all the layers from the db
 					// Make this some sort of helper function later
