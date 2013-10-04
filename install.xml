@@ -18,15 +18,24 @@
 		</author>
 	</author-group>
 
-	<mod-version>0.9.0</mod-version>
+	<mod-version>0.9.1</mod-version>
 
 	<installation>
 		<level>easy</level>
 		<time>120</time>
-		<target-version>3.0.10</target-version>
+		<target-version>3.0.11</target-version>
 	</installation>
 
 	<history>
+		<entry>
+			<date>2013-03-10</date>
+			<rev-version>0.9.1</rev-version>
+			<changelog lang="en">
+				<change>Added support for unicode input for item/layer names and descriptions (issue #53)</change>
+				<change>Updated page titles for adding and editing items</change>
+				<change>Updated jQuery to 1.9.1</change>
+			</changelog>
+		</entry>
 		<entry>
 			<date>2012-07-09</date>
 			<rev-version>0.9.0</rev-version>

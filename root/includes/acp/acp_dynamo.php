@@ -170,8 +170,8 @@ class acp_dynamo
 						$row = $db->sql_fetchrow($result);
 						$max_position = $row['max_position'];
 
-						$desired_name = request_var('dynamo_layer_name', '');
-						$desired_desc = request_var('dynamo_layer_desc', '');
+						$desired_name = utf8_normalize_nfc(request_var('dynamo_layer_name', '', true));
+						$desired_desc = utf8_normalize_nfc(request_var('dynamo_layer_desc', '', true));
 						$desired_position = request_var('dynamo_layer_position', 0);
 						$desired_mandatory = request_var('dynamo_layer_mandatory', 0);
 						$desired_default = 0; // Because it's a new layer, so it has no items
@@ -227,7 +227,7 @@ class acp_dynamo
 						'TOP_POSITION'		=> $top_position + 1,
 						'L_TITLE'			=> $user->lang['ADD_LAYER'],
 						'L_TITLE_EXPLAIN'	=> $user->lang['ADD_LAYER_EXPLAIN'],
-						'LAYER_NAME'		=> request_var('dynamo_layer_name', ''), // from the quick "add layer" form thing
+						'LAYER_NAME'		=> utf8_normalize_nfc(request_var('dynamo_layer_name', '', true)), // from the quick "add layer" form thing
 						'IN_CREATE'			=> true,
 					);
 				}
@@ -238,8 +238,8 @@ class acp_dynamo
 					{
 						// Get the GET vars that we'll be updating the layer with
 						$desired_position = request_var('dynamo_layer_position', 0);
-						$desired_name = request_var('dynamo_layer_name', '');
-						$desired_desc = request_var('dynamo_layer_desc', '');
+						$desired_name = utf8_normalize_nfc(request_var('dynamo_layer_name', '', true));
+						$desired_desc = utf8_normalize_nfc(request_var('dynamo_layer_desc', '', true));
 						$desired_mandatory = request_var('dynamo_layer_mandatory', 0);
 						$desired_default = request_var('dynamo_layer_default', 0);
 						$desired_price = request_var('default_price', 0);
@@ -407,7 +407,7 @@ class acp_dynamo
 							ON l.dynamo_layer_default = i.dynamo_item_id
 							ORDER BY l.dynamo_layer_position DESC";
 					$result = $db->sql_query($sql);
-					
+
 					// For disabling move up/move down icons
 					$min_position = 0;
 					$max_position = 0;
@@ -458,8 +458,8 @@ class acp_dynamo
 					if ($submit)
 					{
 						// The necessary post vars for this new item
-						$desired_name = request_var('dynamo_item_name', '');
-						$desired_desc = request_var('dynamo_item_desc', '');
+						$desired_name = utf8_normalize_nfc(request_var('dynamo_item_name', '', true));
+						$desired_desc = utf8_normalize_nfc(request_var('dynamo_item_desc', '', true));
 						$desired_layer = request_var('dynamo_item_layer', 0);
 						$desired_price = request_var('item_price', 0);
 
@@ -522,6 +522,8 @@ class acp_dynamo
 
 						trigger_error($user->lang['ACP_DYNAMO_ADDED_ITEM'] . adm_back_link($this->u_action));
 					}
+
+					$this_title = 'ADDING_ITEM';
 					$this_template = 'acp_dynamo_items_edit';
 
 					// Make the layer dropdown - get all the layers from the db
@@ -545,15 +547,15 @@ class acp_dynamo
 						'L_TITLE'			=> $user->lang['ADDING_ITEM'],
 						'L_TITLE_EXPLAIN'	=> $user->lang['ADDING_ITEM_EXPLAIN'],
 						'U_ACTION'			=> $this->u_action . '&amp;add=1',
-						'ITEM_NAME'			=> request_var('dynamo_item_name', ''),
+						'ITEM_NAME'			=> utf8_normalize_nfc(request_var('dynamo_item_name', '', true)),
 					);
 				}
 				else if ($edit_item_id > 0)
 				{
 					if ($submit)
 					{
-						$desired_name = request_var('dynamo_item_name', '');
-						$desired_desc = request_var('dynamo_item_desc', '');
+						$desired_name = utf8_normalize_nfc(request_var('dynamo_item_name', '', true));
+						$desired_desc = utf8_normalize_nfc(request_var('dynamo_item_desc', '', true));
 						$desired_layer = request_var('dynamo_item_layer', 0);
 						$desired_price = request_var('item_price', 0);
 
@@ -599,11 +601,8 @@ class acp_dynamo
 
 						trigger_error($user->lang['ACP_DYNAMO_EDITED_ITEM'] . adm_back_link($this->u_action));
 					}
-					// Editing the item
-					$this_title = 'ACP_DYNAMO_ITEMS_EDIT';
-					$this_template = 'acp_dynamo_items_edit';
 
-					// Get the info related to this item
+					// Editing the item. Get the info related to this item
 					$sql = "SELECT *
 							FROM " . DYNAMO_ITEMS_TABLE . "
 							WHERE dynamo_item_id = $edit_item_id";
@@ -611,6 +610,8 @@ class acp_dynamo
 					$item = $db->sql_fetchrow($result);
 
 					$item_name = $item['dynamo_item_name'];
+					$this_title = sprintf($user->lang['EDITING_ITEM'], $item_name);
+					$this_template = 'acp_dynamo_items_edit';
 
 					// Make the layer dropdown - get all the layers from the db
 					// Make this some sort of helper function later
@@ -672,7 +673,7 @@ class acp_dynamo
 
 						add_log('admin', 'LOG_DYNAMO_DELETE_ITEM', $row['dynamo_item_name']);
 
-						trigger_error($user->lang['ACP_DYNAMO_DELETED_ITEM'] . adm_back_link($this->u_action));	
+						trigger_error($user->lang['ACP_DYNAMO_DELETED_ITEM'] . adm_back_link($this->u_action));
 					}
 					else
 					{
