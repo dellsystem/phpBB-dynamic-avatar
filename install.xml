@@ -7,7 +7,7 @@
 	<title lang="en">Dynamic Avatar Mod</title>
 	<description lang="en">This MOD provides the ability to edit your avatar, using bodily features and clothes that can be purchased or acquired. In the vein of 2.0x MODs like Live Avatar and Nulavatar, and the dynamic avatar capabilities of the 3.0x MOD Camorea Suite. Useful for RPG forums.</description>
 
-	<author-notes lang="en">Although not required, the Ultimate Points MOD by femu and Wuerzi is supported by this MOD (or will be in subsequent versions, anyway). If you have it installed, you will be able to set prices for items. If not installed, all items are free. Additionally, although some sample images are provided for you to test out the MOD, a comprehensive set of avatar and clothing images is not included; you will need to acquire those images yourself, hopefully legally.</author-notes>
+	<author-notes lang="en">Although not required, the Ultimate Points MOD by femu and Wuerzi is supported by this MOD. If you have it installed, you will be able to set prices for items. If not installed, all items are free. Additionally, although some sample images are provided for you to test out the MOD, a comprehensive set of avatar and clothing images is not included; you will need to acquire those images yourself.</author-notes>
 
 	<author-group>
 		<author>
@@ -18,15 +18,34 @@
 		</author>
 	</author-group>
 
-	<mod-version>0.1.0</mod-version>
+	<mod-version>0.9.1</mod-version>
 
 	<installation>
 		<level>easy</level>
 		<time>120</time>
-		<target-version>3.0.10</target-version>
+		<target-version>3.0.11</target-version>
 	</installation>
 
 	<history>
+		<entry>
+			<date>2013-03-10</date>
+			<rev-version>0.9.1</rev-version>
+			<changelog lang="en">
+				<change>Added support for unicode input for item/layer names and descriptions (issue #53)</change>
+				<change>Updated page titles for adding and editing items</change>
+				<change>Updated jQuery to 1.9.1</change>
+			</changelog>
+		</entry>
+		<entry>
+			<date>2012-07-09</date>
+			<rev-version>0.9.0</rev-version>
+			<changelog lang="en">
+				<change>Points MOD integration (issue #1)</change>
+				<change>Fixed bugs with deleting layers/items (issue #48)</change>
+				<change>Fixed bugs with itemless layers and layerless items in UCP (issues #49, #50)</change>
+				<change>Updated to jQuery 1.7.2</change>
+			</changelog>
+		</entry>
 		<entry>
 			<date>2012-03-26</date>
 			<rev-version>0.1.0</rev-version>
