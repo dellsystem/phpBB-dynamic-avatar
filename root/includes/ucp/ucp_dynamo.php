@@ -206,7 +206,7 @@ class ucp_dynamo
 
 					// For now, pretend it's a remote avatar and modify the user's avatar-related fields accordingly
 					$update_array = array(
-						'user_avatar' 			=> generate_board_url() . '/' . $avatar_path,
+						'user_avatar' 			=> generate_board_url() . '/' . $avatar_path . '?' . time(),
 						'user_avatar_type'		=> 2, // means remote
 						'user_avatar_width'		=> $config['dynamo_width'],
 						'user_avatar_height'	=> $config['dynamo_height'],
