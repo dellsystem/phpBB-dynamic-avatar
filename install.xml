@@ -9,6 +9,8 @@
 
 	<author-notes lang="en">Although not required, the Ultimate Points MOD by femu and Wuerzi is supported by this MOD. If you have it installed, you will be able to set prices for items. If not installed, all items are free. Additionally, although some sample images are provided for you to test out the MOD, a comprehensive set of avatar and clothing images is not included; you will need to acquire those images yourself.</author-notes>
 
+    <github>https://github.com/dellsystem/phpBB-dynamic-avatar</github>
+
 	<author-group>
 		<author>
 			<username>dellsystem</username>
