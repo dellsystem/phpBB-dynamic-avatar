@@ -86,7 +86,52 @@
 	</header>
 	<action-group>
 		<copy>
-			<file from="root/*" to="*"/>
+			<file from="root/dynamo_mod_install.php" to="dynamo_mod_install.php"/>
+			<file from="root/jquery-1.9.1.min.js" to="jquery-1.9.1.min.js"/>
+			<file from="root/adm/style/acp_dynamo_items_edit.html" to="adm/style/acp_dynamo_items_edit.html"/>
+			<file from="root/adm/style/acp_dynamo_items.html" to="adm/style/acp_dynamo_items.html"/>
+			<file from="root/adm/style/acp_dynamo_layers_edit.html" to="adm/style/acp_dynamo_layers_edit.html"/>
+			<file from="root/adm/style/acp_dynamo_layers.html" to="adm/style/acp_dynamo_layers.html"/>
+			<file from="root/adm/style/acp_dynamo_overview.html" to="adm/style/acp_dynamo_overview.html"/>
+			<file from="root/adm/style/acp_dynamo_settings.html" to="adm/style/acp_dynamo_settings.html"/>
+			<file from="root/adm/style/acp_dynamo_users.html" to="adm/style/acp_dynamo_users.html"/>
+			<file from="root/adm/style/dynamo.js" to="admin/style/dynamo.js"/>
+			<file from="root/images/avatars/dynamo/emptyfile" to="images/avatars/dynamo/emptyfile"/>
+			<file from="root/images/dynamo/10-10.png" to="images/dynamo/10-10.png"/>
+			<file from="root/images/dynamo/10-19.png" to="images/dynamo/10-19.png"/>
+			<file from="root/images/dynamo/10-7.png" to="images/dynamo/10-7.png"/>
+			<file from="root/images/dynamo/10-8.png" to="images/dynamo/10-8.png"/>
+			<file from="root/images/dynamo/10-9.png" to="images/dynamo/10-9.png"/>
+			<file from="root/images/dynamo/1-11.png" to="images/dynamo/1-11.png"/>
+			<file from="root/images/dynamo/11-20.png" to="images/dynamo/11-20.png"/>
+			<file from="root/images/dynamo/12-21.png" to="images/dynamo/12-21.png"/>
+			<file from="root/images/dynamo/12-22.png" to="images/dynamo/12-22.png"/>
+			<file from="root/images/dynamo/12-23.png" to="images/dynamo/12-23.png"/>
+			<file from="root/images/dynamo/12-24.png" to="images/dynamo/12-24.png"/>
+			<file from="root/images/dynamo/4-16.png" to="images/dynamo/4-16.png"/>
+			<file from="root/images/dynamo/4-17.png" to="images/dynamo/4-17.png"/>
+			<file from="root/images/dynamo/4-18.png" to="images/dynamo/4-18.png"/>
+			<file from="root/images/dynamo/5-2.png" to="images/dynamo/5-2.png"/>
+			<file from="root/images/dynamo/6-13.png" to="images/dynamo/6-13.png"/>
+			<file from="root/images/dynamo/6-14.png" to="images/dynamo/6-14.png"/>
+			<file from="root/images/dynamo/6-15.png" to="images/dynamo/6-15.png"/>
+			<file from="root/images/dynamo/7-12.png" to="images/dynamo/7-12.png"/>
+			<file from="root/images/dynamo/9-3.png" to="images/dynamo/9-3.png"/>
+			<file from="root/images/dynamo/9-4.png" to="images/dynamo/9-4.png"/>
+			<file from="root/images/dynamo/9-5.png" to="images/dynamo/9-5.png"/>
+			<file from="root/images/dynamo/9-6.png" to="images/dynamo/9-6.png"/>
+			<file from="root/includes/acp/acp_dynamo.php" to="includes/acp/acp_dynamo.php"/>
+			<file from="root/includes/acp/info/acp_dynamo.php" to="includes/acp/info/acp_dynamo.php"/>
+			<file from="root/includes/acp/functions_dynamo.php" to="includes/acp/functions_dynamo.php"/>
+			<file from="root/includes/ucp/info/ucp_dynamo.php" to="includes/ucp/info/ucp_dynamo.php"/>
+			<file from="root/includes/ucp/ucp_dynamo.php" to="includes/ucp/ucp_dynamo.php"/>
+			<file from="root/language/en/mods/dynamo/acp.php" to="language/en/mods/dynamo/acp.php"/>
+			<file from="root/language/en/mods/dynamo/ucp.php" to="language/en/mods/dynamo/ucp.php"/>
+			<file from="root/language/en/mods/info_acp_dynamo.php" to="language/en/mods/info_acp_dynamo.php"/>
+			<file from="root/language/en/mods/info_ucp_dynamo.php" to="language/en/mods/info_ucp_dynamo.php"/>
+			<file from="root/language/en/mods/permissions_dynamo.php" to="language/en/mods/permissions_dynamo.php"/>
+			<file from="root/styles/prosilver/template/dynamo.js" to="styles/prosilver/template/dynamo.js"/>
+			<file from="root/styles/prosilver/template/ucp_dynamo_edit.html" to="styles/prosilver/template/ucp_dynamo_edit.html"/>
 		</copy>
 		<open src="includes/constants.php">
 			<edit>
