@@ -18,7 +18,7 @@
 				<email><![CDATA[dellsystem@phpbb.com]]></email>
 			</author>
 		</author-group>
-		<mod-version>0.9.2</mod-version>
+		<mod-version>0.9.3</mod-version>
 		<installation>
 			<level>easy</level>
 			<time>120</time>
@@ -80,6 +80,14 @@
 				<rev-version>0.9.2</rev-version>
 				<changelog lang="en">
 					<change><![CDATA[Improved caching prevention for avatar images (issue #54)]]></change>
+				</changelog>
+			</entry>
+			<entry>
+				<date>2014-07-13</date>
+				<rev-version>0.9.3</rev-version>
+				<changelog lang="en">
+					<change><![CDATA[Fixed jQuery include in UCP (since it's now 1.9.1]]></change>
+					<change><![CDATA[Explicitly listed all the copy instructions for better AutoMOD integration]]></change>
 				</changelog>
 			</entry>
 		</history>

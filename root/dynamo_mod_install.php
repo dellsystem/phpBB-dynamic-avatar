@@ -80,6 +80,8 @@ function fix_table_index($action, $version)
 }
 
 $versions = array(
+	'0.9.3' => array(
+	),
 	'0.9.2' => array(
 	),
 	'0.9.1' => array(
