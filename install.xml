@@ -1,110 +1,106 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <?xml-stylesheet type="text/xsl" href="modx.prosilver.en.xsl"?>
-<!--For security purposes, please check: http://www.phpbb.com/mods/ for the latest version of this MOD. Although MODs are checked before being allowed in the MODs Database there is no guarantee that there are no security problems within the MOD. No support will be given for MODs not found within the MODs Database which can be found at http://www.phpbb.com/mods/-->
-<mod xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.phpbb.com/mods/xml/modx-1.2.5.xsd">
-<header>
-	<license>http://opensource.org/licenses/gpl-license.php GNU General Public License v2</license>
-	<title lang="en">Dynamic Avatar Mod</title>
-	<description lang="en">This MOD provides the ability to edit your avatar, using bodily features and clothes that can be purchased or acquired. In the vein of 2.0x MODs like Live Avatar and Nulavatar, and the dynamic avatar capabilities of the 3.0x MOD Camorea Suite. Useful for RPG forums.</description>
-
-	<author-notes lang="en">Although not required, the Ultimate Points MOD by femu and Wuerzi is supported by this MOD. If you have it installed, you will be able to set prices for items. If not installed, all items are free. Additionally, although some sample images are provided for you to test out the MOD, a comprehensive set of avatar and clothing images is not included; you will need to acquire those images yourself.</author-notes>
-
-	<author-group>
-		<author>
-			<username>dellsystem</username>
-			<realname>N/A</realname>
-			<homepage>http://www.dellsystem.me/phpbb</homepage>
-			<email>dellsystem@phpbb.com</email>
-		</author>
-	</author-group>
-
-	<mod-version>0.9.2</mod-version>
-
-	<installation>
-		<level>easy</level>
-		<time>120</time>
-		<target-version>3.0.12</target-version>
-	</installation>
-
-	<history>
-		<entry>
-			<date>2013-10-03</date>
-			<rev-version>0.9.2</rev-version>
-			<changelog lang="en">
-				<change>Improved caching prevention for avatar images (issue #54)</change>
-			</changelog>
-		</entry>
-		<entry>
-			<date>2013-03-10</date>
-			<rev-version>0.9.1</rev-version>
-			<changelog lang="en">
-				<change>Added support for unicode input for item/layer names and descriptions (issue #53)</change>
-				<change>Updated page titles for adding and editing items</change>
-				<change>Updated jQuery to 1.9.1</change>
-			</changelog>
-		</entry>
-		<entry>
-			<date>2012-07-09</date>
-			<rev-version>0.9.0</rev-version>
-			<changelog lang="en">
-				<change>Points MOD integration (issue #1)</change>
-				<change>Fixed bugs with deleting layers/items (issue #48)</change>
-				<change>Fixed bugs with itemless layers and layerless items in UCP (issues #49, #50)</change>
-				<change>Updated to jQuery 1.7.2</change>
-			</changelog>
-		</entry>
-		<entry>
-			<date>2012-03-26</date>
-			<rev-version>0.1.0</rev-version>
-			<changelog lang="en">
-				<change>Rewrote and redesigned UCP module (issues #35 and #42)</change>
-				<change>Added logging to more ACP actions (issue #41)</change>
-				<change>Made image directory paths ACP-configurable (issue #37)</change>
-				<change>Turned basically all text into a language constant (issues #10, #16)</change>
-				<change>Improved reordering of layers by adding a move up/down option and fixing bugs (issues #32, #33, #34)</change>
-				<change>Dropped the `position` unique index in the layers table (see previous)</change>
-				<change>Added functionality to the "reset" button, and added a new one (issue #36)</change>
-				<change>Moved reusable functions into functions_dynamo.php (new file)</change>
-				<change>Added ACP-configurable image dimensions (issue #5 - still a WIP and may not behave as expected)</change>
-			</changelog>
-		</entry>
-		<entry>
-			<date>2011-08-31</date>
-			<rev-version>0.0.2</rev-version>
-			<changelog lang="en">
-				<change>Fixed bug in ACP dynamic avatar module</change>
-				<change>Clicking on radio buttons in UCP module works now</change>
-				<change>More language constants</change>
-			</changelog>
-		</entry>
-		<entry>
-			<date>2011-08-23</date>
-			<rev-version>0.0.1</rev-version>
-			<changelog lang="en">
-				<change>Initial release - very basic and unstable ALPHA version</change>
-			</changelog>
-		</entry>
-	</history>
-</header>
-
-<action-group>
-	<copy>
-		<file from="root/*" to="*" />
-	</copy>
-	<open src="includes/constants.php">
-		<edit>
-			<find><![CDATA[// Additional tables]]></find>
-			<action type="after-add"><![CDATA[// Dynamo (dynamic avatar) MOD
+<!--NOTICE: Please open this file in your web browser. If presented with a security warning, you may safely tell it to allow the blocked content.-->
+<!--For security purposes, please check: http://www.phpbb.com/mods/ for the latest version of this MOD.\nAlthough MODs are checked before being allowed in the MODs Database there is no guarantee that there are no security problems within the MOD.\nNo support will be given for MODs not found within the MODs Database which can be found at http://www.phpbb.com/mods/-->
+<mod xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="https://www.phpbb.com/mods/xml/modx-1.2.6.xsd">
+	<header>
+		<meta name="generator" content="MODX file generated with PP MODX Creator by tumba25 (online version)"/>
+		<license><![CDATA[http://opensource.org/licenses/gpl-license.php GNU General Public License v2]]></license>
+		<title lang="en"><![CDATA[Dynamic Avatar Mod]]></title>
+		<description lang="en"><![CDATA[This MOD provides the ability to edit your avatar, using bodily features and clothes that can be purchased or acquired. In the vein of 2.0x MODs like Live Avatar and Nulavatar, and the dynamic avatar capabilities of the 3.0x MOD Camorea Suite. Useful for RPG forums.]]></description>
+		<author-notes lang="en"><![CDATA[Although not required, the Ultimate Points MOD by femu and Wuerzi is supported by this MOD. If you have it installed, you will be able to set prices for items. If not installed, all items are free. Additionally, although some sample images are provided for you to test out the MOD, a comprehensive set of avatar and clothing images is not included; you will need to acquire those images yourself.]]></author-notes>
+		<github><![CDATA[https://github.com/dellsystem/phpBB-dynamic-avatar]]></github>
+		<author-group>
+			<author>
+				<realname><![CDATA[Wendy Liu]]></realname>
+				<username><![CDATA[dellsystem]]></username>
+				<homepage><![CDATA[http://www.dellsystem.me/phpbb]]></homepage>
+				<email><![CDATA[dellsystem@phpbb.com]]></email>
+			</author>
+		</author-group>
+		<mod-version>0.9.2</mod-version>
+		<installation>
+			<level>easy</level>
+			<time>120</time>
+			<target-version>3.0.12</target-version>
+		</installation>
+		<history>
+			<entry>
+				<date>2011-08-23</date>
+				<rev-version>0.0.1</rev-version>
+				<changelog lang="en">
+					<change><![CDATA[Initial release - very basic and unstable ALPHA version]]></change>
+				</changelog>
+			</entry>
+			<entry>
+				<date>2011-08-31</date>
+				<rev-version>0.0.2</rev-version>
+				<changelog lang="en">
+					<change><![CDATA[Fixed bug in ACP dynamic avatar module]]></change>
+					<change><![CDATA[Clicking on radio buttons in UCP module works now]]></change>
+					<change><![CDATA[More language constants]]></change>
+				</changelog>
+			</entry>
+			<entry>
+				<date>2012-03-26</date>
+				<rev-version>0.1.0</rev-version>
+				<changelog lang="en">
+					<change><![CDATA[Rewrote and redesigned UCP module (issues #35 and #42)]]></change>
+					<change><![CDATA[Added logging to more ACP actions (issue #41)]]></change>
+					<change><![CDATA[Made image directory paths ACP-configurable (issue #37)]]></change>
+					<change><![CDATA[Turned basically all text into a language constant (issues #10, #16)]]></change>
+					<change><![CDATA[Improved reordering of layers by adding a move up/down option and fixing bugs (issues #32, #33, #34)]]></change>
+					<change><![CDATA[Dropped the `position` unique index in the layers table (see previous)]]></change>
+					<change><![CDATA[Added functionality to the "reset" button, and added a new one (issue #36)]]></change>
+					<change><![CDATA[Moved reusable functions into functions_dynamo.php (new file)]]></change>
+					<change><![CDATA[Added ACP-configurable image dimensions (issue #5 - still a WIP and may not behave as expected)]]></change>
+				</changelog>
+			</entry>
+			<entry>
+				<date>2012-07-09</date>
+				<rev-version>0.9.0</rev-version>
+				<changelog lang="en">
+					<change><![CDATA[Points MOD integration (issue #1)]]></change>
+					<change><![CDATA[Fixed bugs with deleting layers/items (issue #48)]]></change>
+					<change><![CDATA[Fixed bugs with itemless layers and layerless items in UCP (issues #49, #50)]]></change>
+					<change><![CDATA[Updated to jQuery 1.7.2]]></change>
+				</changelog>
+			</entry>
+			<entry>
+				<date>2013-03-10</date>
+				<rev-version>0.9.1</rev-version>
+				<changelog lang="en">
+					<change><![CDATA[Added support for unicode input for item/layer names and descriptions (issue #53)]]></change>
+					<change><![CDATA[Updated page titles for adding and editing items]]></change>
+					<change><![CDATA[Updated jQuery to 1.9.1]]></change>
+				</changelog>
+			</entry>
+			<entry>
+				<date>2013-10-03</date>
+				<rev-version>0.9.2</rev-version>
+				<changelog lang="en">
+					<change><![CDATA[Improved caching prevention for avatar images (issue #54)]]></change>
+				</changelog>
+			</entry>
+		</history>
+	</header>
+	<action-group>
+		<copy>
+			<file from="root/*" to="*"/>
+		</copy>
+		<open src="includes/constants.php">
+			<edit>
+				<find><![CDATA[// Additional tables]]></find>
+				<action type="after-add"><![CDATA[// Dynamo (dynamic avatar) MOD
 define('DYNAMO_LAYERS_TABLE',		$table_prefix . 'dynamo_layers');
 define('DYNAMO_ITEMS_TABLE',		$table_prefix . 'dynamo_items');
 define('DYNAMO_USERS_TABLE',		$table_prefix . 'dynamo_users');
 define('DYNAMO_INVENTORY_TABLE',  $table_prefix . 'dynamo_inventory');]]></action>
-		</edit>
-	</open>
-	<diy-instructions lang="en">Navigate to dynamo_mod_install.php in the root of your forum and follow the install instructions.
+			</edit>
+		</open>
+		<php-installer><![CDATA[dynamo_mod_install.php]]></php-installer>
+		<diy-instructions lang="en"><![CDATA[Make sure to enable remote avatars (ACP, Avatar settings) and change the maximum avatar dimensions (the supplied demo images have a width of 100px and a height of 120px - this isn't a necessary step but it may become one eventually?). Make sure also to chmod/chown the /images/avatars/dynamo/ and /images/dynamo/ directories so that they are writable by whatever user your server's PHP process runs under (777 is always a safe bet).
 
-Make sure to enable remote avatars (ACP, Avatar settings) and change the maximum avatar dimensions (the supplied demo images have a width of 100px and a height of 120px - this isn't a necessary step but it may become one eventually?). Make sure also to chmod/chown the /images/avatars/dynamo/ and /images/dynamo/ directories so that they are writable by whatever user your server's PHP process runs under (777 is always a safe bet).
-
-You can configure this MOD in the ACP, under the .MODs tab.</diy-instructions>
-</action-group>
+You can configure this MOD in the ACP, under the .MODs tab.]]></diy-instructions>
+	</action-group>
 </mod>
